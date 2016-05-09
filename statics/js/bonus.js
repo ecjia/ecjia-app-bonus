@@ -90,7 +90,7 @@
 					$('.nav-list-ready').append(opt);
 				};
 			} else {
-				$('.nav-list-ready').html('<li class="ms-elem-selectable disabled"><span>未搜索到文章信息</span></li>');
+				$('.nav-list-ready').html('<li class="ms-elem-selectable disabled"><span>未搜索到商品信息</span></li>');
 			}
 			app.link_goods.search_link_goods_opt();
 			app.link_goods.add_link_goods();
@@ -207,23 +207,21 @@
 					}
 				};
 				$.post(searchURL, filters, function(data) {
-					if(data.content != null){
-						app.link_user.load_link_user_opt(data);
-					}
+					app.link_user.load_link_user_opt(data);
 				}, "JSON");
 			})
 		},
 
 		load_link_user_opt : function(data) {
 			$('.nav-list-ready').html('');
-			if (data.content.length > 0) {
+			if (data.content != null && data.content.length > 0) {
 				for (var i = 0; i < data.content.length; i++) {
 					var disable = $('.nav-list-content .ms-elem-selection').find('input[value="' + data.content[i].user_id + '"]').length ? 'disabled' : '';
 					var opt = '<li class="ms-elem-selectable ' + disable + '" id="userid_' + data.content[i].user_id + '" data-id="' + data.content[i].user_id + '"><span>' + data.content[i].user_name + '</span></li>'
 					$('.nav-list-ready').append(opt);
 				};
 			} else {
-				$('.nav-list-ready').html('<li class="ms-elem-selectable disabled"><span>未搜索到文章信息</span></li>');
+				$('.nav-list-ready').html('<li class="ms-elem-selectable disabled"><span>未搜索到用户信息</span></li>');
 			}
 			app.link_user.search_link_user_opt();
 			app.link_user.add_link_user();

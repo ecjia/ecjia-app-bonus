@@ -5,8 +5,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @access  public
  * @return void
  */
-function get_type_list()
-{
+function get_type_list() {
 	RC_Lang::load('bonus');
 	$db_user_bonus = RC_Loader::load_app_model('user_bonus_model', 'bonus');
 	$db_bonus_type = RC_Loader::load_app_model('bonus_type_model', 'bonus');
@@ -16,16 +15,16 @@ function get_type_list()
 	$data = $db_user_bonus->field("bonus_type_id, COUNT(*) AS sent_count,SUM(IF(used_time>0,1,0)) as used_count")->group('bonus_type_id')->select();
 	$sent_arr = array();
 	$used_arr = array();
-	if(!empty($data)) {
+	if (!empty($data)) {
 		foreach ($data as $row) {
 			$sent_arr[$row['bonus_type_id']] = $row['sent_count'];
 			$used_arr[$row['bonus_type_id']] = $row['used_count'];
 		}
 	}
-	$bonustype_id=$_GET['bonustype_id'];
+	$bonustype_id = !empty($_GET['bonustype_id']) ? intval($_GET['bonustype_id']) : 0;
 	$filter['send_type']='';
-	$where=array();
-	if(!empty($_GET['bonustype_id']) || (isset($_GET['bonustype_id']) && trim($_GET['bonustype_id'])==='0' )){
+	$where = array();
+	if (!empty($_GET['bonustype_id']) || (isset($_GET['bonustype_id']) && trim($_GET['bonustype_id'])==='0' )) {
 		$where['send_type']=$_GET['bonustype_id'];
 		$filter['send_type']  =  $bonustype_id;
 	}
@@ -35,28 +34,27 @@ function get_type_list()
 
 	$count = $db_bonus_type->where($where)->count();
 	$page = new ecjia_page($count, 15, 6);
-	$res = $merchants_db_bonus_type->where($where)->order($filter[sort_by].' '.$filter[sort_order])->limit($page->limit())->select();
+	$res = $merchants_db_bonus_type->where($where)->order($filter['sort_by'].' '.$filter['sort_order'])->limit($page->limit())->select();
 	
 	$arr = array();
-	if(!empty($res)) {
-		foreach ($res as $row){
+	if (!empty($res)) {
+		foreach ($res as $row) {
 			$row['send_by']    = RC_Lang::lang('send_by/'. $row['send_type']);
 			$row['send_count'] = isset($sent_arr[$row['type_id']]) ? $sent_arr[$row['type_id']] : 0;
 			$row['use_count']  = isset($used_arr[$row['type_id']]) ? $used_arr[$row['type_id']] : 0;
 			
-			if(empty($row['user_id'])){
-				if(empty($row['usebonus_type'])){
+			if (empty($row['user_id'])) {
+				if (empty($row['usebonus_type'])) {
 					$row['user_bonus_type'] = 1; //自主使用
-				}else{
+				} else {
 					$row['user_bonus_type'] = 2; //全场通用
 				}
-			}else{
+			} else {
 				$row['user_bonus_type'] = $row['shoprz_brandName'].$row['shopNameSuffix']; //商家名称
 			}
 			$arr[] = $row;
 		}
 	}
-
 	$arr = array('item' => $arr, 'filter' => $filter, 'page' => $page->show(5), 'desc' => $page->page_desc());
 	return $arr;
 }
@@ -68,10 +66,9 @@ function get_type_list()
  * @param integer $type_id        	
  * @return array
  */
-function get_bonus_goods($type_id) 
-{
+function get_bonus_goods($type_id) {
 	$db_goods = RC_Loader::load_app_model('goods_model', 'goods');
-	$row = $db_goods->field('goods_id, goods_name')->where("bonus_type_id = '$type_id'")->select ();
+	$row = $db_goods->field('goods_id, goods_name')->where("bonus_type_id = '$type_id'")->select();
 	return $row;
 }
 
@@ -83,8 +80,7 @@ function get_bonus_goods($type_id)
  *        	$page_param
  * @return void
  */
-function get_bonus_list() 
-{
+function get_bonus_list() {
 	RC_Lang::load('bonus');
 	$db_user_bonus = RC_Loader::load_app_model( 'user_bonus_model', 'bonus');
 	$dbview = RC_Loader::load_app_model('user_bonus_type_viewmodel', 'bonus');
@@ -96,22 +92,22 @@ function get_bonus_list()
 	$count = $db_user_bonus->where ( $where )->count ();
 	$page = new ecjia_page ( $count, 15, 6 );
 	$dbview->view = array (
-			'bonus_type' => array (
-					'type' => Component_Model_View::TYPE_LEFT_JOIN,
-					'alias' => 'bt',
-					'field' => 'ub.*, u.user_name, u.email, o.order_sn, bt.type_name',
-					'on' => 'bt.type_id = ub.bonus_type_id' 
-			),
-			'users' => array (
-					'type' => Component_Model_View::TYPE_LEFT_JOIN,
-					'alias' => 'u',
-					'on' => 'u.user_id = ub.user_id' 
-			),
-			'order_info' => array (
-					'type' => Component_Model_View::TYPE_LEFT_JOIN,
-					'alias' => 'o',
-					'on' => 'o.order_id = ub.order_id' 
-			) 
+		'bonus_type' => array (
+			'type' => Component_Model_View::TYPE_LEFT_JOIN,
+			'alias' => 'bt',
+			'field' => 'ub.*, u.user_name, u.email, o.order_sn, bt.type_name',
+			'on' => 'bt.type_id = ub.bonus_type_id' 
+		),
+		'users' => array (
+			'type' => Component_Model_View::TYPE_LEFT_JOIN,
+			'alias' => 'u',
+			'on' => 'u.user_id = ub.user_id' 
+		),
+		'order_info' => array (
+			'type' => Component_Model_View::TYPE_LEFT_JOIN,
+			'alias' => 'o',
+			'on' => 'o.order_id = ub.order_id' 
+		) 
 	);
 	$row = $dbview->where( $where )->order( $filter ['sort_by'] . " " . $filter ['sort_order'] )->limit ( $page->limit () )->select ();
 	if (! empty( $row )) {
@@ -120,12 +116,7 @@ function get_bonus_list()
 			$row[$key]['emailed']   = RC_Lang::lang ( 'mail_status/' . $row [$key] ['emailed'] );
 		}
 	}
-	$arr = array (
-			'item' => $row,
-			'filter' => $filter,
-			'page' => $page->show ( 15 ),
-			'desc' => $page->page_desc () 
-	);
+	$arr = array('item' => $row, 'filter' => $filter, 'page' => $page->show ( 15 ), 'desc' => $page->page_desc ());
 	return $arr;
 }
 
@@ -136,8 +127,7 @@ function get_bonus_list()
  *        	红包类型id
  * @return array
  */
-function bonus_type_info($bonus_type_id) 
-{
+function bonus_type_info($bonus_type_id) {
 	$db_bonus_type = RC_Loader::load_app_model ('bonus_type_model', 'bonus');
 	return $db_bonus_type->find( "type_id = '$bonus_type_id'" );
 }
@@ -151,8 +141,7 @@ function bonus_type_info($bonus_type_id)
  * @param unknown $is_html
  * @return boolean
  */
-function add_to_maillist($username, $email, $subject, $content, $is_html) 
-{
+function add_to_maillist($username, $email, $subject, $content, $is_html) {
 	$db_mail_templates = RC_Loader::load_app_model ( 'mail_templates_model', 'mail');
 	$db_email_sendlist = RC_Loader::load_app_model ( 'email_sendlist_model', 'mail');
 	$time = time ();
@@ -160,13 +149,13 @@ function add_to_maillist($username, $email, $subject, $content, $is_html)
 	$template_id = $db_mail_templates->field ( 'template_id' )->find ( "template_code = 'send_bonus'" );
 	$template_id = $template_id ['template_id'];
 	$data = array (
-			'email' => $email,
-			'template_id' => $template_id,
-			'email_content' => $content,
-			'pri' => 1,
-			'last_send' => $time 
+		'email' 		=> $email,
+		'template_id' 	=> $template_id,
+		'email_content' => $content,
+		'pri' 			=> 1,
+		'last_send' 	=> $time 
 	);
-	$db_email_sendlist->insert ( $data );
+	$db_email_sendlist->insert( $data );
 	return true;
 }
 
@@ -177,14 +166,10 @@ function add_to_maillist($username, $email, $subject, $content, $is_html)
  * @param   float   $goods_amount   订单商品金额
  * @return  array   红包数组
  */
-function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) 
-{
-	//will.chen start
+function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) {
 	$db_cart_view = RC_Loader::load_app_model('cart_goods_viewmodel', 'cart');
-// 	$sql = "SELECT g.user_id FROM " .$GLOBALS['ecs']->table('cart') ." as c,". $GLOBALS['ecs']->table('goods') ." as g". " WHERE  c.goods_id = g.goods_id AND c.rec_id in($cart_value)";
-// 	$goods_list = $GLOBALS['db']->getAll($sql);
     $where = array();
-    if(!empty($cart_id)){
+    if (!empty($cart_id)) {
         $where = array('c.rec_id' => $cart_id);
     }
     $where['c.user_id'] = $_SESSION['user_id'];
@@ -193,68 +178,43 @@ function user_bonus($user_id, $goods_amount = 0, $cart_id = array())
 	
 	$where = "";
 	$goods_user = array();
-	if($goods_list){
-		foreach($goods_list as $key=>$row){
+	if ($goods_list) {
+		foreach ($goods_list as $key => $row) {
 			$goods_user[] = $row['user_id'];
 		}
 	}
 	
-// 	if(!empty($goods_user)){
-// 		$goods_user = substr($goods_user, 0, -1);
-// 		$goods_user = explode(',', $goods_user);
-// 		$goods_user = array_unique($goods_user);
-// 		$goods_user = implode(',', $goods_user);
-// 		$where = "IF(bt.usebonus_type > 0, bt.usebonus_type = 1, bt.user_id in($goods_user)) ";
-// 	}
-	//will.chen end 
-	
 	$dbview	= RC_Loader::load_app_model('user_bonus_type_viewmodel', 'bonus');
-// 	$day	= getdate();
-// 	$today	= RC_Time::local_mktime(23, 59, 59, $day['mon'], $day['mday'], $day['year']);
 	$today = RC_Time::gmtime();
 	$dbview->view = array(
-			'bonus_type' 	=> array(
-					'type' 	=> Component_Model_View::TYPE_LEFT_JOIN,
-					'alias'	=> 'bt',
-					'field'	=> 'bt.type_id, bt.type_name, bt.type_money, ub.bonus_id, bt.user_id, bt.usebonus_type',
-					'on'   	=> 'ub.bonus_type_id = bt.type_id'
-			)
+		'bonus_type' 	=> array(
+			'type' 	=> Component_Model_View::TYPE_LEFT_JOIN,
+			'alias'	=> 'bt',
+			'field'	=> 'bt.type_id, bt.type_name, bt.type_money, ub.bonus_id, bt.user_id, bt.usebonus_type',
+			'on'   	=> 'ub.bonus_type_id = bt.type_id'
+		)
 	);
-	$bt_where = array('bt.use_start_date' => array('elt' => $today),
-			'bt.use_end_date'		=> array('egt' => $today),
-			'bt.min_goods_amount'	=> array('elt' => $goods_amount),
-			'ub.user_id'			=> array('neq' => 0),
-			'ub.user_id'			=> $user_id,
-			'ub.order_id'			=> 0	
+	$bt_where = array(
+		'bt.use_start_date' 	=> array('elt' => $today),
+		'bt.use_end_date'		=> array('egt' => $today),
+		'bt.min_goods_amount'	=> array('elt' => $goods_amount),
+		'ub.user_id'			=> array('neq' => 0),
+		'ub.user_id'			=> $user_id,
+		'ub.order_id'			=> 0	
 	);
 	
-// 	$bt_where = empty($where) ? $bt_where : array_merge($bt_where, $where);
 	$row = $dbview->where($bt_where)->select();
-	
-	foreach ($row as $key => $val) {
-		if ($val['usebonus_type'] == 0) {
-			if (!in_array($val['user_id'], $goods_user)) {
-				unset($row[$key]);
+	if (!empty($row)) {
+		foreach ($row as $key => $val) {
+			if ($val['usebonus_type'] == 0) {
+				if (!in_array($val['user_id'], $goods_user)) {
+					unset($row[$key]);
+				}
 			}
 		}
+		$row = array_merge($row);
 	}
-	
-	$row = array_merge($row);
-	
 	return $row;
-	//	$sql = "SELECT bt.type_id, bt.type_name, bt.type_money, b.bonus_id " .
-	//			"FROM " . $GLOBALS['ecs']->table('bonus_type') . " AS bt," .
-	//			$GLOBALS['ecs']->table('user_bonus') . " AS ub " .
-	//			"WHERE bt.type_id = ub.bonus_type_id " .
-	//			"AND bt.use_start_date <= '$today' " .
-	//			"AND bt.use_end_date >= '$today' " .
-	//			"AND bt.min_goods_amount <= '$goods_amount' " .
-	//			"AND ub.user_id<>0 " .
-	//			"AND ub.user_id = '$user_id' " .
-	//			"AND ub.order_id = 0";
-	//	return $GLOBALS['db']->getAll($sql);
-	//$dbview	= RC_Loader::load_app_model('bonus_type_viewmodel','user');
-	//return $dbview->join('user_bonus')->where('bt.use_start_date <= '.$today.' AND bt.use_end_date >= '.$today.' AND bt.min_goods_amount <= '.$goods_amount.' AND ub.user_id <> 0 AND ub.user_id = '.$user_id.' AND ub.order_id = 0')->select();
 }
 
 /**
@@ -263,8 +223,7 @@ function user_bonus($user_id, $goods_amount = 0, $cart_id = array())
 * @param   string  $bonus_sn   红包序列号
 * @param   array   红包信息
 */
-function bonus_info($bonus_id, $bonus_sn = '') 
-{
+function bonus_info($bonus_id, $bonus_sn = '') {
 	$dbview	= RC_Loader::load_app_model('user_bonus_type_viewmodel', 'bonus');
 	$dbview->view = array(
 		'bonus_type' => array(
@@ -280,24 +239,6 @@ function bonus_info($bonus_id, $bonus_sn = '')
 	} else {
 		return $dbview->find(array('ub.bonus_sn' => $bonus_sn));
 	}
-
-	
-	// 	$dbview->view = array(
-	// 			'user_bonus' => array(
-	// 					'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-	// 					'alias'	=> 'ub',
-	// 					'field'	=> 'bt.*, ub.*',
-	// 					'on'	=> 'bt.type_id = ub.bonus_type_id'
-	// 			)
-	// 	);
-	//	 $sql = "SELECT bt.*, ub.* " ."FROM " . $GLOBALS['ecs']->table('bonus_type') . " AS bt," .
-	//				 $GLOBALS['ecs']->table('user_bonus') . " AS ub " .
-	//			 "WHERE bt.type_id = ub.bonus_type_id ";
-	//	$sql .= "AND b.bonus_id = '$bonus_id'";
-	//	$sql .= "AND b.bonus_sn = '$bonus_sn'";
-	//	return $GLOBALS['db']->getRow($sql);
-	
-	//$dbview = RC_Loader::load_app_model('bonus_type_viewmodel','user');
 }
 
 /**
@@ -305,14 +246,10 @@ function bonus_info($bonus_id, $bonus_sn = '')
 * @param   int $bonus_id   红包id
 * @return  bool
 */
-function bonus_used($bonus_id) 
-{
+function bonus_used($bonus_id) {
 	$db = RC_Loader::load_app_model('user_bonus_model', 'bonus');
 	$order_id = $db->where(array('bonus_id' => $bonus_id))->get_field('order_id');
 	return $order_id > 0;
-	
-	//	 $sql = "SELECT order_id FROM " . $GLOBALS['ecs']->table('user_bonus') ." WHERE bonus_id = '$bonus_id'";
-	//	 return  $GLOBALS['db']->getOne($sql) > 0;
 }
 
 /**
@@ -321,19 +258,13 @@ function bonus_used($bonus_id)
 * @param   int	 $order_id   订单id
 * @return  bool
 */
-function use_bonus($bonus_id, $order_id) 
-{
+function use_bonus($bonus_id, $order_id) {
 	$db = RC_Loader::load_app_model('user_bonus_model', 'bonus');
 	$data = array(
 		'order_id'	=> $order_id,
 		'used_time' => RC_Time::gmtime()
 	);
 	return $db->where(array('bonus_id' => $bonus_id))->update($data);
-		
-		//	 $sql = "UPDATE " . $GLOBALS['ecs']->table('user_bonus') .
-		//			 " SET order_id = '$order_id', used_time = '" . gmtime() . "' " .
-		//			 "WHERE bonus_id = '$bonus_id' LIMIT 1";
-		//	 return  $GLOBALS['db']->query($sql);
 }
 
 /**
@@ -342,26 +273,16 @@ function use_bonus($bonus_id, $order_id)
 * @param   int	 $order_id   订单id
 * @return  bool
 */
-function unuse_bonus($bonus_id) 
-{
+function unuse_bonus($bonus_id) {
 	$db = RC_Loader::load_app_model('user_bonus_model', 'bonus');
-	$data = array(
-			'order_id'	=> 0,
-			'used_time'	=> 0
-					);
+	$data = array('order_id' => 0, 'used_time'	=> 0);
 	return $db->where(array('bonus_id' => $bonus_id))->update($data);
-	
-	//	 $sql = "UPDATE " . $GLOBALS['ecs']->table('user_bonus') .
-	//			 " SET order_id = 0, used_time = 0 " .
-	//			 "WHERE bonus_id = '$bonus_id' LIMIT 1";
-	//	 return  $GLOBALS['db']->query($sql);
 }
 
 /**
  * 取得当前用户应该得到的红包总额
  */
-function get_total_bonus() 
-{
+function get_total_bonus() {
 	$db_cart	= RC_Loader::load_app_model('cart_model', 'cart');
 	$dbview		= RC_Loader::load_app_model('cart_exchange_viewmodel', 'cart');
 	$db_bonus	= RC_Loader::load_app_model('bonus_type_model', 'bonus');
@@ -370,16 +291,16 @@ function get_total_bonus()
 
 	/* 按商品发的红包 */
 	$dbview->view = array(
-			'goods' => array(
-					'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-					'alias'	=> 'g',
-					'on'	=> 'c.goods_id = g.goods_id'
-			),
-			'bonus_type' => array(
-					'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-					'alias'	=> 't',
-					'on'	=> 'g.bonus_type_id = t.type_id'
-			),
+		'goods' => array(
+			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+			'alias'	=> 'g',
+			'on'	=> 'c.goods_id = g.goods_id'
+		),
+		'bonus_type' => array(
+			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+			'alias'	=> 't',
+			'on'	=> 'g.bonus_type_id = t.type_id'
+		),
 	);
 	if ($_SESSION['user_id']) {
 		$goods_total = floatval($dbview->where(array('c.user_id' => $_SESSION['user_id'] , 'c.is_gift' => 0 , 't.send_type' => SEND_BY_GOODS , 't.send_start_date' => array('elt' => $today) , 't.send_end_date' => array('egt' => $today) , 'c.rec_type' => CART_GENERAL_GOODS))->sum('c.goods_number * t.type_money')); 
@@ -393,36 +314,7 @@ function get_total_bonus()
 	/* 按订单发的红包 */
 	$order_total = floatval($db_bonus->field('FLOOR('.$amount.' / min_amount) * type_money')->find('send_type = "'. SEND_BY_ORDER . '" AND send_start_date <= '.$today.'  AND send_end_date >= '.$today.' AND min_amount > 0'));
 	return $goods_total + $order_total;
-
-	//	$sql = "SELECT SUM(c.goods_number * t.type_money)" .
-	//			"FROM " . $GLOBALS['ecs']->table('cart') . " AS c, "
-	//					. $GLOBALS['ecs']->table('bonus_type') . " AS t, "
-	//							. $GLOBALS['ecs']->table('goods') . " AS g " .
-	//							"WHERE c.session_id = '" . SESS_ID . "' " .
-	//							"AND c.is_gift = 0 " .
-	//							"AND c.goods_id = g.goods_id " .
-	//							"AND g.bonus_type_id = t.type_id " .
-	//							"AND t.send_type = '" . SEND_BY_GOODS . "' " .
-	//							"AND t.send_start_date <= '$today' " .
-	//							"AND t.send_end_date >= '$today' " .
-	//							"AND c.rec_type = '" . CART_GENERAL_GOODS . "'";
-	//	$goods_total = floatval($GLOBALS['db']->getOne($sql));
-
-	//	$sql = "SELECT SUM(goods_price * goods_number) " .
-	//			"FROM " . $GLOBALS['ecs']->table('cart') .
-	//			" WHERE session_id = '" . SESS_ID . "' " .
-	//			" AND is_gift = 0 " .
-	//			" AND rec_type = '" . CART_GENERAL_GOODS . "'";
-	//	$amount = floatval($GLOBALS['db']->getOne($sql));
-
-	//	$sql = "SELECT FLOOR('$amount' / min_amount) * type_money " .
-	//	"FROM " . $GLOBALS['ecs']->table('bonus_type') .
-	//	" WHERE send_type = '" . SEND_BY_ORDER . "' " .
-	//	" AND send_start_date <= '$today' " .
-	//	"AND send_end_date >= '$today' " .
-	//	"AND min_amount > 0 ";
-	//	$order_total = floatval($GLOBALS['db']->getOne($sql));
-	}
+}
 
 /**
 * 处理红包（下订单时设为使用，取消（无效，退货）订单时设为未使用
@@ -430,28 +322,21 @@ function get_total_bonus()
 * @param   int	 $order_id   订单号
 * @param   int	 $is_used	是否使用了
 */
-function change_user_bonus($bonus_id, $order_id, $is_used = true) 
-{
+function change_user_bonus($bonus_id, $order_id, $is_used = true) {
 	$db = RC_Loader::load_app_model('user_bonus_model', 'bonus');
 	if ($is_used) {
 		$data = array(
-				'used_time'	=> RC_Time::gmtime(),
-				'order_id'	=> $order_id
+			'used_time'	=> RC_Time::gmtime(),
+			'order_id'	=> $order_id
 		);
 		$db->where(array('bonus_id' => $bonus_id))->update($data);
 	} else {
 		$data = array(
-				'used_time'	=> 0,
-				'order_id'	=> 0
+			'used_time'	=> 0,
+			'order_id'	=> 0
 		);
 		$db->where(array('bonus_id' => $bonus_id))->update($data);
 	}
-	
-	//	$sql = 'UPDATE ' . $GLOBALS['ecs']->table('user_bonus') . ' SET ' .
-	//			'used_time = ' . gmtime() . ', ' ."order_id = '$order_id' " ."WHERE bonus_id = '$bonus_id'";
-	//	$sql = 'UPDATE ' . $GLOBALS['ecs']->table('user_bonus') . ' SET ' .
-	//			'used_time = 0, ' .'order_id = 0 ' ."WHERE bonus_id = '$bonus_id'";
-	//	$GLOBALS['db']->query($sql);
 }
 
 /********从order.func移出的有关红包的方法---end************/
@@ -462,8 +347,7 @@ function change_user_bonus($bonus_id, $order_id, $is_used = true)
  *
  * @return  array       分类数组 bonus_typeid => bonus_type_name
  */
-function get_bonus_type()
-{
+function get_bonus_type() {
 	$db = RC_Loader::load_app_model('bonus_type_model', 'bonus');
 	$bonus = array();
 
@@ -482,8 +366,7 @@ function get_bonus_type()
  * @param   bool      $is_special      是否只显示特殊会员组
  * @return  array     rank_id=>rank_name
  */
-function get_rank_list($is_special = false)
-{
+function get_rank_list($is_special = false) {
 	//这个它调的model还是user的，做不了彻底的隔离，可以在每个模块提供公用的api,把这些方法放进去 
 	$db = RC_Loader::load_app_model('user_rank_model', 'user');
 
