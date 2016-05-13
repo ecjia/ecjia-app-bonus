@@ -517,6 +517,7 @@ class admin extends ecjia_admin {
 	 * 处理红包的发送页面 post
 	 */
 	public function send_by_user() {
+		
 		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
 		
 		if (!empty($_SESSION['ru_id'])) {
@@ -524,11 +525,13 @@ class admin extends ecjia_admin {
 		}
 
 		$user_list = array();
-		$user_ids = !empty($_GET['linked_array']) ? $_GET['linked_array'] : '';
+		$user_ids = !empty($_POST['linked_array']) ? $_POST['linked_array'] : '';
+
 		if (empty($user_ids)) {
 			$this->showmessage(RC_Lang::lang('send_user_empty'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		$user_array = (is_array($user_ids)) ? $user_ids : explode(',', $user_ids);
+		
 		$new_ids = array();
 		if (!empty($user_array)) {
 			foreach ($user_array as $value) {
@@ -541,7 +544,7 @@ class admin extends ecjia_admin {
 		$count = count($user_list);
 
 		/* 发送红包 */
-		$bonus_type_id = intval($_GET['bonus_type_id']);
+		$bonus_type_id = intval($_POST['bonus_type_id']);
 		$bonus_type = bonus_type_info($bonus_type_id);
 		$tpl_name = 'send_bonus';
 		$tpl   = RC_Api::api('mail', 'mail_template', $tpl_name);
@@ -570,7 +573,7 @@ class admin extends ecjia_admin {
 						'order_id' 		=> 0,
 						'emailed' 		=> BONUS_INSERT_MAILLIST_SUCCEED,
 					);
-					$this->db_user_bonus->insert($data);
+					$result = $this->db_user_bonus->insert($data);
 				} else {
 					$data = array(
 						'bonus_type_id' => $bonus_type_id,
@@ -580,11 +583,13 @@ class admin extends ecjia_admin {
 						'order_id' 		=> 0,
 						'emailed' 		=> BONUS_INSERT_MAILLIST_FAIL,
 					);
-					$this->db_user_bonus->insert($data);
+					$result = $this->db_user_bonus->insert($data);
 				}
 			}
+			if ($result) {
+				$this->showmessage(sprintf(RC_Lang::lang('sendbonus_count'), $count), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
+			}
 		}
-		$this->showmessage(sprintf(RC_Lang::lang('sendbonus_count'), $count), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 	}
 	
 	

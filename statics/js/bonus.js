@@ -297,7 +297,7 @@
 					var user_id = $('.nav-list-content li').eq(index).find('input').val();
 					info.linked_array.push({'user_id' : user_id});
 				});
-				$.get(url, info, function(data) {
+				$.post(url, info, function(data) {
 					ecjia.admin.showmessage(data);
 				});
 			})
