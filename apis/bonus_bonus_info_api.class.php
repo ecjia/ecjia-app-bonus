@@ -28,7 +28,7 @@ class bonus_bonus_info_api extends Component_Event_Api {
 			'bonus_type' => array(
 				'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
 				'alias'	=> 'bt',
-				'field'	=> 'bt.type_id, bt.type_name, bt.type_money, bt.send_type, bt.usebonus_type, bt.min_amount, bt.max_amount, bt.send_start_date, bt.send_end_date, bt.use_start_date, bt.use_end_date, bt.min_goods_amount, bt.user_id as seller_id, ub.*',
+				'field'	=> 'bt.type_id, bt.type_name, bt.type_money, bt.send_type, bt.usebonus_type, bt.min_amount, bt.max_amount, bt.send_start_date, bt.send_end_date, bt.use_start_date, bt.use_end_date, bt.min_goods_amount, bt.seller_id as seller_id, ub.*',
 				'on'	=> 'bt.type_id = ub.bonus_type_id'
 			)
 		);

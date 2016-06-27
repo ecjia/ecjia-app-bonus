@@ -29,7 +29,8 @@ class bonus_user_bonus_api extends Component_Event_Api {
 	    }
 	    $where['c.user_id']	= $_SESSION['user_id'];
 	    $where['rec_type']	= CART_GENERAL_GOODS;
-		$goods_list = $db_cart_view->join(array('goods'))->field('g.user_id')->where($where)->group('g.user_id')->select();
+// 		$goods_list = $db_cart_view->join(array('goods'))->field('g.user_id')->where($where)->group('g.user_id')->select();
+		$goods_list = $db_cart_view->join(array('goods'))->field('g.seller_id')->where($where)->group('g.seller_id')->select();
 		
 		$where = "";
 		$goods_user = array();
