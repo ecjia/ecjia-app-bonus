@@ -72,6 +72,7 @@ class admin extends ecjia_admin {
 		);
 		
 		$list = get_type_list();
+		
 		$this->assign('type_list', $list);
 		$this->assign('bonustype', $list['filter']);
 		$this->assign('search_action', RC_Uri::url('bonus/admin/init'));
@@ -120,10 +121,6 @@ class admin extends ecjia_admin {
 	 */
 	public function insert() {
 		$this->admin_priv('bonus_type_add', ecjia::MSGTYPE_JSON);
-	
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
 
 		$type_name   = !empty($_POST['type_name']) ? trim($_POST['type_name']) : '';
 		$type_id     = !empty($_POST['type_id'])    ? intval($_POST['type_id'])    : 0;
@@ -157,7 +154,8 @@ class admin extends ecjia_admin {
 			'min_amount'       	=> $min_amount,
 			'min_goods_amount' 	=> floatval($_POST['min_goods_amount']),
 			'usebonus_type'		=> $bonus_type,
-			'user_id'			=> 0,
+			//'user_id'			=> 0,
+			'seller_id'			=> 0,
 		);
 		$id=$this->db_bonus_type->insert($data);
 		 
@@ -210,9 +208,6 @@ class admin extends ecjia_admin {
 	public function update() {
 		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
 		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
 
 		$type_name = !empty($_POST['type_name']) ? trim($_POST['type_name']) : '';
 		$old_typename = !empty($_POST['old_typename']) ? trim($_POST['old_typename']) : '';
@@ -317,9 +312,7 @@ class admin extends ecjia_admin {
 	public function edit_min_amount() {
 		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
 		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
+		
 		$id  = intval($_POST['pk']);
 		$val = floatval($_POST['value']);
 		/* 可为0 */
@@ -338,11 +331,8 @@ class admin extends ecjia_admin {
 	public function remove() {
 		$this->admin_priv('bonus_type_delete', ecjia::MSGTYPE_JSON);	
 		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
 		$id = intval($_GET['id']);
-		if (empty($_SESSION['ru_id'])) {
+		if (empty($_SESSION['seller_id'])) {
 			$this->db_bonus_type->where(array('type_id' => $id))->delete();
 			$this->db_user_bonus->where(array('bonus_type_id' => $id))->delete();
 			$data = array('bonus_type_id' => 0);
@@ -520,10 +510,6 @@ class admin extends ecjia_admin {
 		
 		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
 		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
-
 		$user_list = array();
 		$user_ids = !empty($_POST['linked_array']) ? $_POST['linked_array'] : '';
 
@@ -598,10 +584,6 @@ class admin extends ecjia_admin {
 	 */
 	public function send_by_goods() {
 		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
-		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
 
 		$goods_id = !empty($_GET['linked_array']) ? $_GET['linked_array'] : '';
 		$type_id = intval($_GET['bonus_type_id']);
@@ -660,9 +642,9 @@ class admin extends ecjia_admin {
 	public function send_by_print()	{
 		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
 		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
+// 		if (!empty($_SESSION['ru_id'])) {
+// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+// 		}
 
 		@set_time_limit(0);
 		/* 线下红包的类型ID和生成的数量的处理 */
@@ -714,9 +696,9 @@ class admin extends ecjia_admin {
 		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
 		$dbview = RC_Loader::load_app_model('user_bonus_type_viewmodel');
 
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
+// 		if (!empty($_SESSION['ru_id'])) {
+// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+// 		}
 
 		$bonus_type = bonus_type_info($bonus_type_id);
 		if ($bonus_type['send_type'] != SEND_BY_USER) {
@@ -771,9 +753,9 @@ class admin extends ecjia_admin {
 	public function gen_excel() {
 		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
 		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
+// 		if (!empty($_SESSION['ru_id'])) {
+// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+// 		}
 
 		@set_time_limit(0);
 		$tid  = !empty($_GET['tid']) ? intval($_GET['tid']) : 0;
@@ -858,9 +840,9 @@ class admin extends ecjia_admin {
 	public function search_users() {
 		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
 
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
+// 		if (!empty($_SESSION['ru_id'])) {
+// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+// 		}
 		
 		$json = $_POST['JSON'];
 		$keywords = !empty($json) && isset($json['keyword']) ? trim($json['keyword']) : '';
@@ -932,9 +914,9 @@ class admin extends ecjia_admin {
 	 * 批量操作
 	 */
 	public function batch() {
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
+// 		if (!empty($_SESSION['ru_id'])) {
+// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+// 		}
 
 		$bonus_type_id = intval($_GET['bonus_type_id']);
 		$sel_action = trim($_GET['sel_action']);

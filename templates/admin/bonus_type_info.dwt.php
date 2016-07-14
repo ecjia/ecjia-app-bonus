@@ -89,10 +89,9 @@
 					<label class="control-label">{$lang.usage_type}：</label>
 					<div class="controls">
 						<select name="bonus_type" id="type_id">
-							<option value="0" {if $bonus_arr.usebonus_type eq 0}selected="selected"{/if}>{t}自主使用{/t}</option>
+<!-- 							<option value="0" {if $bonus_arr.usebonus_type eq 0}selected="selected"{/if}>{t}自主使用{/t}</option> -->
 							<option value="1" {if $bonus_arr.usebonus_type eq 1}selected="selected"{/if}>{t}全场使用{/t}</option>
 				        </select>
-<!-- 			        	<input class="f_r w70" name="bonus_type_ext" type="text" id="bonus_type_ext" value="{$bonus_arr.bonus_type_ext}" /> -->
 					</div>
 				</div>
 				<div class="control-group formSep">

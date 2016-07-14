@@ -71,9 +71,7 @@
 							</div>
 						</td> 
 						<td>
-							<!-- {if $type.user_bonus_type eq 1} -->
-							{t}自主使用{/t}
-							<!-- {elseif $type.user_bonus_type eq 2} -->
+							<!-- {if $type.user_bonus_type eq 2} -->
 							<font style="color:#0e92d0;">{t}全场通用{/t}</font>
 							<!-- {else}-->
 							<font style="color:#F00;">{$type.user_bonus_type}</font>

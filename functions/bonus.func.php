@@ -29,12 +29,12 @@ function get_type_list() {
 		$filter['send_type']  =  $bonustype_id;
 	}
 	/* 查询条件 */
-	$filter['sort_by']    = empty($_REQUEST['sort_by']) ? 'type_id' : trim($_REQUEST['sort_by']);
-	$filter['sort_order'] = empty($_REQUEST['sort_order']) ? 'DESC' : trim($_REQUEST['sort_order']);
+	$filter['sort_by']    = empty($_GET['sort_by']) ? 'type_id' : trim($_GET['sort_by']);
+	$filter['sort_order'] = empty($_GET['sort_order']) ? 'DESC' : trim($_GET['sort_order']);
 
 	$count = $db_bonus_type->where($where)->count();
 	$page = new ecjia_page($count, 15, 6);
-	$res = $merchants_db_bonus_type->where($where)->order($filter['sort_by'].' '.$filter['sort_order'])->limit($page->limit())->select();
+	$res = $merchants_db_bonus_type->where($where)->group('type_id')->order($filter['sort_by'].' '.$filter['sort_order'])->limit($page->limit())->select();
 	
 	$arr = array();
 	if (!empty($res)) {
@@ -43,12 +43,12 @@ function get_type_list() {
 			$row['send_count'] = isset($sent_arr[$row['type_id']]) ? $sent_arr[$row['type_id']] : 0;
 			$row['use_count']  = isset($used_arr[$row['type_id']]) ? $used_arr[$row['type_id']] : 0;
 			
-			if (empty($row['user_id'])) {
-				if (empty($row['usebonus_type'])) {
-					$row['user_bonus_type'] = 1; //自主使用
-				} else {
+			if (empty($row['seller_id'])) {
+				//if (empty($row['usebonus_type'])) {
+				//	$row['user_bonus_type'] = 1; //自主使用
+				//} else {
 					$row['user_bonus_type'] = 2; //全场通用
-				}
+				//}
 			} else {
 				$row['user_bonus_type'] = $row['shoprz_brandName'].$row['shopNameSuffix']; //商家名称
 			}
