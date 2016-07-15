@@ -50,7 +50,7 @@ function get_type_list() {
 					$row['user_bonus_type'] = 2; //全场通用
 				//}
 			} else {
-				$row['user_bonus_type'] = $row['shoprz_brandName'].$row['shopNameSuffix']; //商家名称
+				$row['user_bonus_type'] = $row['shop_name']; //商家名称
 			}
 			$arr[] = $row;
 		}
