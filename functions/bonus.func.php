@@ -174,13 +174,13 @@ function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) {
     }
     $where['c.user_id'] = $_SESSION['user_id'];
     $where['rec_type'] = CART_GENERAL_GOODS;
-	$goods_list = $db_cart_view->join(array('goods'))->field('g.user_id')->where($where)->group('g.user_id')->select();
-	
+	//$goods_list = $db_cart_view->join(array('goods'))->field('g.user_id')->where($where)->group('g.user_id')->select();
+    $goods_list = $db_cart_view->join(array('goods'))->field('g.seller_id')->where($where)->group('g.seller_id')->select();
 	$where = "";
 	$goods_user = array();
 	if ($goods_list) {
 		foreach ($goods_list as $key => $row) {
-			$goods_user[] = $row['user_id'];
+			$goods_user[] = $row['seller_id'];
 		}
 	}
 	
@@ -190,7 +190,7 @@ function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) {
 		'bonus_type' 	=> array(
 			'type' 	=> Component_Model_View::TYPE_LEFT_JOIN,
 			'alias'	=> 'bt',
-			'field'	=> 'bt.type_id, bt.type_name, bt.type_money, ub.bonus_id, bt.user_id, bt.usebonus_type',
+			'field'	=> 'bt.type_id, bt.type_name, bt.type_money, ub.bonus_id, bt.seller_id, bt.usebonus_type',
 			'on'   	=> 'ub.bonus_type_id = bt.type_id'
 		)
 	);
@@ -207,7 +207,10 @@ function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) {
 	if (!empty($row)) {
 		foreach ($row as $key => $val) {
 			if ($val['usebonus_type'] == 0) {
-				if (!in_array($val['user_id'], $goods_user)) {
+				//if (!in_array($val['user_id'], $goods_user)) {
+				//	unset($row[$key]);
+				//}
+				if (!in_array($val['seller_id'], $goods_user)) {
 					unset($row[$key]);
 				}
 			}
