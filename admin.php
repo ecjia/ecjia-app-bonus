@@ -402,13 +402,50 @@ class admin extends ecjia_admin {
 			$this->assign('form_action', RC_Uri::url('bonus/admin/send_by_goods'));
 			$this->display('bonus_by_goods.dwt');
 			
-		}
-		elseif ($send_by == SEND_BY_PRINT) {
+		} elseif ($send_by == SEND_BY_PRINT) {
 			//线下发放
 			$this->assign('type_list', get_bonus_type());
 			$this->assign('form_action', RC_Uri::url('bonus/admin/send_by_print'));
 			
 			$this->display('bonus_by_print.dwt');
+		} elseif ($send_by == SEND_COUPON) {//优惠券
+			ecjia_screen::get_current_screen()->add_help_tab(array(
+				'id'		=> 'overview',
+				'title'		=> __('概述'),
+				'content'	=>
+				'<p>' . __('欢迎访问ECJia智能后台按照商品发放优惠券，在此页面可以对商品进行发放优惠券操作。') . '</p>'
+			));
+			
+			ecjia_screen::get_current_screen()->set_help_sidebar(
+				'<p><strong>' . __('更多信息:') . '</strong></p>' .
+				'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:红包类型#.E6.8C.89.E7.85.A7.EF.BC.88.E5.95.86.E5.93.81.EF.BC.89.E5.8F.91.E6.94.BE.E7.BA.A2.E5.8C.85" target="_blank">关于按照商品发放红包帮助文档</a>') . '</p>'
+			);
+			
+			//发放优惠券
+			RC_Loader::load_app_class('goods_category', 'goods', false);
+			/* 模板赋值 */
+			$this->assign('cat_list', goods_category::cat_list());
+			$this->assign('bonus_type_id', $id);
+			$this->assign('brand_list', get_brand_list());
+				
+			$bonus_relation = RC_Loader::load_model('term_meta_model');
+			$where = array(
+					'object_type'	=> 'ecjia.goods',
+					'object_group'	=> 'goods_bonus_coupon',
+					'meta_key'		=> 'bonus_type_id',
+					'meta_value'	=> $id,
+			);
+			$goods_group = $bonus_relation->where($where)->get_field('object_id', true);
+			if (!empty($goods_group)) {
+				$goods_list = $this->db_goods->field(array('goods_id', 'goods_name'))->in($goods_group)->select();
+			} else {
+				$goods_list = array();
+			}
+			$this->assign('goods_list', $goods_list);
+			$this->assign('form_search', RC_Uri::url('bonus/admin/get_goods_list'));
+			$this->assign('form_action', RC_Uri::url('bonus/admin/send_by_coupon'));
+			
+			$this->display('bonus_by_goods.dwt');
 		}
 	}
 	
@@ -609,6 +646,68 @@ class admin extends ecjia_admin {
 		
 		$this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 	}
+	
+	/**
+	 * 添加发放红包的商品
+	 */
+	public function send_by_coupon() {
+		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
+		
+		$goods_id = !empty($_POST['linked_array']) ? $_POST['linked_array'] : '';
+		$type_id = intval($_POST['bonus_type_id']);
+		$info = $this->db_bonus_type->where(array('type_id' => $type_id))->find();
+	
+		$bonus_relation = RC_Loader::load_model('term_meta_model');
+		$where = array(
+				'object_type'	=> 'ecjia.goods',
+				'object_group'	=> 'goods_bonus_coupon',
+				'meta_key'		=> 'bonus_type_id',
+				'meta_value'	=> $type_id,
+		);
+		$goods_group = $bonus_relation->where(array($where))->get_field('object_id', true);
+		$coupon_goods = array();
+		/* 商品若不再优惠范围内，则新增*/
+		if (is_array($goods_id) && !empty($goods_id)) {
+			foreach ($goods_id as $val) {
+				if (empty($goods_group) || !in_array($val['goods_id'], $goods_group)) {
+					$data = array(
+							'object_type'	=> 'ecjia.goods',
+							'object_group'	=> 'goods_bonus_coupon',
+							'object_id'		=> $val['goods_id'],
+							'meta_key'		=> 'bonus_type_id',
+							'meta_value'	=> $type_id,
+					);
+					$bonus_relation->insert($data);
+				}
+				$coupon_goods[] = $val['goods_id'];
+			}
+		}
+	
+		/* 更新取消的商品*/
+		if (!empty($coupon_goods)) {
+			$bonus_relation->in(array('object_id' => $coupon_goods), true)->delete($where);
+		} else {
+			$bonus_relation->delete($where);
+		}
+	
+		if ($info['send_type'] == 0) {
+			$send_type = RC_Lang::get('bonus::bonus.send_by.'.SEND_BY_USER);
+		} elseif ($info['send_type'] == 1) {
+			$send_type = RC_Lang::get('bonus::bonus.send_by.'.SEND_BY_GOODS);
+		} elseif ($info['send_type'] == 2) {
+			$send_type = RC_Lang::get('bonus::bonus.send_by.'.SEND_BY_ORDER);
+		} elseif ($info['send_type'] == 3) {
+			$send_type = RC_Lang::get('bonus::bonus.send_by.'.SEND_BY_PRINT);
+		} elseif ($info['send_type'] == 4) {
+			$send_type = RC_Lang::get('bonus::bonus.send_by.'.SEND_BY_REGISTER);
+		} elseif ($info['send_type'] == 5) {
+			$send_type = RC_Lang::get('bonus::bonus.send_by.'.SEND_COUPON);
+		}
+	
+		ecjia_admin::admin_log(RC_Lang::get('bonus::bonus.send_type_is').$send_type.'，'.RC_Lang::get('bonus::bonus.bonustype_name_is').$info['type_name'], 'add', 'userbonus');
+		$this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
+	}
+	
 	
 	/**
 	 * 删除发放红包的商品
@@ -899,9 +998,9 @@ class admin extends ecjia_admin {
 	public function remove_bonus() {
 		$this->admin_priv('bonus_delete', ecjia::MSGTYPE_JSON);
 		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
+// 		if (!empty($_SESSION['ru_id'])) {
+// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+// 		}
 		$id = intval($_GET['id']);
 		$this->db_user_bonus->where(array('bonus_id'=> $id ))->delete();
 

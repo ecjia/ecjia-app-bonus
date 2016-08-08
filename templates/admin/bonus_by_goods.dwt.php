@@ -3,9 +3,6 @@
 
 <!-- {block name="footer"} -->
 <script type="text/javascript">
-// var bonus_type = {$bonus_type.type_id};
-// var elements = document.forms['search_goods_bonusForm'].elements;
-// var sz = new ecjia.selectzone(1, elements['source_select[]'], elements['target_select[]'],null,'index.php?m=bonus&c=admin&is_ajax=1');
 ecjia.admin.link_goods.init();
 </script>
 <!-- {/block} -->

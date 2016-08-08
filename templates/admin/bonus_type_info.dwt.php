@@ -55,7 +55,8 @@
 						<input type="radio" name="send_type" value="3" {if $bonus_arr.send_type eq 3} checked="true" {/if} onClick="javascript:ecjia.admin.bonus_info_edit.type_info_showunit(3)"  />{$lang.send_by[3]}   
 						<input type="radio" name="send_type" value="1" {if $bonus_arr.send_type eq 1} checked="true" {/if} onClick="javascript:ecjia.admin.bonus_info_edit.type_info_showunit(1)"  />{$lang.send_by[1]}
 						<input type="radio" name="send_type" value="2" {if $bonus_arr.send_type eq 2} checked="true" {/if} onClick="javascript:ecjia.admin.bonus_info_edit.type_info_showunit(2)"  />{$lang.send_by[2]}
-						
+						<input type="radio" name="send_type" value="4" {if $bonus_arr.send_type eq 4} checked="true" {/if} onClick="javascript:ecjia.admin.bonus_info_edit.type_info_showunit(4)"  />{$lang.send_by[4]}
+						<input type="radio" name="send_type" value="5" {if $bonus_arr.send_type eq 5} checked="true" {/if} onClick="javascript:ecjia.admin.bonus_info_edit.type_info_showunit(5)"  />{$lang.send_by[5]}
 					</div>
 				</div>
 				<div class="control-group formSep" id="min_amount_div" {if $bonus_arr.send_type neq 2} style="display:none" {/if}>
@@ -71,7 +72,7 @@
 					<label class="control-label">{$lang.send_startdate}：</label>
 					<div class="controls promote_date">
 						<div class="input-append">
-							<input class="date" name="send_start_date" type="text" id="send_start_date" size="22" value='{$bonus_arr.send_start_date}'  />
+							<input class="date" name="send_start_date" type="text" id="send_start_date" size="22" value='{$bonus_arr.send_start_date}' />
 						</div>
 						<br>
 						<span class="help-block">{$lang.send_startdate_notic}</span>

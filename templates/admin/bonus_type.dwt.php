@@ -62,7 +62,7 @@
 								<a class="data-pjax" href='{RC_Uri::url("bonus/admin/bonus_list","bonus_type={$type.type_id}")}' title="{t}查看红包{/t}">{t}查看红包{/t}</a>&nbsp;|&nbsp;
 								<a class="data-pjax" href='{RC_Uri::url("bonus/admin/edit","type_id={$type.type_id}")}' title="{t}编辑{/t}">{t}编辑{/t}</a> &nbsp;|&nbsp;
 								<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg="{t}您确定要删除红包类型[{$type.type_name}]吗？{/t}" href='{RC_Uri::url("bonus/admin/remove","id={$type.type_id}")}' title="{t}移除{/t}">{t}删除{/t}</a>
-								{if $type.send_type neq 2}
+								{if $type.send_type neq 2 && $type.send_type neq 4}
 								&nbsp;|&nbsp;<a class="data-pjax" href='{RC_Uri::url("bonus/admin/send","id={$type.type_id}&send_by={$type.send_type}")}' title="{t}发放{/t}">{t}发放红包{/t}</a>        
 								{/if}
 								{if $type.send_type eq 3}
