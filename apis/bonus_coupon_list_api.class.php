@@ -22,7 +22,7 @@ class bonus_coupon_list_api extends Component_Event_Api {
 	private function coupon_list($options) 
 	{
 		$where = array();
-		$where['bt.send_type'] = '5';
+		$where['bt.send_type'] = SEND_COUPON;
 		$where['bt.seller_id'] = array('gt' => '0');
 		/*根据经纬度查询附近店铺*/
 		if (is_array($options['location']) && !empty($options['location']['latitude']) && !empty($options['location']['longitude'])) {
