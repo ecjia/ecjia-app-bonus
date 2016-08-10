@@ -264,9 +264,9 @@ class admin extends ecjia_admin {
 	public function edit_type_name() {
 		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
 		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
+// 		if (!empty($_SESSION['ru_id'])) {
+// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+// 		}
 		
 		$typename = trim($_POST['value']);
 		$id		  = intval($_POST['pk']);
