@@ -47,7 +47,7 @@ class bonus_user_bonus_api extends Component_Event_Api {
 				'bonus_type' 	=> array(
 						'type' 	=> Component_Model_View::TYPE_LEFT_JOIN,
 						'alias'	=> 'bt',
-						'field'	=> 'bt.type_id, bt.type_name, bt.type_money, ub.bonus_id, bt.user_id, bt.usebonus_type',
+						'field'	=> 'bt.type_id, bt.type_name, bt.type_money, ub.bonus_id, bt.seller_id, bt.usebonus_type',
 						'on'   	=> 'ub.bonus_type_id = bt.type_id'
 				)
 		);
