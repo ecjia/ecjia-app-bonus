@@ -306,7 +306,7 @@ class admin extends ecjia_admin {
 		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
 		
 // 		if (!empty($_SESSION['ru_id'])) {
-// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+// 			$this->showmessage(RC_Lang::get('bonus::bonus.merchant_notice'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
 // 		}
 		
 		$typename 	= !empty($_POST['value']) 	? trim($_POST['value']) 	: '';
@@ -334,7 +334,7 @@ class admin extends ecjia_admin {
 		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
 		
 		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(RC_Lang::get('bonus::bonus.merchant_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			$this->showmessage(RC_Lang::get('bonus::bonus.merchant_notice'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
 		}
 				
 		$id  = !empty($_POST['pk']) 	? intval($_POST['pk']) 		: 0;
@@ -521,7 +521,7 @@ class admin extends ecjia_admin {
 		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
 		
 		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(RC_Lang::get('bonus::bonus.merchant_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			$this->showmessage(RC_Lang::get('bonus::bonus.merchant_notice'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
 		}
 
 		$user_list = array();
