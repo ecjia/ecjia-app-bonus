@@ -3,7 +3,7 @@
 
 <!-- {block name="footer"} -->
 <script type="text/javascript">
-ecjia.admin.link_goods.init();
+	ecjia.admin.link_goods.init();
 </script>
 <!-- {/block} -->
 
@@ -24,31 +24,31 @@ ecjia.admin.link_goods.init();
 			<form class="form-horizontal" action="{$form_action}" method="post" name="theForm">
 				<div class="tab-content">
 					<fieldset>
-						<div class="control-group choose_list span12" data-url="{url path='goods/admin/get_goods_list'}">
+						<div class="control-group choose_list span12" data-url="{url path='bonus/admin/get_goods_list'}">
 							<!-- <div class="f_l"> -->
 								<select name="cat_id">
-									<option value="0">{$lang.all_category}{$cat_list}</option>
+									<option value="0">{lang key='system::system.all_category'}{$cat_list}</option>
 								</select>
 								<select name="brand_id">
-									<option value="0">{$lang.all_brand}{html_options options=$brand_list}</option>
+									<option value="0">{lang key='system::system.all_brand'}{html_options options=$brand_list}</option>
 								</select>
 							<!-- </div> -->
 							<input type="text" name="keyword" />
-							<a class="btn" data-toggle="searchGoods"><!-- {$lang.button_search} --></a>
-							<span class="help-block m_t5">{t}搜索要发放此类型红包的商品展示在左侧区域中，点击左侧列表中选项，商品即可进入右侧发放红包区域。您还可以在右侧编辑将发放红包的商品。{/t}</span>
+							<a class="btn" data-toggle="searchGoods"><!-- {lang key='system::system.button_search'} --></a>
+							<span class="help-block m_t5">{lang key='bonus::bonus.search_goods_help'}</span>
 						</div>
 						<div class="control-group draggable">
 							<div class="ms-container " id="ms-custom-navigation">
 								<div class="ms-selectable">
 									<div class="search-header">
-										<input class="span12" id="ms-search" type="text" placeholder="{t}筛选搜索到的商品信息{/t}" autocomplete="off">
+										<input class="span12" id="ms-search" type="text" placeholder="{lang key='bonus::bonus.filter_goods_info'}" autocomplete="off">
 									</div>
 									<ul class="ms-list nav-list-ready">
-										<li class="ms-elem-selectable disabled"><span>暂无内容</span></li>
+										<li class="ms-elem-selectable disabled"><span>{lang key='bonus::bonus.no_content'}</span></li>
 									</ul>
 								</div>
 								<div class="ms-selection">
-									<div class="custom-header custom-header-align">发放此类型红包的商品</div>
+									<div class="custom-header custom-header-align">{lang key='bonus::bonus.send_bouns_goods'}</div>
 									<ul class="ms-list nav-list-content">
 										<!-- {foreach from=$goods_list item=goods} -->
 										<li class="ms-elem-selection">
@@ -64,7 +64,7 @@ ecjia.admin.link_goods.init();
 					</fieldset>
 				</div>
 				<p class="ecjiaf-tac">
-					<button class="btn btn-gebo" type="submit">{t}确定发放红包{/t}</button>
+					<button class="btn btn-gebo" type="submit">{lang key='bonus::bonus.confirm_send_bonus'}</button>
 					<input type="hidden" id="bonus_type_id" value="{$bonus_type_id}" />
 				</p>
 			</form>

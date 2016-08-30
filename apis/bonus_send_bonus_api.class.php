@@ -13,7 +13,7 @@ class bonus_send_bonus_api extends Component_Event_Api {
      */
 	public function call(&$options) {
 		if (!is_array($options) || !isset($options['type'])) {
-			return new ecjia_error('invalid_parameter', '无效的参数');
+			return new ecjia_error('invalid_parameter', RC_Lang::get('bonus::bonus.invalid_parameter'));
 		}
 		
 		return $this->send_coupon($options);

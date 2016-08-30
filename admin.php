@@ -10,10 +10,10 @@ class admin extends ecjia_admin {
 	private $db_bonus_type;
 	private $db_user;
 	private $db_user_rank;
+	
 	public function __construct() {
 		parent::__construct();
 		
- 		RC_Lang::load('bonus');
 		RC_Loader::load_app_func('common', 'goods');
 		RC_Loader::load_app_func('category', 'goods');
 		RC_Loader::load_app_func('bonus');
@@ -45,7 +45,27 @@ class admin extends ecjia_admin {
 		RC_Script::enqueue_script('bonus', RC_App::apps_url('statics/js/bonus.js', __FILE__), array(), false, true);
 		RC_Script::enqueue_script('bootstrap-datepicker', RC_Uri::admin_url('statics/lib/datepicker/bootstrap-datepicker.min.js'));
 		
-		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('红包类型'), RC_Uri::url('bonus/admin/init')));
+		$js_lang = array(
+			'edit_bonus_type_name'		=> RC_Lang::get('bonus::bonus.edit_bonus_type_name'),
+			'edit_bonus_money'			=> RC_Lang::get('bonus::bonus.edit_bonus_money'),
+			'edit_order_limit'			=> RC_Lang::get('bonus::bonus.edit_order_limit'),
+			'type_name_required'		=> RC_Lang::get('bonus::bonus.type_name_required'),
+			'type_name_minlength'		=> RC_Lang::get('bonus::bonus.type_name_minlength'),
+			'type_money_required'		=> RC_Lang::get('bonus::bonus.type_money_required'),
+			'min_goods_amount_required'	=> RC_Lang::get('bonus::bonus.min_goods_amount_required'),
+		);
+		RC_Script::localize_script('bonus_type', 'js_lang', $js_lang);
+		
+		$bonus_js_lang = array(
+			'bonus_sum_required'	=> RC_Lang::get('bonus::bonus.bonus_sum_required'),
+			'bonus_number_required'	=> RC_Lang::get('bonus::bonus.bonus_number_required'),
+			'select_goods_empty'	=> RC_Lang::get('bonus::bonus.select_goods_empty'),
+			'select_user_empty'		=> RC_Lang::get('bonus::bonus.select_user_empty'),
+		);
+		RC_Script::localize_script('bonus', 'bonus_js_lang', $bonus_js_lang);
+		
+		
+		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('bonus::bonus.bonus_manage'), RC_Uri::url('bonus/admin/init')));
 	}
 	
 	/**
@@ -53,30 +73,27 @@ class admin extends ecjia_admin {
 	 */
 	public function init() {
 		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
-		
-		$this->assign('ur_here', RC_Lang::lang('bonustype_list'));
-		$this->assign('action_link', array('text' => RC_Lang::lang('bonustype_add'), 'href' => RC_Uri::url('bonus/admin/add')));
-		
+
 		ecjia_screen::get_current_screen()->remove_last_nav_here();
-		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('红包类型')));
+		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('bonus::bonus.bonus_manage')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
 			'id'		=> 'overview',
-			'title'		=> __('概述'),
-			'content'	=>
-			'<p>' . __('欢迎访问ECJia智能后台红包类型列表页面，系统中所有的红包都会显示在此列表中。') . '</p>'
+			'title'		=> RC_Lang::get('bonus::bonus.overview'),
+			'content'	=> '<p>' . RC_Lang::get('bonus::bonus.bonus_type_help') . '</p>'
 		));
 		
 		ecjia_screen::get_current_screen()->set_help_sidebar(
-			'<p><strong>' . __('更多信息:') . '</strong></p>' .
-			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:红包类型" target="_blank">关于红包类型帮助文档</a>') . '</p>'
+			'<p><strong>' . RC_Lang::get('bonus::bonus.more_info') . '</strong></p>' .
+			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:红包类型" target="_blank">'.RC_Lang::get('bonus::bonus.about_bonus_type').'</a>') . '</p>'
 		);
+		
+		$this->assign('ur_here', RC_Lang::get('bonus::bonus.bonustype_list'));
+		$this->assign('action_link', array('text' => RC_Lang::get('system::system.bonustype_add'), 'href' => RC_Uri::url('bonus/admin/add')));
 		
 		$list = get_type_list();
 		
 		$this->assign('type_list', $list);
-		$this->assign('bonustype', $list['filter']);
 		$this->assign('search_action', RC_Uri::url('bonus/admin/init'));
-		$this->assign_lang();
 		
 		$this->display('bonus_type.dwt');
 	}
@@ -87,21 +104,20 @@ class admin extends ecjia_admin {
 	public function add() {
 		$this->admin_priv('bonus_type_add', ecjia::MSGTYPE_JSON);
 	
-		$this->assign('ur_here', RC_Lang::lang('bonustype_add'));
-		$this->assign('action_link', array('href' => RC_Uri::url('bonus/admin/init'), 'text' => '红包类型列表'));
-		
-		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('添加红包类型')));
+		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('bonus::bonus.add_bonus_type')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
 			'id'		=> 'overview',
-			'title'		=> __('概述'),
-			'content'	=>
-			'<p>' . __('欢迎访问ECJia智能后台添加红包页面，可以在此页面添加红包类型信息。') . '</p>'
+			'title'		=> RC_Lang::get('bonus::bonus.overview'),
+			'content'	=> '<p>' . RC_Lang::get('bonus::bonus.add_bonus_help') . '</p>'
 		));
 		
 		ecjia_screen::get_current_screen()->set_help_sidebar(
-			'<p><strong>' . __('更多信息:') . '</strong></p>' .
-			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:红包类型#.E6.B7.BB.E5.8A.A0.E7.BA.A2.E5.8C.85.E7.B1.BB.E5.9E.8B" target="_blank">关于添加红包类型帮助文档</a>') . '</p>'
+			'<p><strong>' . RC_Lang::get('bonus::bonus.more_info') . '</strong></p>' .
+			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:红包类型#.E6.B7.BB.E5.8A.A0.E7.BA.A2.E5.8C.85.E7.B1.BB.E5.9E.8B" target="_blank">'.RC_Lang::get('bonus::bonus.about_add_bonus').'</a>') . '</p>'
 		);
+		
+		$this->assign('ur_here', RC_Lang::get('bonus::bonus.add_bonus_type'));
+		$this->assign('action_link', array('href' => RC_Uri::url('bonus/admin/init'), 'text' => RC_Lang::get('bonus::bonus.bonustype_list')));
 	
 		$next_month = RC_Time::local_strtotime('+1 months');
 		$bonus_arr['send_start_date'] = RC_Time::local_date('Y-m-d');
@@ -112,7 +128,6 @@ class admin extends ecjia_admin {
 		$this->assign('bonus_arr', $bonus_arr);
 		$this->assign('form_action', RC_Uri::url('bonus/admin/insert'));
 		
-		$this->assign_lang();
 		$this->display('bonus_type_info.dwt');
 	}
 	
@@ -122,48 +137,63 @@ class admin extends ecjia_admin {
 	public function insert() {
 		$this->admin_priv('bonus_type_add', ecjia::MSGTYPE_JSON);
 
-		$type_name   = !empty($_POST['type_name']) ? trim($_POST['type_name']) : '';
-		$type_id     = !empty($_POST['type_id'])    ? intval($_POST['type_id'])    : 0;
-		$min_amount  = !empty($_POST['min_amount']) ? floatval($_POST['min_amount']) : 0;
-		$bonus_type  = intval($_POST['bonus_type']) == 1 ? 1 : 0;
+		$type_name   = !empty($_POST['type_name']) 			? trim($_POST['type_name']) 		: '';
+		$type_id     = !empty($_POST['type_id'])    		? intval($_POST['type_id'])    		: 0;
+		$min_amount  = !empty($_POST['min_amount']) 		? floatval($_POST['min_amount']) 	: 0;
+		$bonus_type  = intval($_POST['bonus_type']) == 1 	? 1 								: 0;
+		$send_type	 = !empty($_POST['send_type'])			? intval($_POST['send_type'])		: 0;
 		
 		if ($this->db_bonus_type->where(array('type_name' => $type_name))->count() > 0) {
-			$this->showmessage(RC_Lang::lang('type_name_exist'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			$this->showmessage(RC_Lang::get('bonus::bonus.type_name_exist'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
-		$send_startdate = !empty($_POST['send_start_date']) ? RC_Time::local_strtotime($_POST['send_start_date']) : '';
-		$send_enddate   = !empty($_POST['send_end_date']) ? RC_Time::local_strtotime($_POST['send_end_date']) : '';
-		$use_startdate  = !empty($_POST['use_start_date']) ? RC_Time::local_strtotime($_POST['use_start_date']) : '';
-		$use_enddate    = !empty($_POST['use_end_date']) ? RC_Time::local_strtotime($_POST['use_end_date']) : '';
+		$send_startdate = !empty($_POST['send_start_date']) ? RC_Time::local_strtotime($_POST['send_start_date']) 	: '';
+		$send_enddate   = !empty($_POST['send_end_date']) 	? RC_Time::local_strtotime($_POST['send_end_date']) 	: '';
+		$use_startdate  = !empty($_POST['use_start_date']) 	? RC_Time::local_strtotime($_POST['use_start_date']) 	: '';
+		$use_enddate    = !empty($_POST['use_end_date']) 	? RC_Time::local_strtotime($_POST['use_end_date']) 		: '';
 		
-		if ($send_startdate >= $send_enddate) {
-			$this->showmessage('发送起始日期不能超于发送结束日期', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		if ($send_type != 0 && $send_type != 3) {
+			if (empty($send_startdate)) {
+				$this->showmessage(RC_Lang::get('bonus::bonus.send_startdate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			}
+			if (empty($send_enddate)) {
+				$this->showmessage(RC_Lang::get('bonus::bonus.send_enddate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			}
+			if ($send_startdate >= $send_enddate) {
+				$this->showmessage(RC_Lang::get('bonus::bonus.send_start_lt_end'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			}
+		}
+		if (empty($use_startdate)) {
+			$this->showmessage(RC_Lang::get('bonus::bonus.use_startdate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		}
+		if (empty($use_enddate)) {
+			$this->showmessage(RC_Lang::get('bonus::bonus.use_enddate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		
 		if ($use_startdate >= $use_enddate) {
-			$this->showmessage('使用起始日期不能超于使用结束日期', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			$this->showmessage(RC_Lang::get('bonus::bonus.use_start_lt_end'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		
 		$data = array(
 			'type_name'        	=> $type_name,
-			'type_money'       	=> floatval($_POST['type_money']),
+			'type_money'       	=> !empty($_POST['type_money']) ? floatval($_POST['type_money']) : 0,
 			'send_start_date'  	=> $send_startdate,
 			'send_end_date'    	=> $send_enddate,
 			'use_start_date'   	=> $use_startdate,
 			'use_end_date'     	=> $use_enddate,
-			'send_type'        	=> intval($_POST['send_type']),
+			'send_type'        	=> $send_type,
 			'min_amount'       	=> $min_amount,
-			'min_goods_amount' 	=> floatval($_POST['min_goods_amount']),
+			'min_goods_amount' 	=> !empty($_POST['min_goods_amount']) ? floatval($_POST['min_goods_amount']) : 0,
 			'usebonus_type'		=> $bonus_type,
-			//'user_id'			=> 0,
 			'seller_id'			=> 0,
 		);
-		$id=$this->db_bonus_type->insert($data);
+		$id = $this->db_bonus_type->insert($data);
 		 
-		ecjia_admin::admin_log($type_name, 'add', 'bonustype');
+		$send_type = RC_Lang::get('bonus::bonus.send_by.'.$send_type);
+		ecjia_admin::admin_log(RC_Lang::get('bonus::bonus.send_type_is').$send_type.'，'.RC_Lang::get('bonus::bonus.bonustype_name_is').$type_name, 'add', 'bonustype');
 	
-		$links[] = array('text' => RC_Lang::lang('back_list'), 'href' => RC_Uri::url('bonus/admin/init'));
-		$links[] = array('text' => RC_Lang::lang('continus_add'), 'href' => RC_Uri::url('bonus/admin/add'));
-		$this->showmessage(RC_Lang::lang('add') . "&nbsp;" . $type_name . "&nbsp;" . RC_Lang::lang('attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('links' => $links, 'pjaxurl' => RC_Uri::url('bonus/admin/edit', array('type_id' => $id))));
+		$links[] = array('text' => RC_Lang::get('bonus::bonus.back_list'), 'href' => RC_Uri::url('bonus/admin/init'));
+		$links[] = array('text' => RC_Lang::get('bonus::bonus.continus_add'), 'href' => RC_Uri::url('bonus/admin/add'));
+		$this->showmessage(RC_Lang::get('bonus::bonus.add_success'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('links' => $links, 'pjaxurl' => RC_Uri::url('bonus/admin/edit', array('type_id' => $id))));
 	}
 	
 	/**
@@ -171,34 +201,33 @@ class admin extends ecjia_admin {
 	 */
 	public function edit() {
 		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
+		
+		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('bonus::bonus.bonustype_edit')));
+		ecjia_screen::get_current_screen()->add_help_tab(array(
+			'id'		=> 'overview',
+			'title'		=> RC_Lang::get('bonus::bonus.overview'),
+			'content'	=> '<p>' . RC_Lang::get('bonus::bonus.edit_bonus_help') . '</p>'
+		));
+		
+		ecjia_screen::get_current_screen()->set_help_sidebar(
+			'<p><strong>' . RC_Lang::get('bonus::bonus.more_info') . '</strong></p>' .
+			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:红包类型#.E7.BC.96.E8.BE.91.E7.BA.A2.E5.8C.85.E7.B1.BB.E5.9E.8B" target="_blank">'.RC_Lang::get('bonus::bonus.about_edit_bonus').'</a>') . '</p>'
+		);
 	
+		$this->assign('ur_here', RC_Lang::get('bonus::bonus.bonustype_edit'));
+		$this->assign('action_link', array('href' => RC_Uri::url('bonus/admin/init'), 'text' => RC_Lang::get('bonus::bonus.bonustype_list')));
+		
 		$type_id   = !empty($_GET['type_id']) ? intval($_GET['type_id']) : 0;
 		$bonus_arr = $this->db_bonus_type->where(array('type_id' => $type_id))->find();
+		
 		$bonus_arr['send_start_date'] = RC_Time::local_date('Y-m-d', $bonus_arr['send_start_date']);
 		$bonus_arr['send_end_date']   = RC_Time::local_date('Y-m-d', $bonus_arr['send_end_date']);
 		$bonus_arr['use_start_date']  = RC_Time::local_date('Y-m-d', $bonus_arr['use_start_date']);
 		$bonus_arr['use_end_date']    = RC_Time::local_date('Y-m-d', $bonus_arr['use_end_date']);
 
-		$this->assign('ur_here',     RC_Lang::lang('bonustype_edit'));
-		$this->assign('action_link', array('href' => RC_Uri::url('bonus/admin/init'), 'text' => '红包类型列表'));
 		$this->assign('bonus_arr',   $bonus_arr);
 		$this->assign('form_action', RC_Uri::url('bonus/admin/update'));
-	
-		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('编辑红包类型')));
 		
-		ecjia_screen::get_current_screen()->add_help_tab(array(
-			'id'		=> 'overview',
-			'title'		=> __('概述'),
-			'content'	=>
-			'<p>' . __('欢迎访问ECJia智能后台编辑红包类型页面，可以在此对相应的红包类型进行编辑。') . '</p>'
-		));
-		
-		ecjia_screen::get_current_screen()->set_help_sidebar(
-			'<p><strong>' . __('更多信息:') . '</strong></p>' .
-			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:红包类型#.E7.BC.96.E8.BE.91.E7.BA.A2.E5.8C.85.E7.B1.BB.E5.9E.8B" target="_blank">关于编辑红包类型帮助文档</a>') . '</p>'
-		);
-		
-		$this->assign_lang();
 		$this->display('bonus_type_info.dwt');
 	}
 	
@@ -207,55 +236,69 @@ class admin extends ecjia_admin {
 	 */
 	public function update() {
 		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
-		
 
-		$type_name = !empty($_POST['type_name']) ? trim($_POST['type_name']) : '';
-		$old_typename = !empty($_POST['old_typename']) ? trim($_POST['old_typename']) : '';
+		$type_name 		= !empty($_POST['type_name']) 		? trim($_POST['type_name']) 	: '';
+		$old_typename 	= !empty($_POST['old_typename']) 	? trim($_POST['old_typename']) 	: '';
+		$send_type	 	= !empty($_POST['send_type'])		? intval($_POST['send_type'])	: 0;
+		
 		if ($type_name != $old_typename ) {
 			if ($this->db_bonus_type->where(array('type_name' => $type_name))->count() > 0) {
-			 	$this->showmessage(RC_Lang::lang('type_name_exist'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			 	$this->showmessage(RC_Lang::get('bonus::bonus.type_name_exist'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 			}
 		}
 	
-		$use_startdate  = !empty($_POST['use_start_date']) ? RC_Time::local_strtotime($_POST['use_start_date']) : '';
-		$use_enddate    = !empty($_POST['use_end_date']) ? RC_Time::local_strtotime($_POST['use_end_date']) : '';
+		$send_startdate = !empty($_POST['send_start_date']) ? RC_Time::local_strtotime($_POST['send_start_date'])	: 0;
+		$send_enddate   = !empty($_POST['send_end_date']) 	? RC_Time::local_strtotime($_POST['send_end_date'])		: 0;
+		$use_startdate  = !empty($_POST['use_start_date']) 	? RC_Time::local_strtotime($_POST['use_start_date'])	: 0;
+		$use_enddate    = !empty($_POST['use_end_date']) 	? RC_Time::local_strtotime($_POST['use_end_date'])		: 0;
 
-		if ($use_startdate >= $use_enddate) {
-			$this->showmessage('使用起始日期不能超于使用结束日期', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-		}
-	
 		$type_id     = !empty($_POST['type_id'])    ? intval($_POST['type_id'])    : 0;
 		$min_amount  = !empty($_POST['min_amount']) ? intval($_POST['min_amount']) : 0;
+		
 		$data = array(
 			'type_name'        => $type_name,
 			'type_money'       => floatval($_POST['type_money']),
 			'use_start_date'   => $use_startdate,
 			'use_end_date'     => $use_enddate,
-			'send_type'        => intval($_POST['send_type']),
+			'send_type'        => $send_type,
 			'min_amount'       => $min_amount,
 			'min_goods_amount' => floatval($_POST['min_goods_amount']),
 			'usebonus_type'	   => intval($_POST['bonus_type']),
 		);
 		
-		if ($_POST['send_start_date'] >= $_POST['send_end_date']) {
-			$this->showmessage('发送起始日期不能超于发送结束日期', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		if ($send_type != 0 && $send_type != 3) {
+			if (empty($send_startdate)) {
+				$this->showmessage(RC_Lang::get('bonus::bonus.send_startdate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			}
+			if (empty($send_enddate)) {
+				$this->showmessage(RC_Lang::get('bonus::bonus.send_enddate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			}
+			if ($send_startdate >= $send_enddate) {
+				$this->showmessage(RC_Lang::get('bonus::bonus.send_start_lt_end'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			}
+			$data['send_start_date'] = $send_startdate;
+			$data['send_end_date'] = $send_enddate;
 		}
 		
-		if ( isset($_POST['send_start_date']) && !empty($_POST['send_start_date'])) {
-			$send_startdate = RC_Time::local_strtotime($_POST['send_start_date']);
-			$data['send_start_date'] = $send_startdate;
+		if (empty($use_startdate)) {
+			$this->showmessage(RC_Lang::get('bonus::bonus.use_startdate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
-		if ( isset($_POST['send_end_date']) && !empty($_POST['send_end_date'])) {
-			$send_enddate   = RC_Time::local_strtotime($_POST['send_end_date']);
-			$data['send_end_date'] = $send_enddate;
+		if (empty($use_enddate)) {
+			$this->showmessage(RC_Lang::get('bonus::bonus.use_enddate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+		}
+		
+		if ($use_startdate >= $use_enddate) {
+			$this->showmessage(RC_Lang::get('bonus::bonus.use_start_lt_end'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 	
 		$this->db_bonus_type->where(array('type_id' => $type_id))->update($data);
 	
-		ecjia_admin::admin_log($type_name, 'edit', 'bonustype');
-		$links[] = array('text' => RC_Lang::lang('back_list'), 'href' => RC_Uri::url('bonus/admin/init'));
-		$links[] = array('text' => RC_Lang::lang('continus_add'), 'href' => RC_Uri::url('bonus/admin/add'));
-		$this->showmessage(RC_Lang::lang('edit') .' '. $type_name.' '. RC_Lang::lang('attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('links' => $links, 'pjaxurl' => RC_Uri::url('bonus/admin/edit', array('type_id' => $type_id))));
+		$send_type = RC_Lang::get('bonus::bonus.send_by.'.$send_type);
+		ecjia_admin::admin_log(RC_Lang::get('bonus::bonus.send_type_is').$send_type.'，'.RC_Lang::get('bonus::bonus.bonustype_name_is').$type_name, 'edit', 'bonustype');
+		
+		$links[] = array('text' => RC_Lang::get('bonus::bonus.back_list'), 'href' => RC_Uri::url('bonus/admin/init'));
+		$links[] = array('text' => RC_Lang::get('bonus::bonus.continus_add'), 'href' => RC_Uri::url('bonus/admin/add'));
+		$this->showmessage(RC_Lang::get('bonus::bonus.edit_success'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('links' => $links, 'pjaxurl' => RC_Uri::url('bonus/admin/edit', array('type_id' => $type_id))));
 	}
 	
 	/**
@@ -268,21 +311,21 @@ class admin extends ecjia_admin {
 // 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 // 		}
 		
-		$typename = trim($_POST['value']);
-		$id		  = intval($_POST['pk']);
-		/* 检查红包类型名称是否重复 */
+		$typename 	= !empty($_POST['value']) 	? trim($_POST['value']) 	: '';
+		$id			= !empty($_POST['pk']) 		? intval($_POST['pk']) 		: 0;
+		
 		$old_name = $this->db_bonus_type->where(array('type_id' => $id))->get_field('type_name');
 		if (!empty($typename)) {
 			if ($typename != $old_name) {
 				if ($this->db_bonus_type->where(array('type_name' => $typename))->count() == 0) {
 					$this->db_bonus_type->where(array('type_id' => $id))->update(array('type_name' => $typename));
-					$this->showmessage(RC_Lang::lang('attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
+					$this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 				} else {
-					$this->showmessage(RC_Lang::lang('type_name_exist'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+					$this->showmessage(RC_Lang::get('bonus::bonus.type_name_exist'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 				}
 			}
 		} else {
-			$this->showmessage('请输红包类型名称！', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			$this->showmessage(RC_Lang::get('bonus::bonus.type_name_empty'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 	}
 	
@@ -293,15 +336,17 @@ class admin extends ecjia_admin {
 		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
 		
 		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			$this->showmessage(RC_Lang::get('bonus::bonus.merchant_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
-		$id		= intval($_POST['pk']);
-		$val 	= floatval($_POST['value']);
+				
+		$id  = !empty($_POST['pk']) 	? intval($_POST['pk']) 		: 0;
+		$val = !empty($_POST['value']) 	? floatval($_POST['value']) : 0;
+		
 		if ($val <= 0) {
-			$this->showmessage(RC_Lang::lang('type_money_error'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			$this->showmessage(RC_Lang::get('bonus::bonus.type_money_error'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		} else {
 			$this->db_bonus_type->where(array('type_id' => $id))->update(array('type_money' => $val));
-			$this->showmessage(RC_Lang::lang('attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('bonus/admin/init')));
+			$this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('bonus/admin/init')));
 		}
 	}
 	
@@ -312,16 +357,16 @@ class admin extends ecjia_admin {
 	public function edit_min_amount() {
 		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
 		
-		
 		$id  = intval($_POST['pk']);
 		$val = floatval($_POST['value']);
+		
 		/* 可为0 */
 		if ($val <= 0 && !($_POST['value'] === '0')) {
-			$this->showmessage(RC_Lang::lang('min_amount_empty'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			$this->showmessage(RC_Lang::get('bonus::bonus.min_amount_empty'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		else {
 			$this->db_bonus_type->where(array('type_id' => $id))->update(array('min_amount' => $val));
-			$this->showmessage(RC_Lang::lang('attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('bonus/admin/init')));
+			$this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('bonus/admin/init')));
 		}
 	}
 	
@@ -332,78 +377,103 @@ class admin extends ecjia_admin {
 		$this->admin_priv('bonus_type_delete', ecjia::MSGTYPE_JSON);	
 		
 		$id = intval($_GET['id']);
+		$info = bonus_type_info($id);
+		
 		if (empty($_SESSION['seller_id'])) {
 			$this->db_bonus_type->where(array('type_id' => $id))->delete();
 			$this->db_user_bonus->where(array('bonus_type_id' => $id))->delete();
-			$data = array('bonus_type_id' => 0);
+			
 			$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
+			$data = array('bonus_type_id' => 0);
 			$this->db_goods->where(array('bonus_type_id' => $id))->update($data);
 		}
+		
 		/*记录管理员日志*/
-		ecjia_admin::admin_log($id, 'remove', 'bonustype');
-		$this->showmessage(RC_Lang::lang('del_bonustype_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
+		$send_type = RC_Lang::get('bonus::bonus.send_by.'.$info['send_type']);
+		ecjia_admin::admin_log(RC_Lang::get('bonus::bonus.send_type_is').$send_type.'，'.RC_Lang::get('bonus::bonus.bonustype_name_is').$info['type_name'], 'remove', 'bonustype');
+		
+		$this->showmessage(RC_Lang::get('bonus::bonus.del_bonustype_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 	}
 
 	/**
 	 * 红包发送页面
 	 */
 	public function send() {
-		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
 		
 		/* 取得参数 */
 		$id = !empty($_GET['id'])  ? intval($_GET['id'])  : 0;
+		$this->assign('id', $id);
+		
 		$send_by = intval($_GET['send_by']);
-		
-		$this->assign('ur_here',      RC_Lang::lang('send_bonus'));
-		$this->assign('action_link',  array('href' => RC_Uri::url('bonus/admin/init', array('bonus_type' => $id)), 'text' => '红包类型列表'));
+		$this->assign('ur_here', RC_Lang::get('bonus::bonus.send_bonus'));
+		$this->assign('action_link', array('href' => RC_Uri::url('bonus/admin/init', array('bonus_type' => $id)), 'text' => RC_Lang::get('bonus::bonus.bonustype_list')));
 
-		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('发放红包')));
-		ecjia_screen::get_current_screen()->add_help_tab(array(
-			'id'		=> 'overview',
-			'title'		=> __('概述'),
-			'content'	=>
-			'<p>' . __('欢迎访问ECJia智能后台发放红包页面，可以在此页面发放红包。') . '</p>'
-		));
+		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('bonus::bonus.send_bonus')));
 		
-		ecjia_screen::get_current_screen()->set_help_sidebar(
-			'<p><strong>' . __('更多信息:') . '</strong></p>' .
-			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:红包类型#.E5.8F.91.E6.94.BE.E7.BA.A2.E5.8C.85" target="_blank">关于发放红包帮助文档</a>') . '</p>'
-		);
-		
-		$this->assign_lang();
-		if ($send_by == SEND_BY_USER) {
-			//用户发放
+		if ($send_by == SEND_BY_USER) {//用户发放
+			ecjia_screen::get_current_screen()->add_help_tab(array(
+				'id'		=> 'overview',
+				'title'		=> RC_Lang::get('bonus::bonus.overview'),
+				'content'	=> '<p>' . RC_Lang::get('bonus::bonus.send_by_user_help') . '</p>'
+			));
+				
+			ecjia_screen::get_current_screen()->set_help_sidebar(
+				'<p><strong>' . RC_Lang::get('bonus::bonus.more_info') . '</strong></p>' .
+				'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:红包类型#.E6.8C.89.E7.85.A7.EF.BC.88.E7.94.A8.E6.88.B7.EF.BC.89.E5.8F.91.E6.94.BE.E7.BA.A2.E5.8C.85" target="_blank">'.RC_Lang::get('bonus::bonus.about_send_by_user').'</a>') . '</p>'
+			);
 			$bonus_type = $this->db_bonus_type->field('type_id, type_name')->find(array('type_id' => $id));
-			$this->assign('id',               $id);
+			
 			$this->assign('ranklist',         get_rank_list());
 			$this->assign('bonus_type',       $bonus_type);
 			$this->assign('form_action',      RC_Uri::url('bonus/admin/send_by_user_rank'));
 			$this->assign('form_user_action', RC_Uri::url('bonus/admin/send_by_user'));
-			$this->display('bonus_by_user.dwt');
 			
-		} elseif ($send_by == SEND_BY_GOODS) {
-			//商品发放
+			$this->display('bonus_by_user.dwt');
+		} elseif ($send_by == SEND_BY_GOODS) {//商品发放
+			ecjia_screen::get_current_screen()->add_help_tab(array(
+				'id'		=> 'overview',
+				'title'		=> RC_Lang::get('bonus::bonus.overview'),
+				'content'	=> '<p>' . RC_Lang::get('bonus::bonus.send_by_goods_help') . '</p>'
+			));
+				
+			ecjia_screen::get_current_screen()->set_help_sidebar(
+				'<p><strong>' . RC_Lang::get('bonus::bonus.more_info') . '</strong></p>' .
+				'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:红包类型#.E6.8C.89.E7.85.A7.EF.BC.88.E5.95.86.E5.93.81.EF.BC.89.E5.8F.91.E6.94.BE.E7.BA.A2.E5.8C.85" target="_blank">'.RC_Lang::get('bonus::bonus.about_send_by_goods').'</a>') . '</p>'
+			);
+			
 			RC_Loader::load_app_func('category', 'goods');
 			$bonus_type = $this->db_bonus_type->field('type_id, type_name')->find(array('type_id' => $id));
 			$goods_list = get_bonus_goods($id);
+			
 			$where_sql = array('bonus_type_id' => array('gt' => 0), 'bonus_type_id' => array('neq' => $id));
 			$other_goods_list = $this->db_goods->field('goods_id')->where($where_sql)->get_field('goods_id', true);
+			
 			if (!empty($other_goods_list)) {
 				$this->assign('other_goods', join(',', $other_goods_list));
 			}
 		
 			/* 模板赋值 */
 			$this->assign('cat_list', cat_list());
-			$this->assign('bonus_type_id', $id);
 			$this->assign('brand_list', get_brand_list());
+			
+			$this->assign('bonus_type_id', $id);
 			$this->assign('bonus_type', $bonus_type);
 			$this->assign('goods_list', $goods_list);
-			$this->assign('form_search', RC_Uri::url('bonus/admin/get_goods_list'));
 			$this->assign('form_action', RC_Uri::url('bonus/admin/send_by_goods'));
-			$this->display('bonus_by_goods.dwt');
 			
-		} elseif ($send_by == SEND_BY_PRINT) {
-			//线下发放
+			$this->display('bonus_by_goods.dwt');
+		} elseif ($send_by == SEND_BY_PRINT) {//线下发放
+			ecjia_screen::get_current_screen()->add_help_tab(array(
+				'id'		=> 'overview',
+				'title'		=> RC_Lang::get('bonus::bonus.overview'),
+				'content'	=> '<p>' . RC_Lang::get('bonus::bonus.send_by_print_help') . '</p>'
+			));
+				
+			ecjia_screen::get_current_screen()->set_help_sidebar(
+				'<p><strong>' . RC_Lang::get('bonus::bonus.more_info') . '</strong></p>' .
+				'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:红包类型#.E6.8C.89.E7.85.A7.EF.BC.88.E7.BA.BF.E4.B8.8B.EF.BC.89.E5.8F.91.E6.94.BE.E7.BA.A2.E5.8C.85" target="_blank">'.RC_Lang::get('bonus::bonus.about_send_by_print').'</a>') . '</p>'
+			);
 			$this->assign('type_list', get_bonus_type());
 			$this->assign('form_action', RC_Uri::url('bonus/admin/send_by_print'));
 			
@@ -411,29 +481,26 @@ class admin extends ecjia_admin {
 		} elseif ($send_by == SEND_COUPON) {//优惠券
 			ecjia_screen::get_current_screen()->add_help_tab(array(
 				'id'		=> 'overview',
-				'title'		=> __('概述'),
-				'content'	=>
-				'<p>' . __('欢迎访问ECJia智能后台按照商品发放优惠券，在此页面可以对商品进行发放优惠券操作。') . '</p>'
+				'title'		=> RC_Lang::get('bonus::bonus.overview'),
+				'content'	=> '<p>' . RC_Lang::get('bonus::bonus.send_coupon_help') . '</p>'
 			));
 			
 			ecjia_screen::get_current_screen()->set_help_sidebar(
-				'<p><strong>' . __('更多信息:') . '</strong></p>' .
-				'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:红包类型#.E6.8C.89.E7.85.A7.EF.BC.88.E5.95.86.E5.93.81.EF.BC.89.E5.8F.91.E6.94.BE.E7.BA.A2.E5.8C.85" target="_blank">关于按照商品发放红包帮助文档</a>') . '</p>'
+				'<p><strong>' . RC_Lang::get('bonus::bonus.more_info') . '</strong></p>' .
+				'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:红包类型#.E6.8C.89.E7.85.A7.EF.BC.88.E5.95.86.E5.93.81.EF.BC.89.E5.8F.91.E6.94.BE.E7.BA.A2.E5.8C.85" target="_blank">'.RC_Lang::get('bonus::bonus.about_send_coupon').'</a>') . '</p>'
 			);
 			
-			//发放优惠券
 			RC_Loader::load_app_class('goods_category', 'goods', false);
-			/* 模板赋值 */
 			$this->assign('cat_list', goods_category::cat_list());
-			$this->assign('bonus_type_id', $id);
 			$this->assign('brand_list', get_brand_list());
-				
+
+			$this->assign('bonus_type_id', $id);
 			$bonus_relation = RC_Loader::load_model('term_meta_model');
 			$where = array(
-					'object_type'	=> 'ecjia.goods',
-					'object_group'	=> 'goods_bonus_coupon',
-					'meta_key'		=> 'bonus_type_id',
-					'meta_value'	=> $id,
+				'object_type'	=> 'ecjia.goods',
+				'object_group'	=> 'goods_bonus_coupon',
+				'meta_key'		=> 'bonus_type_id',
+				'meta_value'	=> $id,
 			);
 			$goods_group = $bonus_relation->where($where)->get_field('object_id', true);
 			if (!empty($goods_group)) {
@@ -441,8 +508,8 @@ class admin extends ecjia_admin {
 			} else {
 				$goods_list = array();
 			}
+			
 			$this->assign('goods_list', $goods_list);
-			$this->assign('form_search', RC_Uri::url('bonus/admin/get_goods_list'));
 			$this->assign('form_action', RC_Uri::url('bonus/admin/send_by_coupon'));
 			
 			$this->display('bonus_by_goods.dwt');
@@ -453,10 +520,10 @@ class admin extends ecjia_admin {
 	 * 处理红包的发送页面 
 	 */
 	public function send_by_user_rank() {
-		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
 		
 		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			$this->showmessage(RC_Lang::get('bonus::bonus.merchant_notice'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 
 		$user_list = array();
@@ -517,7 +584,6 @@ class admin extends ecjia_admin {
 						'emailed'   	=> BONUS_INSERT_MAILLIST_SUCCEED,
 					);
 					$this->db_user_bonus->insert($data);
-			
 					$loop++;
 				} else {
 					/* 邮件发送失败，更新数据库 */
@@ -535,23 +601,23 @@ class admin extends ecjia_admin {
 			}
 		} 
        
-		/*记录管理员日志*/
-		ecjia_admin::admin_log($loop."个", 'add', 'user_bonus');
-		$this->showmessage(sprintf(RC_Lang::lang('sendbonus_count'), $loop), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('max_id' => $bonus_type_id));
+		$send_type = RC_Lang::get('bonus::bonus.send_by.'.$bonus_type['send_type']);
+		ecjia_admin::admin_log(RC_Lang::get('bonus::bonus.send_type_is').$send_type.'，'.RC_Lang::get('bonus::bonus.bonustype_name_is').$bonus_type['type_name'].'，'.RC_Lang::get('bonus::bonus.send_rank_is').$rank_name, 'add', 'userbonus');
+		
+		$this->showmessage(sprintf(RC_Lang::get('bonus::bonus.sendbonus_count'), $loop), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('max_id' => $bonus_type_id));
 	}
 
 	/**
 	 * 处理红包的发送页面 post
 	 */
 	public function send_by_user() {
-		
-		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
 		
 		$user_list = array();
 		$user_ids = !empty($_POST['linked_array']) ? $_POST['linked_array'] : '';
 
 		if (empty($user_ids)) {
-			$this->showmessage(RC_Lang::lang('send_user_empty'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			$this->showmessage(RC_Lang::get('bonus::bonus.send_user_empty'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		$user_array = (is_array($user_ids)) ? $user_ids : explode(',', $user_ids);
 		
@@ -570,8 +636,8 @@ class admin extends ecjia_admin {
 		$bonus_type_id = intval($_POST['bonus_type_id']);
 		$bonus_type = bonus_type_info($bonus_type_id);
 		$tpl_name = 'send_bonus';
-		$tpl   = RC_Api::api('mail', 'mail_template', $tpl_name);
 		
+		$tpl   = RC_Api::api('mail', 'mail_template', $tpl_name);
 		$today = RC_Time::local_date(ecjia::config('date_format'));
 			
 		if (!empty($user_list)) {
@@ -581,11 +647,13 @@ class admin extends ecjia_admin {
 				$arr       = $db_config->get_email_setting();
 				$email_cfg = array_merge($val, $arr);
 				$email_cfg['reply_email'] = $arr['smtp_user'];
+				
 				$this->assign('user_name', $val['user_name']);
 				$this->assign('shop_name', ecjia::config('shop_name'));
 				$this->assign('send_date', $today);
 				$this->assign('count',     1);
 				$this->assign('money',     price_format($bonus_type['type_money']));
+				
 				$content = $this->fetch_string($tpl['template_content']);
 				if (add_to_maillist($val['user_name'], $email_cfg['email'], $tpl['template_subject'], $content, $tpl['is_html'])) {
 					$data = array(
@@ -596,7 +664,7 @@ class admin extends ecjia_admin {
 						'order_id' 		=> 0,
 						'emailed' 		=> BONUS_INSERT_MAILLIST_SUCCEED,
 					);
-					$result = $this->db_user_bonus->insert($data);
+					$this->db_user_bonus->insert($data);
 				} else {
 					$data = array(
 						'bonus_type_id' => $bonus_type_id,
@@ -606,13 +674,15 @@ class admin extends ecjia_admin {
 						'order_id' 		=> 0,
 						'emailed' 		=> BONUS_INSERT_MAILLIST_FAIL,
 					);
-					$result = $this->db_user_bonus->insert($data);
+					$this->db_user_bonus->insert($data);
 				}
 			}
-			if ($result) {
-				$this->showmessage(sprintf(RC_Lang::lang('sendbonus_count'), $count), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
+			$send_type = RC_Lang::get('bonus::bonus.send_by.'.$bonus_type['send_type']);
+			foreach ($user_list as $v) {
+				ecjia_admin::admin_log(RC_Lang::get('bonus::bonus.send_type_is').$send_type.'，'.RC_Lang::get('bonus::bonus.bonustype_name_is').$bonus_type['type_name'].'，'.RC_Lang::get('bonus::bonus.send_target_is').$v['user_name'], 'add', 'userbonus');
 			}
 		}
+		$this->showmessage(sprintf(RC_Lang::get('bonus::bonus.sendbonus_count'), $count), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 	}
 	
 	
@@ -620,31 +690,32 @@ class admin extends ecjia_admin {
 	 * 添加发放红包的商品
 	 */
 	public function send_by_goods() {
-		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
-
-		$goods_id = !empty($_GET['linked_array']) ? $_GET['linked_array'] : '';
-		$type_id = intval($_GET['bonus_type_id']);
-		$data = array('bonus_type_id' => 0);
+		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
 		
+		$goods_id 	= isset($_POST['linked_array']) 	? $_POST['linked_array'] 			: '';
+		$type_id 	= isset($_POST['bonus_type_id']) 	? intval($_POST['bonus_type_id']) 	: 0;
+		
+		$data = array('bonus_type_id' => 0);
 		$this->db_goods->where(array('bonus_type_id' => $type_id))->update($data);
 		
+		$new_ids = array();
 		if (!empty($goods_id)) {
-			$goods_array = (is_array($goods_id)) ? $goods_id : explode(',', $goods_id);
-			$new_ids = array();
-			if (!empty($goods_array)) {
-				foreach ($goods_array as $value) {
-					if (!empty($value['goods_id'])) {
-						$new_ids[] = $value['goods_id'];
-					}
-				}
+			foreach ($goods_id as $value){
+				$new_ids[] = $value['goods_id'];
 			}
-			$data = array( 'bonus_type_id' => $type_id );
+			$data = array('bonus_type_id' => $type_id );
 			$this->db_goods->in(array('goods_id' => $new_ids))->update($data);
-			$ids = implode(',', $new_ids);
-			ecjia_admin::admin_log($ids, 'add', 'goods_bonus');
+			
+			$goods_ids = implode(',', $new_ids);
+			$info = bonus_type_info($type_id);
+			$goods = $this->db_goods->field('goods_name')->in(array('goods_id' => $goods_ids))->select();
+
+			$send_type = RC_Lang::get('bonus::bonus.send_by.'.$info['send_type']);
+			foreach ($goods as $v) {
+				ecjia_admin::admin_log(RC_Lang::get('bonus::bonus.send_type_is').$send_type.'，'.RC_Lang::get('bonus::bonus.bonustype_name_is').$info['type_name'].'，'.RC_Lang::get('bonus::bonus.send_target_is').$v['goods_name'], 'add', 'userbonus');
+			}
 		}
-		
-		$this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
+		$this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 	}
 	
 	/**
@@ -655,14 +726,13 @@ class admin extends ecjia_admin {
 		
 		$goods_id = !empty($_POST['linked_array']) ? $_POST['linked_array'] : '';
 		$type_id = intval($_POST['bonus_type_id']);
-		$info = $this->db_bonus_type->where(array('type_id' => $type_id))->find();
-	
+
 		$bonus_relation = RC_Loader::load_model('term_meta_model');
 		$where = array(
-				'object_type'	=> 'ecjia.goods',
-				'object_group'	=> 'goods_bonus_coupon',
-				'meta_key'		=> 'bonus_type_id',
-				'meta_value'	=> $type_id,
+			'object_type'	=> 'ecjia.goods',
+			'object_group'	=> 'goods_bonus_coupon',
+			'meta_key'		=> 'bonus_type_id',
+			'meta_value'	=> $type_id,
 		);
 		$goods_group = $bonus_relation->where(array($where))->get_field('object_id', true);
 		$coupon_goods = array();
@@ -671,11 +741,11 @@ class admin extends ecjia_admin {
 			foreach ($goods_id as $val) {
 				if (empty($goods_group) || !in_array($val['goods_id'], $goods_group)) {
 					$data = array(
-							'object_type'	=> 'ecjia.goods',
-							'object_group'	=> 'goods_bonus_coupon',
-							'object_id'		=> $val['goods_id'],
-							'meta_key'		=> 'bonus_type_id',
-							'meta_value'	=> $type_id,
+						'object_type'	=> 'ecjia.goods',
+						'object_group'	=> 'goods_bonus_coupon',
+						'object_id'		=> $val['goods_id'],
+						'meta_key'		=> 'bonus_type_id',
+						'meta_value'	=> $type_id,
 					);
 					$bonus_relation->insert($data);
 				}
@@ -690,56 +760,18 @@ class admin extends ecjia_admin {
 			$bonus_relation->delete($where);
 		}
 	
-		if ($info['send_type'] == 0) {
-			$send_type = RC_Lang::get('bonus::bonus.send_by.'.SEND_BY_USER);
-		} elseif ($info['send_type'] == 1) {
-			$send_type = RC_Lang::get('bonus::bonus.send_by.'.SEND_BY_GOODS);
-		} elseif ($info['send_type'] == 2) {
-			$send_type = RC_Lang::get('bonus::bonus.send_by.'.SEND_BY_ORDER);
-		} elseif ($info['send_type'] == 3) {
-			$send_type = RC_Lang::get('bonus::bonus.send_by.'.SEND_BY_PRINT);
-		} elseif ($info['send_type'] == 4) {
-			$send_type = RC_Lang::get('bonus::bonus.send_by.'.SEND_BY_REGISTER);
-		} elseif ($info['send_type'] == 5) {
-			$send_type = RC_Lang::get('bonus::bonus.send_by.'.SEND_COUPON);
-		}
-	
+		$info = bonus_type_info($type_id);
+		$send_type = RC_Lang::get('bonus::bonus.send_by.'.$info['send_type']);
+		
 		ecjia_admin::admin_log(RC_Lang::get('bonus::bonus.send_type_is').$send_type.'，'.RC_Lang::get('bonus::bonus.bonustype_name_is').$info['type_name'], 'add', 'userbonus');
 		$this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 	}
-	
-	
-	/**
-	 * 删除发放红包的商品
-	 */
-// 	public function drop_bonus_goods() {
-// 		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
-// 		$drop_goods     = str_replace('\\', '', $_GET['drop_ids']);
-// 		$arguments      = str_replace('\\', '', $_GET['JSON']);
-// 		$type_id        = $arguments[0];
-// 		$data = array(
-// 				'bonus_type_id' => 0
-// 		);
-// 		$this->db_goods->where(array('bonus_type_id' => $type_id))->in(array('goods_id' => $drop_goods))->update($data);
-// 		/* 重新载入 */
-// 		$arr = get_bonus_goods($type_id);
-// 		$opt = array();
-	
-// 		foreach ($arr AS $key => $val) {
-// 			$opt[] = array(
-// 					'value' => $val['goods_id'],
-// 					'text'  => $val['goods_name'],
-// 					'data'  => '');
-// 		}
-// 		$this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('content' => $opt));
-// 	}
-	
 	
 	/**
 	 * 按线下发放红包
 	 */
 	public function send_by_print()	{
-		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
 		
 // 		if (!empty($_SESSION['ru_id'])) {
 // 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
@@ -747,8 +779,8 @@ class admin extends ecjia_admin {
 
 		@set_time_limit(0);
 		/* 线下红包的类型ID和生成的数量的处理 */
-		$bonus_typeid = !empty($_POST['bonus_type_id']) ? intval($_POST['bonus_type_id']) : 0;
-		$bonus_sum    = !empty($_POST['bonus_sum'])     ? intval($_POST['bonus_sum'])    : 1;
+		$bonus_typeid = !empty($_POST['bonus_type_id']) ? intval($_POST['bonus_type_id']) 	: 0;
+		$bonus_sum    = !empty($_POST['bonus_sum'])     ? intval($_POST['bonus_sum'])    	: 1;
 	
 		/* 生成红包序列号 */
 		$num = $this->db_user_bonus->max('bonus_sn');
@@ -761,28 +793,31 @@ class admin extends ecjia_admin {
 				'bonus_sn' 		=> $bonus_sn
 			);
 			$this->db_user_bonus->insert($data);
-			ecjia_admin::admin_log($bonus_sn, 'add', 'send_manage');
 			$j++;
 		}
-		$this->showmessage(RC_Lang::lang('creat_bonus') . $j . RC_Lang::lang('creat_bonus_num'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('max_id' => $bonus_typeid));
+		$info = bonus_type_info($bonus_typeid);
+		$send_type = RC_Lang::get('bonus::bonus.send_by.'.$info['send_type']);
+		
+		ecjia_admin::admin_log(RC_Lang::get('bonus::bonus.send_type_is').$send_type.'，'.RC_Lang::get('bonus::bonus.bonustype_name_is').$info['type_name'], 'add', 'userbonus');
+		$this->showmessage(RC_Lang::get('bonus::bonus.creat_bonus') . $j . RC_Lang::get('bonus::bonus.creat_bonus_num'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('max_id' => $bonus_typeid));
 	}
 	
 	/**
 	 * 发送邮件
 	 */
 	public function send_mail() {
-		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
 
 		$bonus_id = intval($_GET['bonus_id']);
 		if ($bonus_id <= 0) {
-			$this->showmessage('invalid params', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			$this->showmessage(RC_Lang::get('bonus::bonus.invalid_parameter'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		$bonus = bonus_info($bonus_id);
 		if (empty($bonus)) {
-			$this->showmessage(RC_Lang::lang('bonus_not_exist', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR));
+			$this->showmessage(RC_Lang::get('bonus::bonus.bonus_not_exist'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		$count = $this->send_bonus_mail($bonus['bonus_type_id'], array($bonus_id));
-		$this->showmessage(sprintf(RC_Lang::lang('success_send_mail'), $count), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
+		$this->showmessage(sprintf(RC_Lang::get('bonus::bonus.success_send_mail'), $count), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 	}
 	
 	/**
@@ -792,7 +827,8 @@ class admin extends ecjia_admin {
 	 * @return  int     成功发送数量
 	 */
 	function send_bonus_mail($bonus_type_id, $bonus_id_list) {
-		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
+		
 		$dbview = RC_Loader::load_app_model('user_bonus_type_viewmodel');
 
 // 		if (!empty($_SESSION['ru_id'])) {
@@ -850,7 +886,7 @@ class admin extends ecjia_admin {
 	 * 导出线下发放的信息 excel
 	 */
 	public function gen_excel() {
-		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
 		
 // 		if (!empty($_SESSION['ru_id'])) {
 // 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
@@ -863,14 +899,15 @@ class admin extends ecjia_admin {
 		header("Content-type: application/vnd.ms-excel; charset=utf-8");
 		header("Content-Disposition: attachment; filename=$bonus_filename.xls");
 		
-		echo mb_convert_encoding(RC_Lang::lang('bonus_excel_file')."\t\n", "GBK", "UTF-8");
-		echo mb_convert_encoding(RC_Lang::lang('bonus_sn')."\t" ,"GBK", "UTF-8");
-		echo mb_convert_encoding(RC_Lang::lang('type_money')."\t","GBK", "UTF-8") ;
-		echo mb_convert_encoding(RC_Lang::lang('type_name')."\t" ,"GBK", "UTF-8");
-		echo mb_convert_encoding(RC_Lang::lang('use_enddate')."\t\n","GBK", "UTF-8") ;
+		echo mb_convert_encoding(RC_Lang::get('bonus::bonus.bonus_excel_file')."\t\n", "GBK", "UTF-8");
+		echo mb_convert_encoding(RC_Lang::get('bonus::bonus.bonus_sn')."\t" ,"GBK", "UTF-8");
+		echo mb_convert_encoding(RC_Lang::get('bonus::bonus.type_money')."\t","GBK", "UTF-8") ;
+		echo mb_convert_encoding(RC_Lang::get('bonus::bonus.type_name')."\t" ,"GBK", "UTF-8");
+		echo mb_convert_encoding(RC_Lang::get('bonus::bonus.use_enddate')."\t\n","GBK", "UTF-8");
+		
 		$val = array();
+		
 		$dbview = RC_Loader::load_app_model('user_bonus_type_viewmodel');
-
 		$dbview->view = array(
 			'bonus_type' => array(
 				'type' =>Component_Model_View::TYPE_LEFT_JOIN,
@@ -900,11 +937,11 @@ class admin extends ecjia_admin {
 	 * 搜索商品
 	 */
 	public function get_goods_list() {
-		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
 		
-		$keyword  = !empty($_GET['keywords']) ? trim($_GET['keywords']) : '';
-		$cat_id   = intval($_GET['cat_id']);
-		$brand_id = intval($_GET['brand_id']);
+		$keyword  = !empty($_POST['keyword']) ? trim($_POST['keyword']) : '';
+		$cat_id   = intval($_POST['cat_id']);
+		$brand_id = intval($_POST['brand_id']);
 		$db_view  = RC_Loader::load_app_model('goods_auto_viewmodel','goods');
 		$where = ' 1 ';
 		if (!empty($cat_id)) {
@@ -918,7 +955,7 @@ class admin extends ecjia_admin {
         		 OR goods_sn LIKE '%" . mysql_like_quote($keyword) . "%'
         		 OR goods_id LIKE '%" . mysql_like_quote($keyword) . "%'";
   		} 
-		$arr=$db_view->join(null)->field('goods_id, goods_name, shop_price')->where($where)->limit(50)->select();
+		$arr = $db_view->join(null)->field('goods_id, goods_name, shop_price')->where($where)->limit(50)->select();
 
 		$opt = array();
 		if (!empty($arr)) {
@@ -937,7 +974,7 @@ class admin extends ecjia_admin {
 	 * 搜索用户
 	 */
 	public function search_users() {
-		$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
 
 // 		if (!empty($_SESSION['ru_id'])) {
 // 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
@@ -958,23 +995,24 @@ class admin extends ecjia_admin {
 	public function bonus_list() {
 		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
 		
-		$this->assign('ur_here', RC_Lang::lang('bonus_list'));
-		$this->assign('action_link', array('href' => RC_Uri::url('bonus/admin/init'), 'text' => '红包类型列表'));
-		
-		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('红包列表')));
+		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('bonus::bonus.bonus_list')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
 			'id'		=> 'overview',
-			'title'		=> __('概述'),
-			'content'	=>
-			'<p>' . __('欢迎访问ECJia智能后台红包类表页面，可以在此页面查看指定类型的红包列表。') . '</p>'
+			'title'		=> RC_Lang::get('bonus::bonus.overview'),
+			'content'	=> '<p>' . RC_Lang::get('bonus::bonus.bonus_list_help') . '</p>'
 		));
 		
 		ecjia_screen::get_current_screen()->set_help_sidebar(
-			'<p><strong>' . __('更多信息:') . '</strong></p>' .
-			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:红包类型#.E6.9F.A5.E7.9C.8B.E7.BA.A2.E5.8C.85" target="_blank">关于红包列表帮助文档</a>') . '</p>'
+			'<p><strong>' . RC_Lang::get('bonus::bonus.more_info') . '</strong></p>' .
+			'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:红包类型#.E6.9F.A5.E7.9C.8B.E7.BA.A2.E5.8C.85" target="_blank">'.RC_Lang::get('bonus::bonus.about_bonus_list').'</a>') . '</p>'
 		);
 		
+		$this->assign('ur_here', RC_Lang::get('bonus::bonus.bonus_list'));
+		$this->assign('action_link', array('href' => RC_Uri::url('bonus/admin/init'), 'text' => RC_Lang::get('bonus::bonus.bonustype_list')));
+		
 		$list = get_bonus_list();
+		$this->assign('bonus_list', $list);
+		
 		$bonus_type_id = intval($_GET['bonus_type']);
 		$bonus_type = bonus_type_info($bonus_type_id);
 		
@@ -985,10 +1023,8 @@ class admin extends ecjia_admin {
 		}
 			
 		$this->assign('bonus_type_id', $bonus_type_id);
-		$this->assign('bonus_list',    $list);
-		$this->assign('form_action',   RC_Uri::url('bonus/admin/batch'));
+		$this->assign('form_action', RC_Uri::url('bonus/admin/batch'));
 		
-		$this->assign_lang();
 		$this->display('bonus_list.dwt');
 	}
 	
@@ -996,17 +1032,17 @@ class admin extends ecjia_admin {
 	 * 删除红包
 	 */
 	public function remove_bonus() {
-		$this->admin_priv('bonus_delete', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_delete', ecjia::MSGTYPE_JSON);
 		
 // 		if (!empty($_SESSION['ru_id'])) {
 // 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 // 		}
 		$id = intval($_GET['id']);
+		$bonus_sn = $this->db_user_bonus->where(array('bonus_id' => $id))->get_field('bonus_sn');
 		$this->db_user_bonus->where(array('bonus_id'=> $id ))->delete();
 
-		/* 记录日志 */
-		ecjia_admin::admin_log($id, 'remove', 'bonus');
-		$this->showmessage(RC_Lang::lang('attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);	
+		ecjia_admin::admin_log($bonus_sn, 'remove', 'userbonus');
+		$this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);		
 	}
 	
 	/**
@@ -1017,15 +1053,17 @@ class admin extends ecjia_admin {
 // 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 // 		}
 
-		$bonus_type_id = intval($_GET['bonus_type_id']);
-		$sel_action = trim($_GET['sel_action']);
-		$action = !empty($sel_action) ? $sel_action : 'send';
-		$ids = $_POST['checkboxes'];
+		$bonus_type_id 	= intval($_GET['bonus_type_id']);
+		$sel_action 	= trim($_GET['sel_action']);
+		$action 		= !empty($sel_action) ? $sel_action : 'send';
+		$ids 			= $_POST['checkboxes'];
+		
+		$info = $this->db_user_bonus->in(array('bonus_id' => $ids))->select();
 		
 		if ($action == 'remove') {
-			$this->admin_priv('bonus_delete', ecjia::MSGTYPE_JSON);
+			$this->admin_priv('bonus_type_delete', ecjia::MSGTYPE_JSON);
 		} else {
-			$this->admin_priv('bonus_send_manage', ecjia::MSGTYPE_JSON);
+			$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
 		}
 		if (!empty($ids)) {
 			switch ($action) {
@@ -1037,15 +1075,16 @@ class admin extends ecjia_admin {
 						$count = count($ids);
 					}
 					$this->db_user_bonus->in(array('bonus_id' => $ids))->delete();
-					/* 记录日志 */
-					ecjia_admin::admin_log($ids, 'batch_remove', 'bonus');
 
-					$this->showmessage(sprintf(RC_Lang::lang('batch_drop_success'), $count), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('bonus/admin/bonus_list', array('bonus_type' => $bonus_type_id))));
+					foreach ($info as $v) {
+						ecjia_admin::admin_log($v['bonus_sn'], 'batch_remove', 'userbonus');
+					}
+					$this->showmessage(sprintf(RC_Lang::get('bonus::bonus.batch_drop_success'), $count), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('bonus/admin/bonus_list', array('bonus_type' => $bonus_type_id))));
 					break;
 		
 				case 'send' :
 					$this->send_bonus_mail($bonus_type_id, $ids);
-					$this->showmessage(RC_Lang::lang('success_send_mail'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('bonus/admin/bonus_list', array('bonus_type' => $bonus_type_id))));
+					$this->showmessage(RC_Lang::get('bonus::bonus.success_send_mail'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('bonus/admin/bonus_list', array('bonus_type' => $bonus_type_id))));
 					break;
 					
 				default :
@@ -1054,4 +1093,5 @@ class admin extends ecjia_admin {
 		}
     }
 }
+
 //end

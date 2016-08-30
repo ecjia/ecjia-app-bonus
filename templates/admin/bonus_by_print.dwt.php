@@ -3,7 +3,7 @@
 
 <!-- {block name="footer"} -->
 <script type="text/javascript">
-ecjia.admin.bonus.send_by_print_init();
+	ecjia.admin.bonus.send_by_print_init();
 </script>
 <!-- {/block} -->
 
@@ -22,7 +22,7 @@ ecjia.admin.bonus.send_by_print_init();
 		<form method="post" class="form-horizontal" action="{$form_action}" name="bonus_thePrintForm" data-pjax-url="{RC_Uri::url('bonus/admin/bonus_list')}" >
 			<fieldset>
 				<div class="control-group formSep">
-					<label class="control-label">{$lang.bonus_type_id}：</label>
+					<label class="control-label">{lang key='bonus::bonus.bonus_type_id'}</label>
 					<div class="controls">
 						<select name="bonus_type_id">
 							<!-- {html_options options=$type_list selected=$smarty.get.id} -->
@@ -30,14 +30,15 @@ ecjia.admin.bonus.send_by_print_init();
 					</div>
 				</div>    
 				<div class="control-group formSep">    
-					<label class="control-label">{$lang.send_bonus_count}：</label>
+					<label class="control-label">{lang key='bonus::bonus.send_bonus_count'}</label>
 					<div class="controls">
 						<input type="text" name="bonus_sum" size="30" maxlength="6" />
+						<span class="input-must">{lang key='system::system.require_field'}</span>
 					</div>
 				</div>
 				<div class="control-group">
 					<div class="controls">
-						<button class="btn btn-gebo" type="submit">{$lang.button_submit}</button>
+						<button class="btn btn-gebo" type="submit">{lang key='system::system.button_submit'}</button>
 						<input type="hidden" name="type_id" value="{$bonus_arr.type_id}" />  	
 					</div>
 				</div>    

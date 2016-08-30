@@ -5,8 +5,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
  */
 
 /* 红包类型字段信息 */
-$LANG['merchant_name']='商家名称';
-$LANG['usage_type'] = '使用类型';
 $LANG['bonus_type'] = '红包类型';
 $LANG['bonus_list'] = '红包列表';
 $LANG['type_name'] = '类型名称';

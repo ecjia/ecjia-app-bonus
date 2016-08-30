@@ -20,17 +20,17 @@
 <div class="row-fluid batch" >
 	<div class="choose_list">
 		<!-- 筛选 -->
-		<form class=" form-inline" action="{$search_action}"  method="post" name="searchForm">
+		<form class="form-inline" action="{$search_action}"  method="post" name="searchForm">
 			<div class="screen">
 				<!-- 级别 -->
 				<select name="bonustype_id" class="no_search w150"  id="select-bonustype">
-					<option value=''  {if $bonustype.send_type eq '' } selected="true" {/if}>{t}所有发放类型{/t}</option>
-					<option value='0' {if $bonustype.send_type eq '0'} selected="true" {/if}>{$lang.send_by[0]}</option>
-					<option value='1' {if $bonustype.send_type eq '1'} selected="true" {/if}>{$lang.send_by[1]}</option>
-					<option value='2' {if $bonustype.send_type eq '2'} selected="true" {/if}>{$lang.send_by[2]}</option>
-					<option value='3' {if $bonustype.send_type eq '3'} selected="true" {/if}>{$lang.send_by[3]}</option>
+					<option value=''  {if $type_list.filter.send_type eq '' } selected="true" {/if}>{lang key='bonus::bonus.all_send_type'}</option>
+					<option value='0' {if $type_list.filter.send_type eq '0'} selected="true" {/if}>{lang key='bonus::bonus.send_by.0'}</option>
+					<option value='1' {if $type_list.filter.send_type eq '1'} selected="true" {/if}>{lang key='bonus::bonus.send_by.1'}</option>
+					<option value='2' {if $type_list.filter.send_type eq '2'} selected="true" {/if}>{lang key='bonus::bonus.send_by.2'}</option>
+					<option value='3' {if $type_list.filter.send_type eq '3'} selected="true" {/if}>{lang key='bonus::bonus.send_by.3'}</option>
 				</select>
-				<button class="btn screen-btn" type="button">{t}筛选{/t}</button>
+				<button class="btn screen-btn" type="button">{lang key='bonus::bonus.filter'}</button>
 			</div>
 		</form>
 	</div>
@@ -38,63 +38,59 @@
 
 <div class="row-fluid">
 	<div class="span12">
-		<form method="post" name="listForm"  action="">
-			<!-- start brand list -->
-			<table class="table table-striped smpl_tbl dataTable table-hide-edit">
-				<thead>
-					<tr>
-						<th>{$lang.type_name}</th>
-						<th>{$lang.merchant_name}</th>
-						<th>{$lang.send_type}</th>
-						<th>{$lang.type_money}</th>
-						<th>{$lang.min_amount}</th>
-						<th>{$lang.send_count}</th>
-						<th>{$lang.use_count}</th>
-					</tr>
-				</thead>
-				<tbody>
-					<!-- {foreach from=$type_list.item item=type} -->
-					<tr>
-						<td class="hide-edit-area hide_edit_area_bottom" >
-							<span class="cursor_pointer" data-trigger="editable" data-url="{RC_Uri::url('bonus/admin/edit_type_name')}" data-name="type_name" data-pk="{$type.type_id}" data-title="编辑红包类型名称">{$type.type_name}</span>
-							<br/>
-							<div class="edit-list">
-								<a class="data-pjax" href='{RC_Uri::url("bonus/admin/bonus_list","bonus_type={$type.type_id}")}' title="{t}查看红包{/t}">{t}查看红包{/t}</a>&nbsp;|&nbsp;
-								<a class="data-pjax" href='{RC_Uri::url("bonus/admin/edit","type_id={$type.type_id}")}' title="{t}编辑{/t}">{t}编辑{/t}</a> &nbsp;|&nbsp;
-								<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg="{t}您确定要删除红包类型[{$type.type_name}]吗？{/t}" href='{RC_Uri::url("bonus/admin/remove","id={$type.type_id}")}' title="{t}移除{/t}">{t}删除{/t}</a>
-								{if $type.send_type neq 2 && $type.send_type neq 4}
-								&nbsp;|&nbsp;<a class="data-pjax" href='{RC_Uri::url("bonus/admin/send","id={$type.type_id}&send_by={$type.send_type}")}' title="{t}发放{/t}">{t}发放红包{/t}</a>        
-								{/if}
-								{if $type.send_type eq 3}
-								&nbsp;|&nbsp;<a href='{RC_Uri::url("bonus/admin/gen_excel","tid={$type.type_id}")}' title="{t}报表{/t}">{t}导出报表{/t}</a> 
-								{/if}
-							</div>
-						</td> 
-						<td>
-							<!-- {if $type.user_bonus_type eq 2} -->
-							<font style="color:#0e92d0;">{t}全场通用{/t}</font>
-							<!-- {else}-->
-							<font style="color:#F00;">{$type.user_bonus_type}</font>
-							<!-- {/if} -->
-						</td>
-						<td>{$type.send_by}</td>
-						<td>
-							<span class="cursor_pointer" data-trigger="editable" data-url="{RC_Uri::url('bonus/admin/edit_type_money')}" data-name="type_money" data-pk="{$type.type_id}" data-title="编辑红包金额">{$type.type_money}</span>
-						</td>
-						<td>
-							<span class="cursor_pointer" data-trigger="editable" data-url="{RC_Uri::url('bonus/admin/edit_min_amount')}" data-name="min_amount" data-pk="{$type.type_id}" title="编辑订单下限金额">{$type.min_amount}</span>
-						</td>
-						<td>{$type.send_count}</td>
-						<td>{$type.use_count}</td>
-					</tr>
-					<!-- {foreachelse} -->
-					<tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
-					<!-- {/foreach} -->
-				</tbody>
-			</table>
-			<!-- end brand list -->
-		</form>
+		<table class="table table-striped smpl_tbl dataTable table-hide-edit">
+			<thead>
+				<tr>
+				<th>{lang key='bonus::bonus.type_name'}</th>
+				<th class="w100">{lang key='bonus::bonus.merchant_name'}</th>
+				<th class="w100">{lang key='bonus::bonus.send_type'}</th>
+				<th class="w100">{lang key='bonus::bonus.type_money'}</th>
+				<th class="w100">{lang key='bonus::bonus.min_amount'}</th>
+				<th class="w130">{lang key='bonus::bonus.send_count'}</th>
+				<th class="w100">{lang key='bonus::bonus.use_count'}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- {foreach from=$type_list.item item=type} -->
+				<tr>
+					<td class="hide-edit-area hide_edit_area_bottom" >
+						<span class="cursor_pointer" data-trigger="editable" data-url="{RC_Uri::url('bonus/admin/edit_type_name')}" data-name="type_name" data-pk="{$type.type_id}" data-title="{lang key='bonus::bonus.edit_bonus_type_name'}">{$type.type_name}</span>
+						<br/>
+						<div class="edit-list">
+							<a class="data-pjax" href='{RC_Uri::url("bonus/admin/bonus_list", "bonus_type={$type.type_id}")}' title="{lang key='bonus::bonus.view_bonus'}">{lang key='bonus::bonus.view_bonus'}</a>&nbsp;|&nbsp;
+							<a class="data-pjax" href='{RC_Uri::url("bonus/admin/edit", "type_id={$type.type_id}")}' title="{lang key='system::system.edit'}">{lang key='system::system.edit'}</a> &nbsp;|&nbsp;
+							<a class="ajaxremove ecjiafc-red" data-toggle="ajaxremove" data-msg="{lang key='bonus::bonus.remove_bonustype_confirm'}" href='{RC_Uri::url("bonus/admin/remove", "id={$type.type_id}")}' title="{lang key='system::system.remove'}">{lang key='system::system.drop'}</a>
+							{if $type.send_type neq 2 && $type.send_type neq 4}
+							&nbsp;|&nbsp;<a class="data-pjax" href='{RC_Uri::url("bonus/admin/send", "id={$type.type_id}&send_by={$type.send_type}")}' title="{lang key='bonus::bonus.send_bonus'}">{lang key='bonus::bonus.send_bonus'}</a>        
+							{/if}
+							{if $type.send_type eq 3}
+							&nbsp;|&nbsp;<a href='{RC_Uri::url("bonus/admin/gen_excel", "tid={$type.type_id}")}' title="{lang key='bonus::bonus.gen_excel'}">{lang key='bonus::bonus.gen_excel'}</a> 
+							{/if}
+						</div>
+					</td> 
+					<td>
+						<!-- {if $type.user_bonus_type eq 2} -->
+						<font style="color:#0e92d0;">{lang key='bonus::bonus.general_audience'}</font>
+						<!-- {else}-->
+						<font style="color:#F00;">{$type.user_bonus_type}</font>
+						<!-- {/if} -->
+					</td>
+					<td>{$type.send_by}</td>
+					<td>
+						<span class="cursor_pointer" data-trigger="editable" data-url="{RC_Uri::url('bonus/admin/edit_type_money')}" data-name="type_money" data-pk="{$type.type_id}" data-title="{lang key='bonus::bonus.edit_bonus_money'}">{$type.type_money}</span>
+					</td>
+					<td>
+						<span class="cursor_pointer" data-trigger="editable" data-url="{RC_Uri::url('bonus/admin/edit_min_amount')}" data-name="min_amount" data-pk="{$type.type_id}" title="{lang key='bonus::bonus.edit_order_limit'}">{$type.min_amount}</span>
+					</td>
+					<td>{$type.send_count}</td>
+					<td>{$type.use_count}</td>
+				</tr>
+				<!-- {foreachelse} -->
+				<tr><td class="no-records" colspan="10">{lang key='system::system.no_records'}</td></tr>
+				<!-- {/foreach} -->
+			</tbody>
+		</table>
+		<!-- {$type_list.page} -->
 	</div>
 </div>
-<!-- {$type_list.page} -->
 <!-- {/block} -->
