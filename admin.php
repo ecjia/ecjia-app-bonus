@@ -17,8 +17,6 @@ class admin extends ecjia_admin {
 		RC_Loader::load_app_func('common', 'goods');
 		RC_Loader::load_app_func('category', 'goods');
 		RC_Loader::load_app_func('bonus');
-		RC_Loader::load_app_func('global');
-		assign_adminlog_content();
 		
 		$this->db_user_bonus 	= RC_Loader::load_app_model('user_bonus_model');
 		$this->db_bonus_type 	= RC_Loader::load_app_model('bonus_type_model' );
