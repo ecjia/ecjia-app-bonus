@@ -5,10 +5,11 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @author will.chen
  *
  */
-class receive_coupon_module implements ecjia_interface {
+class receive_coupon_module extends api_front implements api_interface {
 	
-	public function run(ecjia_api & $api) {
-		EM_Api::authSession();
+	 public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {	
+		$this->authSession();	
+		
 		$bonus_id = isset($_POST['bonus_type_id']) ? $_POST['bonus_type_id'] : 0 ;
  		if ($bonus_id <= 0 ) {
  			EM_Api::outPut(101);
