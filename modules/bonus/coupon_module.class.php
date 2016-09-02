@@ -10,7 +10,6 @@ class coupon_module extends api_front implements api_interface {
 	public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {
 		
 		$this->authSession();
-// 		$location	 = empty($_POST['location']) ? array() : $_POST['location'] ;
 		$location = $this->requestdata('loaction', array());
 		/*经纬度为空判断*/
 		if (!is_array($location) || empty($location['longitude']) || empty($location['latitude'])) {

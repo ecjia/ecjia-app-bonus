@@ -10,7 +10,6 @@ class receive_coupon_module extends api_front implements api_interface {
 	 public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {	
 		$this->authSession();	
 		
-// 		$bonus_id = isset($_POST['bonus_type_id']) ? $_POST['bonus_type_id'] : 0 ;
 		$bonus_id = $this->requestData('bonus_type_id', 0);
  		if ($bonus_id <= 0 ) {
  			EM_Api::outPut(101);
