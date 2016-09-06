@@ -10,13 +10,16 @@ class receive_coupon_module extends api_front implements api_interface {
 	 public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {	
 		$this->authSession();	
 		
+		if ($_SESSION['user_id'] <= 0) {
+			return new ecjia_error(100,'Invalid session');
+		} else {
+			$user_id = $_SESSION['user_id'];
+		}
 		$bonus_id = $this->requestData('bonus_type_id', 0);
  		if ($bonus_id <= 0 ) {
- 			EM_Api::outPut(101);
+ 			return new ecjia_error('invalid_parameter', RC_Lang::get('system::system.invalid_parameter'));
  		}
- 		if (!empty($_SESSION['user_id'])) {
- 			$user_id = $_SESSION['user_id'];
- 		}
+ 		
  		$time = RC_Time::gmtime();
  		$where = array(
  				'send_type'			=> SEND_COUPON,
