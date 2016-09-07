@@ -21,7 +21,7 @@ class bonus_send_bonus_api extends Component_Event_Api {
 	
 	/* 发放优惠券*/
 	private function send_coupon($options) {
-		$db_user_bonus = RC_Loader::load_app_model('user_bonus_model', 'bonus');
+		$db_user_bonus = RC_Model::model('bonus/user_bonus_model');
 		$result = $db_user_bonus->where(array('bonus_type_id' => $options['bonus_type_id'], 'user_id' => $_SESSION['user_id']))->find();
 		if (empty($result)) {
 			

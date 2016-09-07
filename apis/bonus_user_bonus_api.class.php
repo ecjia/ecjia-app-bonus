@@ -22,7 +22,7 @@ class bonus_user_bonus_api extends Component_Event_Api {
 	private function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) 
 	{
 
-		$db_cart_view = RC_Loader::load_app_model('cart_goods_viewmodel', 'cart');
+		$db_cart_view = RC_Model::model('cart/cart_goods_viewmodel');
 	    $where = array();
 	    if(!empty($cart_id)){
 	        $where = array('c.rec_id' => $cart_id);
@@ -40,7 +40,7 @@ class bonus_user_bonus_api extends Component_Event_Api {
 			}
 		}
 		
-		$dbview	= RC_Loader::load_app_model('user_bonus_type_viewmodel', 'bonus');
+		$dbview	= RC_Model::model('bonus/user_bonus_type_viewmodel');
 
 		$today = RC_Time::gmtime();
 		$dbview->view = array(

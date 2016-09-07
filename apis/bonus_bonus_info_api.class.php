@@ -23,7 +23,7 @@ class bonus_bonus_info_api extends Component_Event_Api {
 	*/
 	private function bonus_info($bonus_id, $bonus_sn = '') 
 	{
-		$dbview	= RC_Loader::load_app_model('user_bonus_type_viewmodel', 'bonus');
+		$dbview	= RC_Model::model('bonus/user_bonus_type_viewmodel');
 		$dbview->view = array(
 			'bonus_type' => array(
 				'type'	=> Component_Model_View::TYPE_LEFT_JOIN,

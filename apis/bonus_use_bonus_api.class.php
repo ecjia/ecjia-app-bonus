@@ -23,7 +23,7 @@ class bonus_use_bonus_api extends Component_Event_Api {
 	*/
 	private function use_bonus($bonus_id, $order_id) 
 	{
-		$db = RC_Loader::load_app_model('user_bonus_model', 'bonus');
+		$db = RC_Model::model('bonus/user_bonus_model');
 		$data = array(
 			'order_id'	=> $order_id,
 			'used_time' => RC_Time::gmtime()
