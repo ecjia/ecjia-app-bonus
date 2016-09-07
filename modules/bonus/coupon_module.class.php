@@ -16,9 +16,8 @@ class coupon_module extends api_front implements api_interface {
 			return new ecjia_error('invalid_parameter', '参数无效');
 		}
 		
-		$page_parm = EM_Api::$pagination;
-		$page = $page_parm['page'];
-		$size = $page_parm['count'];
+		$size = $this->requestData('pagination.count', 15);
+        $page = $this->requestData('pagination.page', 1);
 		
 		$where = array();
 		$where['bt.send_type'] = SEND_COUPON;
