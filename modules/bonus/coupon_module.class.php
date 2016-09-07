@@ -60,8 +60,8 @@ class coupon_module extends api_front implements api_interface {
 				'more'	=> $result['page']->total_pages <= $page ? 0 : 1,
 		);
 		
-		EM_Api::outPut($list, $pager);
+		return array('data' => $list, 'pager' => $pager);
 
-	 }	
+	 }
 }
 // end
