@@ -7,14 +7,14 @@ defined('IN_ECJIA') or exit('No permission resources.');
 
 return array(
 	/* Bonus type feild information */
-	'bonus_manage' 				=> 'Bonus Manage',
-	'bonus_list' 				=> 'Bonus List',
-	'type_name' 				=> 'Name',
-	'merchant_name'				=> 'Merchant name',
-	'type_money' 				=> 'Bonus money',
+	'bonus_type' 	=> 'Bonus Type',
+	'bonus_list' 	=> 'Bonus List',
+	'type_name' 	=> 'Name',
+	'type_money' 	=> 'Bonus money',
 	'min_goods_amount' 			=> 'Minimum orders amount',
 	'notice_min_goods_amount' 	=> 'Only the total amount of merchandise to achieve this the number of orders to use such red packets.',
 	'min_amount' 				=> 'Min limit',
+	'min_amount_lable' 			=> 'Min limit:',
 	'max_amount' 				=> 'Max limit',
 	'send_startdate' 			=> 'Start time',
 	'send_enddate' 				=> 'Deadline',
@@ -147,10 +147,8 @@ return array(
 	'send_enddate_lable' 	=> 'Payment end date:',
 	'use_startdate_lable' 	=> 'Use start date:',
 	'use_enddate_lable' 	=> 'Use end date:',
-	'min_amount_lable' 		=> 'Min limit:',
 	'send_method_lable' 	=> 'Provide method:',
 	'min_goods_amount_lable'=> 'Minimum orders amount:',
-	'usage_type_label'		=> 'Usee type:',
 	'type_money_lable' 		=> 'Bonus money:',
 	'type_name_lable' 		=> 'Name:',
 	'add_bonus_type'		=> 'Add Bonus type',
@@ -177,7 +175,6 @@ return array(
 	'filter'				=> 'Filter',
 	'edit_bonus_type_name'	=> 'Edit bonus Type Name',
 	'view_bonus'			=> 'View bonus',
-	'general_audience'		=> 'General audience',
 	'remove_bonustype_confirm'	=> 'Are you sure you want to remove the bonus type?',
 	'gen_excel'					=> 'Export report',
 	'edit_bonus_money'			=> 'Edit bonus amount',
@@ -233,7 +230,6 @@ return array(
 	
 	'send_start_lt_end' 		=> 'bonus release date can not be greater than the beginning date of the end',
 	'use_start_lt_end'	 		=> 'bonus use date can not be greater than the beginning date of the end',
-	'merchant_notice'			=> 'Settled businesses do not have the right to operate, please visit the business background operation!'
 );
 
 //end
