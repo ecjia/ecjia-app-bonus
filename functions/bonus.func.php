@@ -12,7 +12,7 @@ function get_type_list() {
 	$merchants_db_bonus_type = RC_Loader::load_app_model('merchants_user_bonus_type_viewmodel','bonus');
 	
 	/* 获得所有红包类型的发放数量 */
-	$data = $db_user_bonus->field("bonus_type_id, COUNT(*) AS sent_count,SUM(IF(used_time>0,1,0)) as used_count")->group('bonus_type_id')->select();
+	$data = $db_user_bonus->field("bonus_type_id, COUNT(*) AS sent_count, SUM(IF(used_time>0,1,0)) as used_count")->group('bonus_type_id')->select();
 	$sent_arr = array();
 	$used_arr = array();
 	if (!empty($data)) {
@@ -67,9 +67,10 @@ function get_type_list() {
  * @return array
  */
 function get_bonus_goods($type_id) {
-	$db_goods = RC_Loader::load_app_model('goods_model', 'goods');
-	$row = $db_goods->field('goods_id, goods_name')->where("bonus_type_id = '$type_id'")->select();
-	return $row;
+// 	$db_goods = RC_Loader::load_app_model('goods_model', 'goods');
+// 	$row = $db_goods->field('goods_id, goods_name')->where("bonus_type_id = '$type_id'")->select();
+// 	return $row;
+	return RC_DB::table('goods')->select('goods_id', 'goods_name')->where('bonus_type_id', $type_id)->get();
 }
 
 /**
@@ -82,38 +83,34 @@ function get_bonus_goods($type_id) {
  */
 function get_bonus_list() {
 	RC_Lang::load('bonus');
-	$db_user_bonus = RC_Loader::load_app_model( 'user_bonus_model', 'bonus');
-	$dbview = RC_Loader::load_app_model('user_bonus_type_viewmodel', 'bonus');
+	
 	/* 查询条件 */
-	$filter ['sort_by']    = empty( $_REQUEST ['sort_by'] ) ? 'bonus_id' : trim( $_REQUEST ['sort_by'] );
-	$filter ['sort_order'] = empty( $_REQUEST ['sort_order'] ) ? 'DESC' : trim( $_REQUEST ['sort_order'] );
-	$filter ['bonus_type'] = empty( $_REQUEST ['bonus_type'] ) ? 0 : intval( $_REQUEST ['bonus_type'] );
-	$where = empty( $filter ['bonus_type'] ) ? '' : "bonus_type_id='$filter[bonus_type]'";
-	$count = $db_user_bonus->where ( $where )->count ();
-	$page = new ecjia_page ( $count, 15, 6 );
-	$dbview->view = array (
-		'bonus_type' => array (
-			'type' => Component_Model_View::TYPE_LEFT_JOIN,
-			'alias' => 'bt',
-			'field' => 'ub.*, u.user_name, u.email, o.order_sn, bt.type_name',
-			'on' => 'bt.type_id = ub.bonus_type_id' 
-		),
-		'users' => array (
-			'type' => Component_Model_View::TYPE_LEFT_JOIN,
-			'alias' => 'u',
-			'on' => 'u.user_id = ub.user_id' 
-		),
-		'order_info' => array (
-			'type' => Component_Model_View::TYPE_LEFT_JOIN,
-			'alias' => 'o',
-			'on' => 'o.order_id = ub.order_id' 
-		) 
-	);
-	$row = $dbview->where( $where )->order( $filter ['sort_by'] . " " . $filter ['sort_order'] )->limit ( $page->limit () )->select ();
-	if (! empty( $row )) {
-		foreach( $row as $key => $val ) {
-			$row[$key]['used_time'] = $val ['used_time'] == 0 ? RC_Lang::lang ( 'no_use' ) : RC_Time::local_date ( ecjia::config ( 'date_format' ), $val ['used_time'] );
-			$row[$key]['emailed']   = RC_Lang::lang ( 'mail_status/' . $row [$key] ['emailed'] );
+	$filter ['sort_by']    = empty($_REQUEST['sort_by']) 	? 'user_bonus.bonus_id'	: trim($_REQUEST['sort_by']);
+	$filter ['sort_order'] = empty($_REQUEST['sort_order'])	? 'DESC'				: trim($_REQUEST['sort_order']);
+	$filter ['bonus_type'] = empty($_REQUEST['bonus_type'])	? 0 					: intval($_REQUEST['bonus_type']);
+	
+	$db_user_bonus = RC_DB::table('user_bonus');
+	if (!empty($filter['bonus_type'])) {
+		$db_user_bonus->where('user_bonus.bonus_type_id', '=', $filter['bonus_type']);
+	}
+	
+	$count = $db_user_bonus->count();
+	$page = new ecjia_page ($count, 15, 6);
+
+	$row = $db_user_bonus
+		->leftJoin('bonus_type', 'bonus_type.type_id', '=', 'user_bonus.bonus_type_id')
+		->leftJoin('users', 'users.user_id', '=', 'user_bonus.user_id')
+		->leftJoin('order_info', 'order_info.order_id', '=', 'user_bonus.order_id')
+		->select('user_bonus.*', 'users.user_name', 'users.email', 'order_info.order_sn', 'bonus_type.type_name')
+		->orderby($filter['sort_by'], $filter['sort_order'])
+		->take(15)
+		->skip($page->start_id-1)
+		->get();
+	
+	if (!empty($row)) {
+		foreach($row as $key => $val) {
+			$row[$key]['used_time'] = $val['used_time'] == 0 ? RC_Lang::get('bonus::bonus.no_use') : RC_Time::local_date(ecjia::config('date_format'), $val['used_time']);
+			$row[$key]['emailed']   = RC_Lang::get('bonus::bonus.mail_status.'.$row[$key]['emailed']);
 		}
 	}
 	$arr = array('item' => $row, 'filter' => $filter, 'page' => $page->show ( 15 ), 'desc' => $page->page_desc ());
@@ -128,8 +125,10 @@ function get_bonus_list() {
  * @return array
  */
 function bonus_type_info($bonus_type_id) {
-	$db_bonus_type = RC_Loader::load_app_model ('bonus_type_model', 'bonus');
-	return $db_bonus_type->find( "type_id = '$bonus_type_id'" );
+// 	$db_bonus_type = RC_Loader::load_app_model ('bonus_type_model', 'bonus');
+// 	return $db_bonus_type->find( "type_id = '$bonus_type_id'" );
+	
+	return RC_DB::table('bonus_type')->where('type_id', $bonus_type_id)->first();
 }
 
 /**
@@ -146,8 +145,10 @@ function add_to_maillist($username, $email, $subject, $content, $is_html) {
 	$db_email_sendlist = RC_Loader::load_app_model ( 'email_sendlist_model', 'mail');
 	$time = time ();
 	$content = addslashes ( $content );
-	$template_id = $db_mail_templates->field ( 'template_id' )->find ( "template_code = 'send_bonus'" );
-	$template_id = $template_id ['template_id'];
+// 	$template_id = $db_mail_templates->field ( 'template_id' )->find ( "template_code = 'send_bonus'" );
+// 	$template_id = $template_id ['template_id'];
+	$template_id = RC_DB::table('mail_templates')->where('template_code', 'send_bonus')->pluck('template_id');
+
 	$data = array (
 		'email' 		=> $email,
 		'template_id' 	=> $template_id,
@@ -155,7 +156,8 @@ function add_to_maillist($username, $email, $subject, $content, $is_html) {
 		'pri' 			=> 1,
 		'last_send' 	=> $time 
 	);
-	$db_email_sendlist->insert( $data );
+// 	$db_email_sendlist->insert( $data );
+	RC_DB::table('email_sendlist')->insert($data);
 	return true;
 }
 
@@ -227,20 +229,24 @@ function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) {
 * @param   array   红包信息
 */
 function bonus_info($bonus_id, $bonus_sn = '') {
-	$dbview	= RC_Loader::load_app_model('user_bonus_type_viewmodel', 'bonus');
-	$dbview->view = array(
-		'bonus_type' => array(
-			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-			'alias'	=> 'bt',
-			'field'	=> 'bt.*, ub.*',
-			'on'	=> 'bt.type_id = ub.bonus_type_id'
-		)
-	);
-
+// 	$dbview	= RC_Loader::load_app_model('user_bonus_type_viewmodel', 'bonus');
+// 	$dbview->view = array(
+// 		'bonus_type' => array(
+// 			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
+// 			'alias'	=> 'bt',
+// 			'field'	=> 'bt.*, ub.*',
+// 			'on'	=> 'bt.type_id = ub.bonus_type_id'
+// 		)
+// 	);
+	$db_view = RC_DB::table('user_bonus')->leftJoin('bonus_type', 'bonus_type.type_id', '=', 'user_bonus.bonus_type_id');
+	$db_view->select('user_bonus.*', 'bonus_type.*');
+	
 	if ($bonus_id > 0) {
-		return $dbview->find(array('ub.bonus_id' => $bonus_id));
+// 		return $dbview->find(array('ub.bonus_id' => $bonus_id));
+		return $db_view->where('user_bonus.bonus_id', $bonus_id)->first();
 	} else {
-		return $dbview->find(array('ub.bonus_sn' => $bonus_sn));
+// 		return $dbview->find(array('ub.bonus_sn' => $bonus_sn));
+		return $db_view->where('user_bonus.bonus_sn', $bonus_sn)->first();
 	}
 }
 
@@ -351,10 +357,11 @@ function change_user_bonus($bonus_id, $order_id, $is_used = true) {
  * @return  array       分类数组 bonus_typeid => bonus_type_name
  */
 function get_bonus_type() {
-	$db = RC_Loader::load_app_model('bonus_type_model', 'bonus');
+// 	$db = RC_Loader::load_app_model('bonus_type_model', 'bonus');
+// 	$data = $db->field('type_id, type_name, type_money')->where('send_type = 3')->select();
+	$data = RC_DB::table('bonus_type')->select('type_id', 'type_name', 'type_money')->where('send_type', 3)->get();
+	
 	$bonus = array();
-
-	$data = $db->field('type_id, type_name, type_money')->where('send_type = 3')->select();
 	if (!empty($data)) {
 		foreach ($data as $row) {
 			$bonus[$row['type_id']] = $row['type_name'].' [' .sprintf(ecjia::config('currency_format'), $row['type_money']).']';
@@ -371,14 +378,15 @@ function get_bonus_type() {
  */
 function get_rank_list($is_special = false) {
 	//这个它调的model还是user的，做不了彻底的隔离，可以在每个模块提供公用的api,把这些方法放进去 
-	$db = RC_Loader::load_app_model('user_rank_model', 'user');
+	$db_user_rank = RC_DB::table('user_rank');
+	$db_user_rank->select('rank_id', 'rank_name', 'min_points');
+
+	if ($is_special) {
+		$db_user_rank->where('special_rank', 1);
+	}
+	$data = $db_user_rank->orderby('min_points', 'asc')->get();
 
 	$rank_list = array();
-	if ($is_special) {
-		$data = $db->field('rank_id, rank_name, min_points')->where('special_rank = 1')->order('min_points asc')->select();
-	} else {
-		$data = $db->field('rank_id, rank_name, min_points')->order('min_points asc')->select();
-	}
 	if (!empty($data)) {
 		foreach ($data as $row) {
 			$rank_list[$row['rank_id']] = $row['rank_name'];

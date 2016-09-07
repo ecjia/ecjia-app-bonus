@@ -43,13 +43,13 @@
 					<th>{lang key='bonus::bonus.bonus_sn'}</th>
 					<!-- {/if} -->
 					<th>{lang key='bonus::bonus.list_bonus_type'}</th>
-					<th class="w130">{lang key='bonus::bonus.order_id'}</th>
-					<th class="w120">{lang key='bonus::bonus.user_id'}</th>
-					<th class="w120">{lang key='bonus::bonus.used_time'}</th>
+					<th class="w150">{lang key='bonus::bonus.order_id'}</th>
+					<th class="w150">{lang key='bonus::bonus.user_id'}</th>
+					<th class="w150">{lang key='bonus::bonus.used_time'}</th>
 					<!-- {if $show_mail} -->  
 					<th class="w220">{lang key='bonus::bonus.emailed'}</th>
 					<!-- {/if} -->
-					<th class="w100">{lang key='system::system.handler'}</th>
+					<th class="w80">{lang key='system::system.handler'}</th>
 				</tr>    
 			</thead>
 			<tbody>

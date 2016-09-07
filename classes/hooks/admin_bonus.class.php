@@ -8,9 +8,7 @@ class bonus_admin_plugin {
 	    $menus->add_submenu($menu);
 	    return $menus;
 	}
-	
 }
-
 
 RC_Hook::add_filter( 'promotion_admin_menu_api', array('bonus_admin_plugin', 'bonus_admin_menu_api') );
 
