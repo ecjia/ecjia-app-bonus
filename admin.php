@@ -5,11 +5,8 @@
 defined('IN_ECJIA') or exit('No permission resources.');
 
 class admin extends ecjia_admin {
-	private $db_goods;
 	private $db_user_bonus;
 	private $db_bonus_type;
-	private $db_user;
-	private $db_user_rank;
 	
 	public function __construct() {
 		parent::__construct();
@@ -18,11 +15,8 @@ class admin extends ecjia_admin {
 		RC_Loader::load_app_func('category', 'goods');
 		RC_Loader::load_app_func('bonus');
 		
-		$this->db_user_bonus 	= RC_Loader::load_app_model('user_bonus_model');
-		$this->db_bonus_type 	= RC_Loader::load_app_model('bonus_type_model' );
-		$this->db_goods 		= RC_Loader::load_app_model('goods_model', 'goods');
-		$this->db_user 		 	= RC_Loader::load_app_model('users_model', 'user');
-		$this->db_user_rank		= RC_Loader::load_app_model('user_rank_model', 'user');
+		$this->db_user_bonus 	= RC_Model::model('bonus/user_bonus_model');
+		$this->db_bonus_type 	= RC_Model::model('bonus/bonus_type_model' );
 
 		/* 加载全局 js/css */
 		RC_Script::enqueue_script('jquery-validate');
@@ -802,9 +796,9 @@ class admin extends ecjia_admin {
 		$bonus_sum    = !empty($_POST['bonus_sum'])     ? intval($_POST['bonus_sum'])    	: 1;
 	
 		/* 生成红包序列号 */
-		$num = $this->db_user_bonus->max('bonus_sn');
+		$num = RC_DB::table('user_bonus')->max('bonus_sn');
 		$num = $num ? floor($num / 10000) : 100000;
-	
+		
 		for ($i = 0, $j = 0; $i < $bonus_sum; $i++) {
 			$bonus_sn = ($num + $i) . str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT);
 			$data = array(
