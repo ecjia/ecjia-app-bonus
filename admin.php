@@ -93,7 +93,7 @@ class admin extends ecjia_admin {
 	 * 红包类型添加页面
 	 */
 	public function add() {
-		$this->admin_priv('bonus_type_add', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
 	
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('bonus::bonus.add_bonus_type')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
@@ -126,7 +126,7 @@ class admin extends ecjia_admin {
 	 * 红包类型添加的处理
 	 */
 	public function insert() {
-		$this->admin_priv('bonus_type_add', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
 
 		$type_name   = !empty($_POST['type_name']) 			? trim($_POST['type_name']) 		: '';
 		$type_id     = !empty($_POST['type_id'])    		? intval($_POST['type_id'])    		: 0;
