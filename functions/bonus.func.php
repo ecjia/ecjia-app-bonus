@@ -7,9 +7,9 @@ defined('IN_ECJIA') or exit('No permission resources.');
  */
 function get_type_list() {
 	RC_Lang::load('bonus');
-	$db_user_bonus = RC_Loader::load_app_model('user_bonus_model', 'bonus');
-	$db_bonus_type = RC_Loader::load_app_model('bonus_type_model', 'bonus');
-	$merchants_db_bonus_type = RC_Loader::load_app_model('merchants_user_bonus_type_viewmodel','bonus');
+	$db_user_bonus = RC_Model::model('bonus/user_bonus_model');
+	$db_bonus_type = RC_Model::model('bonus/bonus_type_model');
+	$merchants_db_bonus_type = RC_Model::model('bonus/merchants_user_bonus_type_viewmodel');
 	
 	/* 获得所有红包类型的发放数量 */
 	$data = $db_user_bonus->field("bonus_type_id, COUNT(*) AS sent_count, SUM(IF(used_time>0,1,0)) as used_count")->group('bonus_type_id')->select();
@@ -141,8 +141,8 @@ function bonus_type_info($bonus_type_id) {
  * @return boolean
  */
 function add_to_maillist($username, $email, $subject, $content, $is_html) {
-	$db_mail_templates = RC_Loader::load_app_model ( 'mail_templates_model', 'mail');
-	$db_email_sendlist = RC_Loader::load_app_model ( 'email_sendlist_model', 'mail');
+	$db_mail_templates = RC_Model::model('mail/mail_templates_model');
+	$db_email_sendlist = RC_Model::model('mail/email_sendlist_model');
 	$time = time ();
 	$content = addslashes ( $content );
 // 	$template_id = $db_mail_templates->field ( 'template_id' )->find ( "template_code = 'send_bonus'" );
@@ -169,7 +169,7 @@ function add_to_maillist($username, $email, $subject, $content, $is_html) {
  * @return  array   红包数组
  */
 function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) {
-	$db_cart_view = RC_Loader::load_app_model('cart_goods_viewmodel', 'cart');
+	$db_cart_view = RC_Model::model('cart/cart_goods_viewmodel');
     $where = array();
     if (!empty($cart_id)) {
         $where = array('c.rec_id' => $cart_id);
@@ -186,7 +186,7 @@ function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) {
 		}
 	}
 	
-	$dbview	= RC_Loader::load_app_model('user_bonus_type_viewmodel', 'bonus');
+	$dbview	= RC_Model::model('bonus/user_bonus_type_viewmodel');
 	$today = RC_Time::gmtime();
 	$dbview->view = array(
 		'bonus_type' 	=> array(
@@ -256,7 +256,7 @@ function bonus_info($bonus_id, $bonus_sn = '') {
 * @return  bool
 */
 function bonus_used($bonus_id) {
-	$db = RC_Loader::load_app_model('user_bonus_model', 'bonus');
+	$db = RC_Model::model('bonus/user_bonus_model');
 	$order_id = $db->where(array('bonus_id' => $bonus_id))->get_field('order_id');
 	return $order_id > 0;
 }
@@ -268,7 +268,7 @@ function bonus_used($bonus_id) {
 * @return  bool
 */
 function use_bonus($bonus_id, $order_id) {
-	$db = RC_Loader::load_app_model('user_bonus_model', 'bonus');
+	$db = RC_Model::model('bonus/user_bonus_model');
 	$data = array(
 		'order_id'	=> $order_id,
 		'used_time' => RC_Time::gmtime()
@@ -283,7 +283,7 @@ function use_bonus($bonus_id, $order_id) {
 * @return  bool
 */
 function unuse_bonus($bonus_id) {
-	$db = RC_Loader::load_app_model('user_bonus_model', 'bonus');
+	$db = RC_Model::model('bonus/user_bonus_model');
 	$data = array('order_id' => 0, 'used_time'	=> 0);
 	return $db->where(array('bonus_id' => $bonus_id))->update($data);
 }
@@ -292,9 +292,9 @@ function unuse_bonus($bonus_id) {
  * 取得当前用户应该得到的红包总额
  */
 function get_total_bonus() {
-	$db_cart	= RC_Loader::load_app_model('cart_model', 'cart');
-	$dbview		= RC_Loader::load_app_model('cart_exchange_viewmodel', 'cart');
-	$db_bonus	= RC_Loader::load_app_model('bonus_type_model', 'bonus');
+	$db_cart	= RC_Model::model('cart/cart_model');
+	$dbview		= RC_Model::model('cart/cart_exchange_viewmodel');
+	$db_bonus	= RC_Model::model('bonus/bonus_type_model');
 	$day		= RC_Time::local_getdate();
 	$today		= RC_Time::local_mktime(23, 59, 59, $day['mon'], $day['mday'], $day['year']);
 
@@ -332,7 +332,7 @@ function get_total_bonus() {
 * @param   int	 $is_used	是否使用了
 */
 function change_user_bonus($bonus_id, $order_id, $is_used = true) {
-	$db = RC_Loader::load_app_model('user_bonus_model', 'bonus');
+	$db = RC_Model::model('bonus/user_bonus_model');
 	if ($is_used) {
 		$data = array(
 			'used_time'	=> RC_Time::gmtime(),
