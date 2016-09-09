@@ -7,12 +7,17 @@ defined('IN_ECJIA') or exit('No permission resources.');
  */
 function get_type_list() {
 	RC_Lang::load('bonus');
-	$db_user_bonus = RC_Model::model('bonus/user_bonus_model');
-	$db_bonus_type = RC_Model::model('bonus/bonus_type_model');
+// 	$db_user_bonus = RC_Model::model('bonus/user_bonus_model');
+// 	$db_bonus_type = RC_Model::model('bonus/bonus_type_model');
 	$merchants_db_bonus_type = RC_Model::model('bonus/merchants_user_bonus_type_viewmodel');
 	
+	$db_bonus_type = RC_DB::table('bonus_type');
+	
 	/* 获得所有红包类型的发放数量 */
-	$data = $db_user_bonus->field("bonus_type_id, COUNT(*) AS sent_count, SUM(IF(used_time>0,1,0)) as used_count")->group('bonus_type_id')->select();
+// 	$data = $db_user_bonus->field("bonus_type_id, COUNT(*) AS sent_count, SUM(IF(used_time>0,1,0)) as used_count")->group('bonus_type_id')->select();
+	$data = RC_DB::table('user_bonus')->select('bonus_type_id', RC_DB::raw('COUNT(*) AS sent_count, SUM(IF(used_time>0,1,0)) as used_count'))
+		->groupby('bonus_type_id')->get();
+	
 	$sent_arr = array();
 	$used_arr = array();
 	if (!empty($data)) {
@@ -24,17 +29,20 @@ function get_type_list() {
 	$bonustype_id = !empty($_GET['bonustype_id']) ? intval($_GET['bonustype_id']) : 0;
 	$filter['send_type']='';
 	$where = array();
-	if (!empty($_GET['bonustype_id']) || (isset($_GET['bonustype_id']) && trim($_GET['bonustype_id'])==='0' )) {
-		$where['send_type']=$_GET['bonustype_id'];
-		$filter['send_type']  =  $bonustype_id;
+	if (!empty($_GET['bonustype_id']) || (isset($_GET['bonustype_id']) && trim($_GET['bonustype_id']) ==='0')) {
+		$where['send_type'] = $filter['send_type'] = $bonustype_id;
+		$db_bonus_type->where('send_type', $bonustype_id);
 	}
 	/* 查询条件 */
 	$filter['sort_by']    = empty($_GET['sort_by']) ? 'type_id' : trim($_GET['sort_by']);
 	$filter['sort_order'] = empty($_GET['sort_order']) ? 'DESC' : trim($_GET['sort_order']);
 
-	$count = $db_bonus_type->where($where)->count();
-	$page = new ecjia_page($count, 15, 6);
-	$res = $merchants_db_bonus_type->where($where)->group('type_id')->order($filter['sort_by'].' '.$filter['sort_order'])->limit($page->limit())->select();
+	
+// 	$count = $db_bonus_type->where($where)->count();
+	$count = $db_bonus_type->count();
+	$page = new ecjia_page($count, 10, 6);
+// 	$res = $merchants_db_bonus_type->where($where)->group('type_id')->order($filter['sort_by'].' '.$filter['sort_order'])->limit($page->limit())->select();
+	$res = $db_bonus_type->leftJoin('seller_shopinfo', 'seller_shopinfo.id', '=', 'bonus_type.seller_id')->groupby('type_id')->orderby($filter['sort_by'], $filter['sort_order'])->take(10)->skip($page->start_id-1)->get();
 	
 	$arr = array();
 	if (!empty($res)) {
