@@ -36,7 +36,7 @@ class receive_coupon_module extends api_front implements api_interface {
  		$options = array('type' => SEND_COUPON, 'bonus_type_id' => $bonus_id, 'where' => $where);
  		$result = RC_Api::api('bonus', 'send_bonus', $options);
  		if (is_ecjia_error($result)) {
- 			return $result;	
+ 			return $result;
  		}
  		return array();
 	}
