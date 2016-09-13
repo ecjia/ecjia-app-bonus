@@ -233,7 +233,6 @@ return array(
 	
 	'send_start_lt_end' 		=> '红包发放起始日期不能大于或等于发放结束日期',
 	'use_start_lt_end' 			=> '红包使用起始日期不能大于或等于使用结束日期',
-	'merchant_notice'			=> '入驻商家没有操作权限，请登陆商家后台操作！'
 );	
 
 //end

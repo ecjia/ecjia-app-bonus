@@ -786,10 +786,6 @@ class admin extends ecjia_admin {
 	public function send_by_print()	{
 		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
 		
-// 		if (!empty($_SESSION['ru_id'])) {
-// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-// 		}
-
 		@set_time_limit(0);
 		/* 线下红包的类型ID和生成的数量的处理 */
 		$bonus_typeid = !empty($_POST['bonus_type_id']) ? intval($_POST['bonus_type_id']) 	: 0;
@@ -845,10 +841,6 @@ class admin extends ecjia_admin {
 	function send_bonus_mail($bonus_type_id, $bonus_id_list) {
 		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
 		
-// 		$dbview = RC_Loader::load_app_model('user_bonus_type_viewmodel');
-// 		if (!empty($_SESSION['ru_id'])) {
-// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-// 		}
 
 		$bonus_type = bonus_type_info($bonus_type_id);
 		if ($bonus_type['send_type'] != SEND_BY_USER) {
@@ -918,9 +910,6 @@ class admin extends ecjia_admin {
 	public function gen_excel() {
 		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
 		
-// 		if (!empty($_SESSION['ru_id'])) {
-// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-// 		}
 
 		@set_time_limit(0);
 		$tid  = !empty($_GET['tid']) ? intval($_GET['tid']) : 0;
@@ -995,9 +984,6 @@ class admin extends ecjia_admin {
 	public function search_users() {
 		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
 
-// 		if (!empty($_SESSION['ru_id'])) {
-// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-// 		}
 		
 		$json = $_POST['JSON'];
 		$keywords = !empty($json) && isset($json['keyword']) ? trim($json['keyword']) : '';
@@ -1056,9 +1042,6 @@ class admin extends ecjia_admin {
 	public function remove_bonus() {
 		$this->admin_priv('bonus_type_delete', ecjia::MSGTYPE_JSON);
 		
-// 		if (!empty($_SESSION['ru_id'])) {
-// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-// 		}
 		$id = intval($_GET['id']);
 // 		$bonus_sn = $this->db_user_bonus->where(array('bonus_id' => $id))->get_field('bonus_sn');
 		$bonus_sn = RC_DB::table('user_bonus')->where('bonus_id', $id)->pluck('bonus_sn');
@@ -1074,10 +1057,6 @@ class admin extends ecjia_admin {
 	 * 批量操作
 	 */
 	public function batch() {
-// 		if (!empty($_SESSION['ru_id'])) {
-// 			$this->showmessage(__('入驻商家没有操作权限，请登陆商家后台操作！'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
-// 		}
-
 		$bonus_type_id 	= intval($_GET['bonus_type_id']);
 		$sel_action 	= trim($_GET['sel_action']);
 		$action 		= !empty($sel_action) ? $sel_action : 'send';
