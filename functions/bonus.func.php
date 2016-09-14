@@ -177,16 +177,24 @@ function add_to_maillist($username, $email, $subject, $content, $is_html) {
  * @return  array   红包数组
  */
 function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) {
-	$db_cart_view = RC_Model::model('cart/cart_goods_viewmodel');
-    $where = array();
+// 	$db_cart_view = RC_Model::model('cart/cart_goods_viewmodel');
+	$db_cart = RC_DB::table('cart as c')->leftJoin('goods as g', RC_DB::raw('c.goods_id'), '=', RC_DB::raw('g.goods_id'));
+	
+//     $where = array();
     if (!empty($cart_id)) {
-        $where = array('c.rec_id' => $cart_id);
+//         $where = array('c.rec_id' => $cart_id);
+        $db_cart->where(RC_DB::raw('c.rec_id'), $cart_id);
     }
-    $where['c.user_id'] = $_SESSION['user_id'];
-    $where['rec_type'] = CART_GENERAL_GOODS;
+//     $where['c.user_id'] = $_SESSION['user_id'];
+//     $where['rec_type'] = CART_GENERAL_GOODS;
+    
+    $db_cart->where(RC_DB::raw('c.user_id'), $_SESSION['user_id'])->where('rec_type', CART_GENERAL_GOODS);
+    
 	//$goods_list = $db_cart_view->join(array('goods'))->field('g.user_id')->where($where)->group('g.user_id')->select();
-    $goods_list = $db_cart_view->join(array('goods'))->field('g.seller_id')->where($where)->group('g.seller_id')->select();
-	$where = "";
+//     $goods_list = $db_cart_view->join(array('goods'))->field('g.seller_id')->where($where)->group('g.seller_id')->select();
+
+    $goods_list = $db_cart->selectRaw('g.seller_id')->groupby(RC_DB::raw('g.seller_id'))->get();
+    
 	$goods_user = array();
 	if ($goods_list) {
 		foreach ($goods_list as $key => $row) {
@@ -194,26 +202,37 @@ function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) {
 		}
 	}
 	
-	$dbview	= RC_Model::model('bonus/user_bonus_type_viewmodel');
 	$today = RC_Time::gmtime();
-	$dbview->view = array(
-		'bonus_type' 	=> array(
-			'type' 	=> Component_Model_View::TYPE_LEFT_JOIN,
-			'alias'	=> 'bt',
-			'field'	=> 'bt.type_id, bt.type_name, bt.type_money, ub.bonus_id, bt.seller_id, bt.usebonus_type',
-			'on'   	=> 'ub.bonus_type_id = bt.type_id'
-		)
-	);
-	$bt_where = array(
-		'bt.use_start_date' 	=> array('elt' => $today),
-		'bt.use_end_date'		=> array('egt' => $today),
-		'bt.min_goods_amount'	=> array('elt' => $goods_amount),
-		'ub.user_id'			=> array('neq' => 0),
-		'ub.user_id'			=> $user_id,
-		'ub.order_id'			=> 0	
-	);
 	
-	$row = $dbview->where($bt_where)->select();
+// 	$dbview	= RC_Model::model('bonus/user_bonus_type_viewmodel');
+// 	$dbview->view = array(
+// 		'bonus_type' 	=> array(
+// 			'type' 	=> Component_Model_View::TYPE_LEFT_JOIN,
+// 			'alias'	=> 'bt',
+// 			'field'	=> 'bt.type_id, bt.type_name, bt.type_money, ub.bonus_id, bt.seller_id, bt.usebonus_type',
+// 			'on'   	=> 'ub.bonus_type_id = bt.type_id'
+// 		)
+// 	);
+// 	$bt_where = array(
+// 		'bt.use_start_date' 	=> array('elt' => $today),
+// 		'bt.use_end_date'		=> array('egt' => $today),
+// 		'bt.min_goods_amount'	=> array('elt' => $goods_amount),
+// 		'ub.user_id'			=> array('neq' => 0, 'eq' => $user_id),
+// 		'ub.order_id'			=> 0	
+// 	);
+// 	$row = $dbview->where($bt_where)->select();
+	
+	$row = RC_DB::table('user_bonus as ub')
+		->leftJoin('bonus_type as bt', RC_DB::raw('ub.bonus_type_id'), '=', RC_DB::raw('bt.type_id'))
+		->selectRaw('bt.type_id, bt.type_name, bt.type_money, ub.bonus_id, bt.seller_id, bt.usebonus_type')
+		->where(RC_DB::raw('bt.use_start_date'), '<=', $today)
+		->where(RC_DB::raw('bt.use_end_date'), '>=', $today)
+		->where(RC_DB::raw('bt.min_goods_amount'), '<=', $goods_amount)
+		->where(RC_DB::raw('ub.user_id'), '!=', 0)
+		->where(RC_DB::raw('ub.user_id'), $user_id)
+		->where(RC_DB::raw('ub.order_id'), 0)
+	->get();
+	
 	if (!empty($row)) {
 		foreach ($row as $key => $val) {
 			if ($val['usebonus_type'] == 0) {
@@ -291,9 +310,11 @@ function use_bonus($bonus_id, $order_id) {
 * @return  bool
 */
 function unuse_bonus($bonus_id) {
-	$db = RC_Model::model('bonus/user_bonus_model');
+// 	$db = RC_Model::model('bonus/user_bonus_model');
 	$data = array('order_id' => 0, 'used_time'	=> 0);
-	return $db->where(array('bonus_id' => $bonus_id))->update($data);
+// 	return $db->where(array('bonus_id' => $bonus_id))->update($data);
+	
+	return RC_DB::table('user_bonus')->where('bonus_id', $bonus_id)->update($data);
 }
 
 /**
