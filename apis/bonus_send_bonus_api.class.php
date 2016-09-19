@@ -21,15 +21,14 @@ class bonus_send_bonus_api extends Component_Event_Api {
 	
 	/* 发放优惠券*/
 	private function send_coupon($options) {
-		$db_user_bonus = RC_Model::model('bonus/user_bonus_model');
-		$result = $db_user_bonus->where(array('bonus_type_id' => $options['bonus_type_id'], 'user_id' => $_SESSION['user_id']))->find();
+		$db_user_bonus = RC_DB::table('user_bonus');
+		$result = $db_user_bonus->where('bonus_type_id', '=', $options['bonus_type_id'])->where('user_id', '=', $_SESSION['user_id'])->first();
 		if (empty($result)) {
-			
 			$data = array(
 				'bonus_type_id' => $options['bonus_type_id'],
 				'user_id'	   	=> $_SESSION['user_id'],
 			);
-			$db_user_bonus->insert($data);
+			$db_user_bonus->insertGetId($data);
 			return true;
 		} 
 	}

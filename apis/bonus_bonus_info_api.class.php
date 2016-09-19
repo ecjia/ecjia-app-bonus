@@ -23,20 +23,11 @@ class bonus_bonus_info_api extends Component_Event_Api {
 	*/
 	private function bonus_info($bonus_id, $bonus_sn = '') 
 	{
-		$dbview	= RC_Model::model('bonus/user_bonus_type_viewmodel');
-		$dbview->view = array(
-			'bonus_type' => array(
-				'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-				'alias'	=> 'bt',
-				'field'	=> 'bt.type_id, bt.type_name, bt.type_money, bt.send_type, bt.usebonus_type, bt.min_amount, bt.max_amount, bt.send_start_date, bt.send_end_date, bt.use_start_date, bt.use_end_date, bt.min_goods_amount, bt.seller_id as seller_id, ub.*',
-				'on'	=> 'bt.type_id = ub.bonus_type_id'
-			)
-		);
-	
+		$dbview = RC_DB::table('user_bonus as ub')->leftJoin('bonus_type as bt', RC_DB::raw('ub.bonus_type_id'), '=', RC_DB::raw('bt.type_id'));
 		if ($bonus_id > 0) {
-			return $dbview->find(array('ub.bonus_id' => $bonus_id));
+			return $dbview->where(RC_DB::raw('ub.bonus_id'), '=', $bonus_id)->get();
 		} else {
-			return $dbview->find(array('ub.bonus_sn' => $bonus_sn));
+			return $dbview->where(RC_DB::raw('ub.bonus_sn'), '=', $bonus_sn)->get();
 		}
 	}
 }
