@@ -24,7 +24,7 @@
 		</a>
 	</li>
 	<li class="{if $filter.type eq 'merchant'}active{/if}">
-		<a class="data-pjax" href='{url path="bonus/admin/init" args="type=merchant{if $filter.send_type !== ''}&send_type={$filter.send_type}{/if}{if $filter.keywords}&select_type={$filter.select_type}&keywords={$filter.keywords}{/if}"}'>{lang key='bonus::bonus.merchant'}
+		<a class="data-pjax" href='{url path="bonus/admin/init" args="type=merchant{if $filter.send_type !== ''}&send_type={$filter.send_type}{/if}{if $filter.keywords}&select_type={$filter.select_type}&keywords={$filter.keywords}{/if}"}'>{lang key='bonus::bonus.merchants'}
 			<span class="badge badge-info">{if $count.merchant}{$count.merchant}{else}0{/if}</span> 
 		</a>
 	</li>
@@ -62,7 +62,7 @@
 			<thead>
 				<tr>
 				<th>{lang key='bonus::bonus.type_name'}</th>
-				<th class="w100">{lang key='bonus::bonus.merchant_name'}</th>
+				<th class="w100">{lang key='bonus::bonus.merchants_name'}</th>
 				<th class="w100">{lang key='bonus::bonus.send_type'}</th>
 				<th class="w100">{lang key='bonus::bonus.type_money'}</th>
 				<th class="w100">{lang key='bonus::bonus.min_amount'}</th>

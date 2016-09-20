@@ -10,7 +10,7 @@ return array(
 	'bonus_manage' 				=> '红包管理',
 	'bonus_list' 				=> '红包列表',
 	'type_name' 				=> '类型名称',
-	'merchant_name'				=> '商家名称',
+	'merchants_name'			=> '商家名称',
 	'type_money' 				=> '红包金额',
 	'min_goods_amount' 			=> '最小订单金额',
 	'notice_min_goods_amount' 	=> '只有商品总金额达到这个数的订单才能使用这种红包',
@@ -235,7 +235,7 @@ return array(
 	'use_start_lt_end' 			=> '红包使用起始日期不能大于或等于使用结束日期',
 	
 	'all'						=> '全部',
-	'merchant'					=> '商家',
+	'merchants'					=> '商家',
 	'enter_keywords'			=> '请输入名称关键字',
 );		
 

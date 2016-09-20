@@ -10,7 +10,7 @@ return array(
 	'bonus_manage' 				=> 'Bonus Manage',
 	'bonus_list' 				=> 'Bonus List',
 	'type_name' 				=> 'Name',
-	'merchant_name'				=> 'Merchant name',
+	'merchants_name'			=> 'Merchant name',
 	'type_money' 				=> 'Bonus money',
 	'min_goods_amount' 			=> 'Minimum orders amount',
 	'notice_min_goods_amount' 	=> 'Only the total amount of merchandise to achieve this the number of orders to use such red packets.',
