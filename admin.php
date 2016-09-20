@@ -327,10 +327,6 @@ class admin extends ecjia_admin {
 	 */
 	public function edit_type_money() {
 		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
-		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(RC_Lang::get('bonus::bonus.merchant_notice'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
-		}
 				
 		$id  = !empty($_POST['pk']) 	? intval($_POST['pk']) 		: 0;
 		$val = !empty($_POST['value']) 	? floatval($_POST['value']) : 0;
@@ -512,10 +508,6 @@ class admin extends ecjia_admin {
 	 */
 	public function send_by_user_rank() {
 		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
-		
-		if (!empty($_SESSION['ru_id'])) {
-			$this->showmessage(RC_Lang::get('bonus::bonus.merchant_notice'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
-		}
 
 		$user_list = array();
 		$send_count = 0;
