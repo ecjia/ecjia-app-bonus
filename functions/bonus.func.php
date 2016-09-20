@@ -46,7 +46,7 @@ function get_type_list() {
 	}
 	
 	$filter_count = $db_bonus_type
-		->select(RC_DB::raw('count(*) as count'), RC_DB::raw('SUM(IF(bt.store_id >0, 1, 0)) as merchant'))
+		->select(RC_DB::raw('count(*) as count'), RC_DB::raw('SUM(IF(bt.store_id > 0, 1, 0)) as merchant'))
 		->first();
 	
 	$filter['type'] = isset($_GET['type']) ? $_GET['type'] : '';
