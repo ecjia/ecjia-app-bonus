@@ -80,11 +80,13 @@ class admin extends ecjia_admin {
 		
 		$this->assign('ur_here', RC_Lang::get('bonus::bonus.bonustype_list'));
 		$this->assign('action_link', array('text' => RC_Lang::get('system::system.bonustype_add'), 'href' => RC_Uri::url('bonus/admin/add')));
+		$this->assign('search_action', RC_Uri::url('bonus/admin/init'));
 		
 		$list = get_type_list();
 		
 		$this->assign('type_list', $list);
-		$this->assign('search_action', RC_Uri::url('bonus/admin/init'));
+		$this->assign('count', $list['count']);
+		$this->assign('filter', $list['filter']);
 		
 		$this->display('bonus_type.dwt');
 	}

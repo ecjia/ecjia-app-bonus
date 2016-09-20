@@ -233,6 +233,10 @@ return array(
 	
 	'send_start_lt_end' 		=> '红包发放起始日期不能大于或等于发放结束日期',
 	'use_start_lt_end' 			=> '红包使用起始日期不能大于或等于使用结束日期',
-);	
+	
+	'all'						=> '全部',
+	'merchant'					=> '商家',
+	'enter_keywords'			=> '请输入名称关键字',
+);		
 
 //end

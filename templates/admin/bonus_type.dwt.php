@@ -3,7 +3,7 @@
 
 <!-- {block name="footer"} -->
 <script type="text/javascript">
-	ecjia.admin.bonus_type.type_list_init();
+	ecjia.admin.bonus_type.list();
 </script>
 <!-- {/block} -->
 
@@ -17,23 +17,43 @@
 	</h3>
 </div>
 
-<div class="row-fluid batch" >
-	<div class="choose_list">
-		<!-- 筛选 -->
-		<form class="form-inline" action="{$search_action}"  method="post" name="searchForm">
-			<div class="screen">
-				<!-- 级别 -->
-				<select name="bonustype_id" class="no_search w150"  id="select-bonustype">
-					<option value=''  {if $type_list.filter.send_type eq '' } selected="true" {/if}>{lang key='bonus::bonus.all_send_type'}</option>
-					<option value='0' {if $type_list.filter.send_type eq '0'} selected="true" {/if}>{lang key='bonus::bonus.send_by.0'}</option>
-					<option value='1' {if $type_list.filter.send_type eq '1'} selected="true" {/if}>{lang key='bonus::bonus.send_by.1'}</option>
-					<option value='2' {if $type_list.filter.send_type eq '2'} selected="true" {/if}>{lang key='bonus::bonus.send_by.2'}</option>
-					<option value='3' {if $type_list.filter.send_type eq '3'} selected="true" {/if}>{lang key='bonus::bonus.send_by.3'}</option>
-				</select>
-				<button class="btn screen-btn" type="button">{lang key='bonus::bonus.filter'}</button>
-			</div>
-		</form>
-	</div>
+<ul class="nav nav-pills">
+	<li class="{if $filter.type eq ''}active{/if}">
+		<a class="data-pjax" href='{url path="bonus/admin/init" args="{if $filter.send_type !== ''}&send_type={$filter.send_type}{/if}{if $filter.keywords}&select_type={$filter.select_type}&keywords={$filter.keywords}{/if}"}'>{lang key='bonus::bonus.all'} 
+			<span class="badge badge-info">{if $count.count}{$count.count}{else}0{/if}</span> 
+		</a>
+	</li>
+	<li class="{if $filter.type eq 'merchant'}active{/if}">
+		<a class="data-pjax" href='{url path="bonus/admin/init" args="type=merchant{if $filter.send_type !== ''}&send_type={$filter.send_type}{/if}{if $filter.keywords}&select_type={$filter.select_type}&keywords={$filter.keywords}{/if}"}'>{lang key='bonus::bonus.merchant'}
+			<span class="badge badge-info">{if $count.merchant}{$count.merchant}{else}0{/if}</span> 
+		</a>
+	</li>
+</ul>
+
+<div class="row-fluid">
+	<form class="form-inline" action="{$search_action}{if $filter.type}&type={$filter.type}{/if}" method="post" name="searchForm">
+		<div class="f_r">
+			<!-- 关键字 -->
+			<select name="select_type" class="w150">
+				<option value="1" {if $smarty.get.select_type eq 1}selected{/if}>商家名称</option>
+				<option value="2" {if $smarty.get.select_type eq 2}selected{/if}>红包名称</option>
+			</select>
+			<input class="m_l5" type="text" name="keywords" value="{$smarty.get.keywords}" placeholder="{lang key='bonus::bonus.enter_keywords'}" size="15" />
+			<button class="btn" type="submit">{lang key='system::system.button_search'}</button>
+		</div>
+		
+		<div class="screen f_l">
+			<!-- 级别 -->
+			<select name="send_type" class="no_search w150" id="select-bonustype">
+				<option value=''  {if $filter.send_type eq '' } selected="true" {/if}>{lang key='bonus::bonus.all_send_type'}</option>
+				<option value='0' {if $filter.send_type eq '0'} selected="true" {/if}>{lang key='bonus::bonus.send_by.0'}</option>
+				<option value='1' {if $filter.send_type eq '1'} selected="true" {/if}>{lang key='bonus::bonus.send_by.1'}</option>
+				<option value='2' {if $filter.send_type eq '2'} selected="true" {/if}>{lang key='bonus::bonus.send_by.2'}</option>
+				<option value='3' {if $filter.send_type eq '3'} selected="true" {/if}>{lang key='bonus::bonus.send_by.3'}</option>
+			</select>
+			<button class="btn screen-btn m_l5 m_r5" type="button">{lang key='bonus::bonus.filter'}</button>
+		</div>
+	</form>
 </div>
 
 <div class="row-fluid">

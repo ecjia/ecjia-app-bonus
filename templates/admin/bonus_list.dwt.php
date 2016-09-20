@@ -3,7 +3,7 @@
 
 <!-- {block name="footer"} -->
 <script type="text/javascript">
-	ecjia.admin.bonus_type.list_init();
+	ecjia.admin.bonus_type.init();
 </script>
 <!-- {/block} -->
 

@@ -3,7 +3,7 @@
 (function (app, $) {
     app.bonus_type = {
         /**红包类型列表**/
-        type_list_init: function () {
+    	list : function () {
             /* 加载日期控件 */
             var url1 = $(".type_name").attr("data-name");
             var url2 = $(".type_money").attr("data-name");
@@ -12,12 +12,24 @@
             //筛选功能
             $('.screen-btn').on('click', function (e) {
                 e.preventDefault();
-                var url = $("form[name='searchForm']").attr('action')
-                if ($("#select-bonustype option:selected").val() != '') {
-                    url += '&bonustype_id=' + $("#select-bonustype option:selected").val();
+                var url = $("form[name='searchForm']").attr('action');
+                if ($('select[name="send_type"]').val() !== '') {
+                    url += '&send_type=' + $('select[name="send_type"]').val();
                 }
                 ecjia.pjax(url);
-            })
+            });
+            
+            $("form[name='searchForm']").on('submit', function(e) {
+				e.preventDefault();
+				var url = $(this).attr('action');
+				var select_type = $('select[name="select_type"]').val();
+				var keywords = $('input[name="keywords"]').val();
+                
+                if (keywords != '') {
+                	url += '&select_type=' + select_type + '&keywords=' + keywords;
+                }
+				ecjia.pjax(url);
+			});
  
             $('.type_name').editable({
                 name: 'type_name',
@@ -96,7 +108,7 @@
         },
  
         /* 红包列表js初始化 */
-        list_init: function () {
+        init: function () {
             /* 判断按纽是否可点 */
             var inputbool = false;
             $(".smpl_tbl input[type='checkbox']").click(function () {

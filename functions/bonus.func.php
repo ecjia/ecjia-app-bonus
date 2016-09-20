@@ -6,17 +6,22 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @return void
  */
 function get_type_list() {
-	RC_Lang::load('bonus');
 // 	$db_user_bonus = RC_Model::model('bonus/user_bonus_model');
 // 	$db_bonus_type = RC_Model::model('bonus/bonus_type_model');
-	$merchants_db_bonus_type = RC_Model::model('bonus/merchants_user_bonus_type_viewmodel');
+// 	$merchants_db_bonus_type = RC_Model::model('bonus/merchants_user_bonus_type_viewmodel');
+	/* 查询条件 */
+	$filter['sort_by']    	= !empty($_GET['sort_by']) 		? trim($_GET['sort_by']) 		: 'type_id';
+	$filter['sort_order'] 	= !empty($_GET['sort_order']) 	? trim($_GET['sort_order']) 	: 'DESC';
+	$filter['select_type']	= !empty($_GET['select_type']) 	? intval($_GET['select_type']) 	: 1;
+	$filter['keywords'] 	= !empty($_GET['keywords']) 	? trim($_GET['keywords']) 		: '';
 	
-	$db_bonus_type = RC_DB::table('bonus_type');
+	$db_bonus_type = RC_DB::table('bonus_type as bt')->leftJoin('store_franchisee as s', RC_DB::raw('bt.store_id'), '=', RC_DB::raw('s.store_id'));
 	
 	/* 获得所有红包类型的发放数量 */
-// 	$data = $db_user_bonus->field("bonus_type_id, COUNT(*) AS sent_count, SUM(IF(used_time>0,1,0)) as used_count")->group('bonus_type_id')->select();
-	$data = RC_DB::table('user_bonus')->select('bonus_type_id', RC_DB::raw('COUNT(*) AS sent_count, SUM(IF(used_time>0,1,0)) as used_count'))
-		->groupby('bonus_type_id')->get();
+	$data = RC_DB::table('user_bonus')
+		->select('bonus_type_id', RC_DB::raw('COUNT(*) AS sent_count, SUM(IF(used_time > 0, 1, 0)) as used_count'))
+		->groupby('bonus_type_id')
+		->get();
 	
 	$sent_arr = array();
 	$used_arr = array();
@@ -26,45 +31,54 @@ function get_type_list() {
 			$used_arr[$row['bonus_type_id']] = $row['used_count'];
 		}
 	}
-	$bonustype_id = !empty($_GET['bonustype_id']) ? intval($_GET['bonustype_id']) : 0;
-	$filter['send_type']='';
-	$where = array();
-	if (!empty($_GET['bonustype_id']) || (isset($_GET['bonustype_id']) && trim($_GET['bonustype_id']) ==='0')) {
-		$where['send_type'] = $filter['send_type'] = $bonustype_id;
-		$db_bonus_type->where('send_type', $bonustype_id);
-	}
-	/* 查询条件 */
-	$filter['sort_by']    = empty($_GET['sort_by']) ? 'type_id' : trim($_GET['sort_by']);
-	$filter['sort_order'] = empty($_GET['sort_order']) ? 'DESC' : trim($_GET['sort_order']);
-
+	$filter['send_type'] = isset($_GET['send_type']) ? intval($_GET['send_type']) : '';
 	
-// 	$count = $db_bonus_type->where($where)->count();
+	if ($filter['send_type'] !== '') {
+		$db_bonus_type->where('send_type', $filter['send_type']);
+	}
+	
+	if (!empty($filter['keywords'])) {
+		if ($filter['select_type'] == 1) {
+			$db_bonus_type->where(RC_DB::raw('s.merchants_name'), 'like', '%'.mysql_like_quote($filter['keywords']).'%');
+		} elseif ($filter['select_type'] == 2) {
+			$db_bonus_type->where(RC_DB::raw('bt.type_name'), 'like', '%'.mysql_like_quote($filter['keywords']).'%');
+		}
+	}
+	
+	$filter_count = $db_bonus_type
+		->select(RC_DB::raw('count(*) as count'), RC_DB::raw('SUM(IF(bt.store_id >0, 1, 0)) as merchant'))
+		->first();
+	
+	$filter['type'] = isset($_GET['type']) ? $_GET['type'] : '';
+	if (!empty($filter['type'])) {
+		$db_bonus_type->where(RC_DB::raw('bt.store_id'), '>', 0);
+	}
+	
 	$count = $db_bonus_type->count();
 	$page = new ecjia_page($count, 10, 6);
-// 	$res = $merchants_db_bonus_type->where($where)->group('type_id')->order($filter['sort_by'].' '.$filter['sort_order'])->limit($page->limit())->select();
-	$res = $db_bonus_type->leftJoin('seller_shopinfo', 'seller_shopinfo.id', '=', 'bonus_type.seller_id')->groupby('type_id')->orderby($filter['sort_by'], $filter['sort_order'])->take(10)->skip($page->start_id-1)->get();
+	
+	$res = $db_bonus_type
+		->selectRaw('bt.*, s.merchants_name')
+		->orderby($filter['sort_by'], $filter['sort_order'])
+		->take(10)
+		->skip($page->start_id-1)
+		->get();
 	
 	$arr = array();
 	if (!empty($res)) {
 		foreach ($res as $row) {
-			$row['send_by']    = RC_Lang::lang('send_by/'. $row['send_type']);
+			$row['send_by']    = RC_Lang::get('bonus::bonus.send_by.'. $row['send_type']);
 			$row['send_count'] = isset($sent_arr[$row['type_id']]) ? $sent_arr[$row['type_id']] : 0;
 			$row['use_count']  = isset($used_arr[$row['type_id']]) ? $used_arr[$row['type_id']] : 0;
-			
-			if (empty($row['seller_id'])) {
-				//if (empty($row['usebonus_type'])) {
-				//	$row['user_bonus_type'] = 1; //自主使用
-				//} else {
-					$row['user_bonus_type'] = 2; //全场通用
-				//}
+			if (empty($row['store_id'])) {
+				$row['user_bonus_type'] = 2; //全场通用
 			} else {
-				$row['user_bonus_type'] = $row['shop_name']; //商家名称
+				$row['user_bonus_type'] = $row['merchants_name']; //商家名称
 			}
 			$arr[] = $row;
 		}
 	}
-	$arr = array('item' => $arr, 'filter' => $filter, 'page' => $page->show(5), 'desc' => $page->page_desc());
-	return $arr;
+	return array('item' => $arr, 'filter' => $filter, 'page' => $page->show(5), 'desc' => $page->page_desc(), 'count' => $filter_count);
 }
 
 /**
