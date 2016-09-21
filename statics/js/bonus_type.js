@@ -22,11 +22,15 @@
             $("form[name='searchForm']").on('submit', function(e) {
 				e.preventDefault();
 				var url = $(this).attr('action');
-				var select_type = $('select[name="select_type"]').val();
-				var keywords = $('input[name="keywords"]').val();
+				var merchant_keywords = $('input[name="merchant_keywords"]').val();
+				var type_keywords = $('input[name="type_keywords"]').val();
+				
+                if (merchant_keywords != '') {
+                	url += '&merchant_keywords=' + merchant_keywords;
+                }
                 
-                if (keywords != '') {
-                	url += '&select_type=' + select_type + '&keywords=' + keywords;
+                if (type_keywords != '') {
+                	url += '&type_keywords=' + type_keywords;
                 }
 				ecjia.pjax(url);
 			});

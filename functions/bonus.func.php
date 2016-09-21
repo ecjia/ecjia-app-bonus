@@ -10,10 +10,10 @@ function get_type_list() {
 // 	$db_bonus_type = RC_Model::model('bonus/bonus_type_model');
 // 	$merchants_db_bonus_type = RC_Model::model('bonus/merchants_user_bonus_type_viewmodel');
 	/* 查询条件 */
-	$filter['sort_by']    	= !empty($_GET['sort_by']) 		? trim($_GET['sort_by']) 		: 'type_id';
-	$filter['sort_order'] 	= !empty($_GET['sort_order']) 	? trim($_GET['sort_order']) 	: 'DESC';
-	$filter['select_type']	= !empty($_GET['select_type']) 	? intval($_GET['select_type']) 	: 1;
-	$filter['keywords'] 	= !empty($_GET['keywords']) 	? trim($_GET['keywords']) 		: '';
+	$filter['sort_by']    		= !empty($_GET['sort_by']) 				? trim($_GET['sort_by']) 			: 'type_id';
+	$filter['sort_order'] 		= !empty($_GET['sort_order']) 			? trim($_GET['sort_order']) 		: 'DESC';
+	$filter['merchant_keywords'] = !empty($_GET['merchant_keywords']) 	? trim($_GET['merchant_keywords']) 	: '';
+	$filter['type_keywords'] 	= !empty($_GET['type_keywords']) 		? trim($_GET['type_keywords']) 		: '';
 	
 	$db_bonus_type = RC_DB::table('bonus_type as bt')->leftJoin('store_franchisee as s', RC_DB::raw('bt.store_id'), '=', RC_DB::raw('s.store_id'));
 	
@@ -32,17 +32,17 @@ function get_type_list() {
 		}
 	}
 	$filter['send_type'] = isset($_GET['send_type']) ? intval($_GET['send_type']) : '';
-	
+
 	if ($filter['send_type'] !== '') {
 		$db_bonus_type->where('send_type', $filter['send_type']);
 	}
 	
-	if (!empty($filter['keywords'])) {
-		if ($filter['select_type'] == 1) {
-			$db_bonus_type->where(RC_DB::raw('s.merchants_name'), 'like', '%'.mysql_like_quote($filter['keywords']).'%');
-		} elseif ($filter['select_type'] == 2) {
-			$db_bonus_type->where(RC_DB::raw('bt.type_name'), 'like', '%'.mysql_like_quote($filter['keywords']).'%');
-		}
+	if (!empty($filter['merchant_keywords'])) {
+		$db_bonus_type->where(RC_DB::raw('s.merchants_name'), 'like', '%'.mysql_like_quote($filter['merchant_keywords']).'%');
+	}
+	
+	if (!empty($filter['type_keywords'])) {
+		$db_bonus_type->where(RC_DB::raw('bt.type_name'), 'like', '%'.mysql_like_quote($filter['type_keywords']).'%');
 	}
 	
 	$filter_count = $db_bonus_type

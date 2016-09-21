@@ -236,7 +236,8 @@ return array(
 	
 	'all'						=> '全部',
 	'merchants'					=> '商家',
-	'enter_keywords'			=> '请输入名称关键字',
+	'enter_merchant_keywords'	=> '请输入商家名称关键字',
+	'enter_type_keywords'		=> '请输入类型名称关键字',
 );		
 
 //end

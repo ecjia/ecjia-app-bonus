@@ -19,12 +19,12 @@
 
 <ul class="nav nav-pills">
 	<li class="{if $filter.type eq ''}active{/if}">
-		<a class="data-pjax" href='{url path="bonus/admin/init" args="{if $filter.send_type !== ''}&send_type={$filter.send_type}{/if}{if $filter.keywords}&select_type={$filter.select_type}&keywords={$filter.keywords}{/if}"}'>{lang key='bonus::bonus.all'} 
+		<a class="data-pjax" href='{url path="bonus/admin/init" args="{if $filter.send_type !== ''}&send_type={$filter.send_type}{/if}{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}{if $filter.type_keywords}&type_keywords={$filter.type_keywords}{/if}"}'>{lang key='bonus::bonus.all'} 
 			<span class="badge badge-info">{if $count.count}{$count.count}{else}0{/if}</span> 
 		</a>
 	</li>
 	<li class="{if $filter.type eq 'merchant'}active{/if}">
-		<a class="data-pjax" href='{url path="bonus/admin/init" args="type=merchant{if $filter.send_type !== ''}&send_type={$filter.send_type}{/if}{if $filter.keywords}&select_type={$filter.select_type}&keywords={$filter.keywords}{/if}"}'>{lang key='bonus::bonus.merchants'}
+		<a class="data-pjax" href='{url path="bonus/admin/init" args="type=merchant{if $filter.send_type !== ''}&send_type={$filter.send_type}{/if}{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}{if $filter.type_keywords}&type_keywords={$filter.type_keywords}{/if}"}'>{lang key='bonus::bonus.merchants'}
 			<span class="badge badge-info">{if $count.merchant}{$count.merchant}{else}0{/if}</span> 
 		</a>
 	</li>
@@ -34,11 +34,8 @@
 	<form class="form-inline" action="{$search_action}{if $filter.type}&type={$filter.type}{/if}" method="post" name="searchForm">
 		<div class="f_r">
 			<!-- 关键字 -->
-			<select name="select_type" class="w150">
-				<option value="1" {if $smarty.get.select_type eq 1}selected{/if}>商家名称</option>
-				<option value="2" {if $smarty.get.select_type eq 2}selected{/if}>红包名称</option>
-			</select>
-			<input class="m_l5" type="text" name="keywords" value="{$smarty.get.keywords}" placeholder="{lang key='bonus::bonus.enter_keywords'}" size="15" />
+			<input class="m_l5" type="text" name="merchant_keywords" value="{$smarty.get.merchant_keywords}" placeholder="{lang key='bonus::bonus.enter_merchant_keywords'}" size="15" />
+			<input class="m_l5" type="text" name="type_keywords" value="{$smarty.get.type_keywords}" placeholder="{lang key='bonus::bonus.enter_type_keywords'}" size="15" />
 			<button class="btn" type="submit">{lang key='system::system.button_search'}</button>
 		</div>
 		
