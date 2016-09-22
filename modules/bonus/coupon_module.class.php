@@ -24,7 +24,7 @@ class coupon_module extends api_front implements api_interface {
 		$where['bt.seller_id'] = array('gt' => '0');
 		/*根据经纬度查询附近店铺*/
 		if (is_array($location) && !empty($location['latitude']) && !empty($location['longitude'])) {
-			$geohash = RC_Loader::load_app_class('geohash', 'shipping');
+			$geohash = RC_Loader::load_app_class('geohash', 'store');
 			$geohash_code = $geohash->encode($location['latitude'] , $location['longitude']);
 			$geohash_code = substr($geohash_code, 0, 5);
 			$where['geohash'] = array('like' => "%$geohash_code%");
