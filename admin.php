@@ -177,7 +177,6 @@ class admin extends ecjia_admin {
 			'min_amount'       	=> $min_amount,
 			'min_goods_amount' 	=> !empty($_POST['min_goods_amount']) ? floatval($_POST['min_goods_amount']) : 0,
 			'usebonus_type'		=> $bonus_type,
-			'seller_id'			=> 0,
 		);
 		$id = RC_DB::table('bonus_type')->insertGetId($data);
 		 
@@ -367,13 +366,11 @@ class admin extends ecjia_admin {
 		$id = intval($_GET['id']);
 		$info = bonus_type_info($id);
 		
-		if (empty($_SESSION['seller_id'])) {
-			RC_DB::table('bonus_type')->where('type_id', $id)->delete();		//删除红包类型
-			RC_DB::table('user_bonus')->where('bonus_type_id', $id)->delete();	//删除该红包类型的用户红包
-			
-			$data = array('bonus_type_id' => 0);
-			RC_DB::table('goods')->where('bonus_type_id', $id)->update($data);	//更新该红包类型的商品红包类型id为0
-		}
+		RC_DB::table('bonus_type')->where('type_id', $id)->delete();		//删除红包类型
+		RC_DB::table('user_bonus')->where('bonus_type_id', $id)->delete();	//删除该红包类型的用户红包
+		
+		$data = array('bonus_type_id' => 0);
+		RC_DB::table('goods')->where('bonus_type_id', $id)->update($data);	//更新该红包类型的商品红包类型id为0
 		
 		/*记录管理员日志*/
 		$send_type = RC_Lang::get('bonus::bonus.send_by.'.$info['send_type']);

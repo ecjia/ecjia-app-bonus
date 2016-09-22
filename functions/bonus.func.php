@@ -207,14 +207,14 @@ function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) {
 	//$goods_list = $db_cart_view->join(array('goods'))->field('g.user_id')->where($where)->group('g.user_id')->select();
 //     $goods_list = $db_cart_view->join(array('goods'))->field('g.seller_id')->where($where)->group('g.seller_id')->select();
 
-    $goods_list = $db_cart->selectRaw('g.seller_id')->groupby(RC_DB::raw('g.seller_id'))->get();
+ //    $goods_list = $db_cart->selectRaw('g.seller_id')->groupby(RC_DB::raw('g.seller_id'))->get();
     
-	$goods_user = array();
-	if ($goods_list) {
-		foreach ($goods_list as $key => $row) {
-			$goods_user[] = $row['seller_id'];
-		}
-	}
+	// $goods_user = array();
+	// if ($goods_list) {
+	// 	foreach ($goods_list as $key => $row) {
+	// 		$goods_user[] = $row['seller_id'];
+	// 	}
+	// }
 	
 	$today = RC_Time::gmtime();
 	
@@ -238,7 +238,7 @@ function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) {
 	
 	$row = RC_DB::table('user_bonus as ub')
 		->leftJoin('bonus_type as bt', RC_DB::raw('ub.bonus_type_id'), '=', RC_DB::raw('bt.type_id'))
-		->selectRaw('bt.type_id, bt.type_name, bt.type_money, ub.bonus_id, bt.seller_id, bt.usebonus_type')
+		->selectRaw('bt.type_id, bt.type_name, bt.type_money, ub.bonus_id, bt.usebonus_type')
 		->where(RC_DB::raw('bt.use_start_date'), '<=', $today)
 		->where(RC_DB::raw('bt.use_end_date'), '>=', $today)
 		->where(RC_DB::raw('bt.min_goods_amount'), '<=', $goods_amount)
@@ -247,19 +247,19 @@ function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) {
 		->where(RC_DB::raw('ub.order_id'), 0)
 	->get();
 	
-	if (!empty($row)) {
-		foreach ($row as $key => $val) {
-			if ($val['usebonus_type'] == 0) {
-				//if (!in_array($val['user_id'], $goods_user)) {
-				//	unset($row[$key]);
-				//}
-				if (!in_array($val['seller_id'], $goods_user)) {
-					unset($row[$key]);
-				}
-			}
-		}
-		$row = array_merge($row);
-	}
+	// if (!empty($row)) {
+	// 	foreach ($row as $key => $val) {
+	// 		if ($val['usebonus_type'] == 0) {
+	// 			//if (!in_array($val['user_id'], $goods_user)) {
+	// 			//	unset($row[$key]);
+	// 			//}
+	// 			if (!in_array($val['seller_id'], $goods_user)) {
+	// 				unset($row[$key]);
+	// 			}
+	// 		}
+	// 	}
+	// 	$row = array_merge($row);
+	// }
 	return $row;
 }
 

@@ -19,8 +19,7 @@ class bonus_user_bonus_api extends Component_Event_Api {
 	 * @param   float   $goods_amount   订单商品金额
 	 * @return  array   红包数组
 	 */
-	private function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) 
-	{
+	private function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) {
 		//$db_cart_view = RC_Model::model('cart/cart_goods_viewmodel');
 		//$where = array();
 		
@@ -38,14 +37,14 @@ class bonus_user_bonus_api extends Component_Event_Api {
 	    //$goods_list = $db_cart_view->join(array('goods'))->field('g.user_id')->where($where)->group('g.user_id')->select();
 	    //$goods_list = $db_cart_view->join(array('goods'))->field('g.seller_id')->where($where)->group('g.seller_id')->select();
 	     
-	    $goods_list = $db_cart_view->select(RC_DB::raw('g.seller_id'))->groupBy(RC_DB::raw('g.seller_id'))->get();
+// 	    $goods_list = $db_cart_view->select(RC_DB::raw('g.seller_id'))->groupBy(RC_DB::raw('g.seller_id'))->get();
 		
-		$goods_user = array();
-		if($goods_list){
-			foreach($goods_list as $key=>$row){
-				$goods_user[] = $row['user_id'];
-			}
-		}
+// 		$goods_user = array();
+// 		if($goods_list){
+// 			foreach($goods_list as $key=>$row){
+// 				$goods_user[] = $row['user_id'];
+// 			}
+// 		}
 		
 		//$dbview	= RC_Model::model('bonus/user_bonus_type_viewmodel');
 		$dbview = RC_DB::table('user_bonus as ub')->leftJoin('bonus_type as bt', RC_DB::raw('ub.bonus_type_id'), '=', RC_DB::raw('bt.type_id'));
@@ -68,20 +67,20 @@ class bonus_user_bonus_api extends Component_Event_Api {
 
 		//$row = $dbview->where($bt_where)->select();
 		$row = $dbview
-		->where(RC_DB::raw('bt.use_end_date'), '>=', $today)
-		->where(RC_DB::raw('bt.min_goods_amount'), '<=', $goods_amount)
-		->where(RC_DB::raw('ub.user_id'), '<>', 0)
-		->where(RC_DB::raw('ub.user_id'), '=', $user_id)
-		->where(RC_DB::raw('ub.order_id'), '=', 0)
-		->select(RC_DB::raw('bt.type_id'),RC_DB::raw('bt.type_name'), RC_DB::raw('bt.type_money'), RC_DB::raw('ub.bonus_id'), RC_DB::raw('bt.seller_id'), RC_DB::raw('bt.usebonus_type'))->get();
+			->where(RC_DB::raw('bt.use_end_date'), '>=', $today)
+			->where(RC_DB::raw('bt.min_goods_amount'), '<=', $goods_amount)
+			->where(RC_DB::raw('ub.user_id'), '<>', 0)
+			->where(RC_DB::raw('ub.user_id'), '=', $user_id)
+			->where(RC_DB::raw('ub.order_id'), '=', 0)
+			->select(RC_DB::raw('bt.type_id'),RC_DB::raw('bt.type_name'), RC_DB::raw('bt.type_money'), RC_DB::raw('ub.bonus_id'), RC_DB::raw('bt.usebonus_type'))->get();
 		
-		foreach ($row as $key => $val) {
-			if ($val['usebonus_type'] == 0) {
-				if (!in_array($val['user_id'], $goods_user)) {
-					unset($row[$key]);
-				}
-			}
-		}
+// 		foreach ($row as $key => $val) {
+// 			if ($val['usebonus_type'] == 0) {
+// 				if (!in_array($val['user_id'], $goods_user)) {
+// 					unset($row[$key]);
+// 				}
+// 			}
+// 		}
 		
 		$row = array_merge($row);
 		
