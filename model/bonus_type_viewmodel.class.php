@@ -16,10 +16,10 @@ class bonus_type_viewmodel extends Component_Model_View {
 				'on'   			=> 'bt.type_id = ub.bonus_type_id'
 			),
 			/*商家优惠红包*/
-			'seller_shopinfo' 	=> array(
+			'store_franchisee' 	=> array(
 				'type' 			=> Component_Model_View::TYPE_LEFT_JOIN,
-				'alias' 		=> 'ssi',
-				'on'   			=> 'bt.seller_id = ssi.id'
+				'alias' 		=> 's',
+				'on'   			=> 'bt.store_id = s.store_id'
 			),
 		);
 		parent::__construct();
@@ -27,10 +27,10 @@ class bonus_type_viewmodel extends Component_Model_View {
 	
 	/*获取商家优惠红包列表*/
 	public function seller_coupon_list($options) {
-		$record_count = $this->join(array('seller_shopinfo', 'user_bonus'))->where($options['where'])->count('DISTINCT bt.type_id');
+		$record_count = $this->join(array('store_franchisee', 'user_bonus'))->where($options['where'])->count('DISTINCT bt.type_id');
 		//实例化分页
 		$page_row = new ecjia_page($record_count, $options['size'], 6, '', $options['page']);
-		$res = $this->join(array('seller_shopinfo', 'user_bonus'))->where($options['where'])->field('ssi.shop_name, bt.*,ub.user_id')->group('bt.type_id')->limit($page_row->limit())->select();
+		$res = $this->join(array('store_franchisee', 'user_bonus'))->where($options['where'])->field('s.merchants_name, bt.*,ub.user_id')->group('bt.type_id')->limit($page_row->limit())->select();
 		return array('coupon_list' => $res, 'page' => $page_row);
 	}
 }
