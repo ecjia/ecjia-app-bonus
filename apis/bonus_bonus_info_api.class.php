@@ -12,7 +12,7 @@ class bonus_bonus_info_api extends Component_Event_Api {
             return new ecjia_error('invalid_parameter', RC_Lang::get('bonus::bonus.invalid_parameter'));
         }
         $options['bonus_sn'] = isset($options['bonus_sn']) ? $options['bonus_sn'] : '';
-        return $this->bonus_info($options['bonus_id'], $options['bonus_sn']);
+        return $this->bonus_info($options['bonus_id'], $options['bonus_sn'], $options['store_id']);
     }
     
     /**
@@ -21,9 +21,14 @@ class bonus_bonus_info_api extends Component_Event_Api {
 	* @param   string  $bonus_sn   红包序列号
 	* @param   array   红包信息
 	*/
-	private function bonus_info($bonus_id, $bonus_sn = '') 
+	private function bonus_info($bonus_id, $bonus_sn = '', $store_id = null) 
 	{
 		$dbview = RC_DB::table('user_bonus as ub')->leftJoin('bonus_type as bt', RC_DB::raw('ub.bonus_type_id'), '=', RC_DB::raw('bt.type_id'));
+		
+		if ($store_id !== null) {
+			$dbview->where(RC_DB::raw('bt.bonus_id'), $store_id);
+		}
+		
 		if ($bonus_id > 0) {
 			return $dbview->where(RC_DB::raw('ub.bonus_id'), '=', $bonus_id)->get();
 		} else {
