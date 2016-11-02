@@ -56,7 +56,6 @@
 						<input type="radio" name="send_type" value="1" {if $bonus_arr.send_type eq 1} checked="true" {/if} onClick="javascript:ecjia.admin.bonus_info_edit.type_info_showunit(1)"  />{lang key='bonus::bonus.send_by.1'}
 						<input type="radio" name="send_type" value="2" {if $bonus_arr.send_type eq 2} checked="true" {/if} onClick="javascript:ecjia.admin.bonus_info_edit.type_info_showunit(2)"  />{lang key='bonus::bonus.send_by.2'}
 						<input type="radio" name="send_type" value="4" {if $bonus_arr.send_type eq 4} checked="true" {/if} onClick="javascript:ecjia.admin.bonus_info_edit.type_info_showunit(4)"  />{lang key='bonus::bonus.send_by.4'}
-						<input type="radio" name="send_type" value="5" {if $bonus_arr.send_type eq 5} checked="true" {/if} onClick="javascript:ecjia.admin.bonus_info_edit.type_info_showunit(5)"  />{lang key='bonus::bonus.send_by.5'}
 					</div>
 				</div>
 				<div class="control-group formSep" id="min_amount_div" {if $bonus_arr.send_type neq 2} style="display:none" {/if}>

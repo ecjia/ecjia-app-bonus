@@ -709,67 +709,6 @@ class admin extends ecjia_admin {
 		$this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 	}
 	
-	/**
-	 * 添加发放红包的商品
-	 */
-	public function send_by_coupon() {
-		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
-		
-		$goods_id = !empty($_POST['linked_array']) ? $_POST['linked_array'] : '';
-		$type_id = intval($_POST['bonus_type_id']);
-
-// 		$bonus_relation = RC_Loader::load_model('term_meta_model');
-// 		$where = array(
-// 			'object_type'	=> 'ecjia.goods',
-// 			'object_group'	=> 'goods_bonus_coupon',
-// 			'meta_key'		=> 'bonus_type_id',
-// 			'meta_value'	=> $type_id,
-// 		);
-// 		$goods_group = $bonus_relation->where($where)->get_field('object_id', true);
-		
-		$db_term_meta = RC_DB::table('term_meta')
-			->where('object_type', 'ecjia.goods')
-			->where('object_group', 'goods_bonus_coupon')
-			->where('meta_key', 'bonus_type_id')
-			->where('meta_value', $type_id);
-		
-		$goods_group = $db_term_meta->lists('object_id');
-		
-		$coupon_goods = array();
-		/* 商品若不再优惠范围内，则新增*/
-		if (is_array($goods_id) && !empty($goods_id)) {
-			foreach ($goods_id as $val) {
-				if (empty($goods_group) || !in_array($val['goods_id'], $goods_group)) {
-					$data = array(
-						'object_type'	=> 'ecjia.goods',
-						'object_group'	=> 'goods_bonus_coupon',
-						'object_id'		=> $val['goods_id'],
-						'meta_key'		=> 'bonus_type_id',
-						'meta_value'	=> $type_id,
-					);
-// 					$bonus_relation->insert($data);
-					RC_DB::table('term_meta')->insert($data);
-					
-				}
-				$coupon_goods[] = $val['goods_id'];
-			}
-		}
-	
-		/* 更新取消的商品*/
-		if (!empty($coupon_goods)) {
-// 			$bonus_relation->in(array('object_id' => $coupon_goods), true)->delete($where);
-			$db_term_meta->whereNotIn('object_id', $coupon_goods)->delete();
-		} else {
-// 			$bonus_relation->delete($where);
-			$db_term_meta->delete();
-		}
-	
-		$info = bonus_type_info($type_id);
-		$send_type = RC_Lang::get('bonus::bonus.send_by.'.$info['send_type']);
-		
-		ecjia_admin::admin_log(RC_Lang::get('bonus::bonus.send_type_is').$send_type.'，'.RC_Lang::get('bonus::bonus.bonustype_name_is').$info['type_name'], 'add', 'userbonus');
-		$this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
-	}
 	
 	/**
 	 * 按线下发放红包
