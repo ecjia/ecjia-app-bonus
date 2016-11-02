@@ -953,7 +953,7 @@ class admin extends ecjia_admin {
 	 * 搜索商品
 	 */
 	public function get_goods_list() {
-		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
 		$arr = RC_Api::api('goods', 'get_goods_list', $_POST);
 		
 		$opt = array();
@@ -973,7 +973,7 @@ class admin extends ecjia_admin {
 	 * 搜索用户
 	 */
 	public function search_users() {
-		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
 
 		
 		$json = $_POST['JSON'];
@@ -992,7 +992,7 @@ class admin extends ecjia_admin {
 	 * 红包列表
 	 */
 	public function bonus_list() {
-		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('bonus::bonus.bonus_list')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
@@ -1063,7 +1063,7 @@ class admin extends ecjia_admin {
 		if ($action == 'remove') {
 			$this->admin_priv('bonus_type_delete', ecjia::MSGTYPE_JSON);
 		} else {
-			$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
+			$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
 		}
 		
 		if (!empty($ids)) {
