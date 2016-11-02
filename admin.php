@@ -383,7 +383,7 @@ class admin extends ecjia_admin {
 	 * 红包发送页面
 	 */
 	public function send() {
-		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
 		
 		/* 取得参数 */
 		$id = !empty($_GET['id'])  ? intval($_GET['id'])  : 0;
@@ -504,7 +504,7 @@ class admin extends ecjia_admin {
 	 * 处理红包的发送页面 
 	 */
 	public function send_by_user_rank() {
-		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
 
 		$user_list = array();
 		$send_count = 0;
@@ -598,7 +598,7 @@ class admin extends ecjia_admin {
 	 * 处理红包的发送页面 post
 	 */
 	public function send_by_user() {
-		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
 		
 		$user_list = array();
 		$user_ids = !empty($_POST['linked_array']) ? $_POST['linked_array'] : '';
@@ -679,7 +679,7 @@ class admin extends ecjia_admin {
 	 * 添加发放红包的商品
 	 */
 	public function send_by_goods() {
-		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
 		
 		$goods_id 	= isset($_POST['linked_array']) 	? $_POST['linked_array'] 			: '';
 		$type_id 	= isset($_POST['bonus_type_id']) 	? intval($_POST['bonus_type_id']) 	: 0;
@@ -713,7 +713,7 @@ class admin extends ecjia_admin {
 	 * 添加发放红包的商品
 	 */
 	public function send_by_coupon() {
-		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
 		
 		$goods_id = !empty($_POST['linked_array']) ? $_POST['linked_array'] : '';
 		$type_id = intval($_POST['bonus_type_id']);
@@ -775,7 +775,7 @@ class admin extends ecjia_admin {
 	 * 按线下发放红包
 	 */
 	public function send_by_print()	{
-		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
 		
 		@set_time_limit(0);
 		/* 线下红包的类型ID和生成的数量的处理 */
@@ -807,7 +807,7 @@ class admin extends ecjia_admin {
 	 * 发送邮件
 	 */
 	public function send_mail() {
-		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
 
 		$bonus_id = intval($_GET['bonus_id']);
 		if ($bonus_id <= 0) {
@@ -830,7 +830,7 @@ class admin extends ecjia_admin {
 	 * @return  int     成功发送数量
 	 */
 	function send_bonus_mail($bonus_type_id, $bonus_id_list) {
-		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
 		
 
 		$bonus_type = bonus_type_info($bonus_type_id);
@@ -899,7 +899,7 @@ class admin extends ecjia_admin {
 	 * 导出线下发放的信息 excel
 	 */
 	public function gen_excel() {
-		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
 		
 
 		@set_time_limit(0);
