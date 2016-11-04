@@ -43,6 +43,7 @@
 					<th>{lang key='bonus::bonus.bonus_sn'}</th>
 					<!-- {/if} -->
 					<th>{lang key='bonus::bonus.list_bonus_type'}</th>
+					<th>商家名称</th>
 					<th class="w150">{lang key='bonus::bonus.order_id'}</th>
 					<th class="w150">{lang key='bonus::bonus.user_id'}</th>
 					<th class="w150">{lang key='bonus::bonus.used_time'}</th>
@@ -60,6 +61,7 @@
 					<td>{$bonus.bonus_sn}</td>
 					<!-- {/if} -->
 					<td>{$bonus.type_name}</td>
+					<td class="ecjiafc-red">{$bonus.merchants_name}</td>
 					<td>{$bonus.order_sn}</td>
 					<td>{if $bonus.email}<a href="{RC_Uri::url('user/admin/info',"id={$bonus.user_id}")}">{$bonus.user_name}</a>{else}{$bonus.user_name}{/if}</td>
 					<td align="right">{$bonus.used_time}</td>
