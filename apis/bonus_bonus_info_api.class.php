@@ -30,9 +30,9 @@ class bonus_bonus_info_api extends Component_Event_Api {
 		}
 		
 		if ($bonus_id > 0) {
-			return $dbview->where(RC_DB::raw('ub.bonus_id'), '=', $bonus_id)->get();
+			return $dbview->where(RC_DB::raw('ub.bonus_id'), '=', $bonus_id)->first();
 		} else {
-			return $dbview->where(RC_DB::raw('ub.bonus_sn'), '=', $bonus_sn)->get();
+			return $dbview->where(RC_DB::raw('ub.bonus_sn'), '=', $bonus_sn)->first(); 
 		}
 	}
 }
