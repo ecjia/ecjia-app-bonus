@@ -60,11 +60,11 @@
 				<tr>
 				<th>{lang key='bonus::bonus.type_name'}</th>
 				<th class="w180">{lang key='bonus::bonus.merchants_name'}</th>
-				<th class="w180">{lang key='bonus::bonus.send_type'}</th>
+				<th class="w150">{lang key='bonus::bonus.send_type'}</th>
 				<th class="w100">{lang key='bonus::bonus.type_money'}</th>
 				<th class="w100">{lang key='bonus::bonus.min_amount'}</th>
-				<th class="w130">{lang key='bonus::bonus.send_count'}</th>
-				<th class="w100">{lang key='bonus::bonus.use_count'}</th>
+				<th class="w100">{lang key='bonus::bonus.send_count'}</th>
+				<th class="w80">{lang key='bonus::bonus.use_count'}</th>
 				</tr>
 			</thead>
 			<tbody>
