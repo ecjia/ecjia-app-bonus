@@ -893,10 +893,14 @@ class admin extends ecjia_admin {
 	 */
 	public function get_goods_list() {
 		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
-		$arr = RC_Api::api('goods', 'get_goods_list', $_POST);
+		
+		$arr = $_POST;
+		$type_id = !empty($_POST['type_id']) ? intval($_POST['type_id']) : '';
+		$arr['store_id'] = RC_DB::table('bonus_type')->select('store_id')->where('type_id', $type_id)->pluck();
+		$row = RC_Api::api('goods', 'get_goods_list', $arr);
 		$opt = array();
-		if (!empty($arr)) {
-			foreach ($arr AS $key => $val) {
+		if (!empty($row)) {
+			foreach ($row AS $key => $val) {
 				$opt[] = array(
 					'value' => $val['goods_id'],
 					'text'  => $val['goods_name'],
