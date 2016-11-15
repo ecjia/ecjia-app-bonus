@@ -78,6 +78,7 @@
                     searchURL = $choose_list.attr('data-url');
                 var filters = {
                     'keyword': $choose_list.find('[name="keyword"]').val(),
+                    'type_id': $choose_list.find('[name="type_id"]').val(),
                     'cat_id': $choose_list.find('[name="cat_id"] option:checked').val(),
                     'brand_id': $choose_list.find('[name="brand_id"] option:checked').val(),
                 };

@@ -135,8 +135,10 @@ class admin extends ecjia_admin {
 		$min_amount  = !empty($_POST['min_amount']) 		? floatval($_POST['min_amount']) 	: 0;
 		$bonus_type  = intval($_POST['bonus_type']) == 1 	? 1 								: 0;
 		$send_type	 = !empty($_POST['send_type'])			? intval($_POST['send_type'])		: 0;
-		
-		if (RC_DB::table('bonus_type')->where('type_name', $type_name)->count() > 0) {
+		$store_id = RC_DB::table('bonus_type')->select('store_id')->where('type_id', $type_id)->pluck();
+		$store_id    = !empty($store_id)                    ? intval($store_id)    		        : 0;
+
+		if (RC_DB::table('bonus_type')->where('type_name', $type_name)->where('store_id', $store_id)->count() > 0) {
 			$this->showmessage(RC_Lang::get('bonus::bonus.type_name_exist'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		$send_startdate = !empty($_POST['send_start_date']) ? RC_Time::local_strtotime($_POST['send_start_date']) 	: '';
@@ -427,14 +429,13 @@ class admin extends ecjia_admin {
 			);
 			
 			RC_Loader::load_app_func('category', 'goods');
-			$bonus_type = RC_DB::table('bonus_type')->select('type_id', 'type_name')->where('type_id', $id)->first();
 			
+			$bonus_type = RC_DB::table('bonus_type')->select('type_id', 'type_name')->where('type_id', $id)->first();
 			$goods_list = get_bonus_goods($id);
-
 			/* 模板赋值 */
 			$this->assign('cat_list', RC_Api::api('goods', 'get_goods_category'));
 			$this->assign('brand_list', RC_Api::api('goods', 'get_goods_brand'));
-			
+
 			$this->assign('bonus_type_id', $id);
 			$this->assign('bonus_type', $bonus_type);
 			$this->assign('goods_list', $goods_list);
@@ -491,7 +492,6 @@ class admin extends ecjia_admin {
 			if (!empty($goods_group)) {
 				$goods_list = RC_DB::table('goods')->whereIn('goods_id', $goods_group)->select('goods_id', 'goods_name')->get();
 			}
-			
 			$this->assign('bonus_type_id', 	$id);
 			$this->assign('goods_list', 	$goods_list);
 			$this->assign('form_action', 	RC_Uri::url('bonus/admin/send_by_coupon'));
@@ -894,7 +894,6 @@ class admin extends ecjia_admin {
 	public function get_goods_list() {
 		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
 		$arr = RC_Api::api('goods', 'get_goods_list', $_POST);
-		
 		$opt = array();
 		if (!empty($arr)) {
 			foreach ($arr AS $key => $val) {

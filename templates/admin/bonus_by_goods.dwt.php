@@ -34,6 +34,7 @@
 								</select>
 							<!-- </div> -->
 							<input type="text" name="keyword" />
+							<input type="hidden" name="type_id" value="{$id}">
 							<a class="btn" data-toggle="searchGoods"><!-- {lang key='system::system.button_search'} --></a>
 							<span class="help-block m_t5">{lang key='bonus::bonus.search_goods_help'}</span>
 						</div>
