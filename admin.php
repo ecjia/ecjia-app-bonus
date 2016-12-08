@@ -139,7 +139,7 @@ class admin extends ecjia_admin {
 		$store_id    = !empty($store_id)                    ? intval($store_id)    		        : 0;
 
 		if (RC_DB::table('bonus_type')->where('type_name', $type_name)->where('store_id', $store_id)->count() > 0) {
-			$this->showmessage(RC_Lang::get('bonus::bonus.type_name_exist'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('bonus::bonus.type_name_exist'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		$send_startdate = !empty($_POST['send_start_date']) ? RC_Time::local_strtotime($_POST['send_start_date']) 	: '';
 		$send_enddate   = !empty($_POST['send_end_date']) 	? RC_Time::local_strtotime($_POST['send_end_date']) 	: '';
@@ -148,24 +148,24 @@ class admin extends ecjia_admin {
 		
 		if ($send_type != 0 && $send_type != 3) {
 			if (empty($send_startdate)) {
-				$this->showmessage(RC_Lang::get('bonus::bonus.send_startdate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+				return $this->showmessage(RC_Lang::get('bonus::bonus.send_startdate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 			}
 			if (empty($send_enddate)) {
-				$this->showmessage(RC_Lang::get('bonus::bonus.send_enddate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+				return $this->showmessage(RC_Lang::get('bonus::bonus.send_enddate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 			}
 			if ($send_startdate >= $send_enddate) {
-				$this->showmessage(RC_Lang::get('bonus::bonus.send_start_lt_end'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+				return $this->showmessage(RC_Lang::get('bonus::bonus.send_start_lt_end'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 			}
 		}
 		if (empty($use_startdate)) {
-			$this->showmessage(RC_Lang::get('bonus::bonus.use_startdate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('bonus::bonus.use_startdate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		if (empty($use_enddate)) {
-			$this->showmessage(RC_Lang::get('bonus::bonus.use_enddate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('bonus::bonus.use_enddate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		
 		if ($use_startdate >= $use_enddate) {
-			$this->showmessage(RC_Lang::get('bonus::bonus.use_start_lt_end'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('bonus::bonus.use_start_lt_end'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		
 		$data = array(
@@ -187,7 +187,7 @@ class admin extends ecjia_admin {
 	
 		$links[] = array('text' => RC_Lang::get('bonus::bonus.back_list'), 'href' => RC_Uri::url('bonus/admin/init'));
 		$links[] = array('text' => RC_Lang::get('bonus::bonus.continus_add'), 'href' => RC_Uri::url('bonus/admin/add'));
-		$this->showmessage(RC_Lang::get('bonus::bonus.add_success'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('links' => $links, 'pjaxurl' => RC_Uri::url('bonus/admin/edit', array('type_id' => $id))));
+		return $this->showmessage(RC_Lang::get('bonus::bonus.add_success'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('links' => $links, 'pjaxurl' => RC_Uri::url('bonus/admin/edit', array('type_id' => $id))));
 	}
 	
 	/**
@@ -237,7 +237,7 @@ class admin extends ecjia_admin {
 		
 		if ($type_name != $old_typename ) {
 			if (RC_DB::table('bonus_type')->where('type_name', $type_name)->count() > 0) {
-			 	$this->showmessage(RC_Lang::get('bonus::bonus.type_name_exist'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			 	return $this->showmessage(RC_Lang::get('bonus::bonus.type_name_exist'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 			}
 		}
 	
@@ -262,27 +262,27 @@ class admin extends ecjia_admin {
 		
 		if ($send_type != 0 && $send_type != 3) {
 			if (empty($send_startdate)) {
-				$this->showmessage(RC_Lang::get('bonus::bonus.send_startdate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+				return $this->showmessage(RC_Lang::get('bonus::bonus.send_startdate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 			}
 			if (empty($send_enddate)) {
-				$this->showmessage(RC_Lang::get('bonus::bonus.send_enddate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+				return $this->showmessage(RC_Lang::get('bonus::bonus.send_enddate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 			}
 			if ($send_startdate >= $send_enddate) {
-				$this->showmessage(RC_Lang::get('bonus::bonus.send_start_lt_end'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+				return $this->showmessage(RC_Lang::get('bonus::bonus.send_start_lt_end'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 			}
 			$data['send_start_date'] = $send_startdate;
 			$data['send_end_date'] = $send_enddate;
 		}
 		
 		if (empty($use_startdate)) {
-			$this->showmessage(RC_Lang::get('bonus::bonus.use_startdate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('bonus::bonus.use_startdate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		if (empty($use_enddate)) {
-			$this->showmessage(RC_Lang::get('bonus::bonus.use_enddate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('bonus::bonus.use_enddate_required'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		
 		if ($use_startdate >= $use_enddate) {
-			$this->showmessage(RC_Lang::get('bonus::bonus.use_start_lt_end'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('bonus::bonus.use_start_lt_end'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 	
 		RC_DB::table('bonus_type')->where('type_id', $type_id)->update($data);
@@ -292,7 +292,7 @@ class admin extends ecjia_admin {
 		
 		$links[] = array('text' => RC_Lang::get('bonus::bonus.back_list'), 'href' => RC_Uri::url('bonus/admin/init'));
 		$links[] = array('text' => RC_Lang::get('bonus::bonus.continus_add'), 'href' => RC_Uri::url('bonus/admin/add'));
-		$this->showmessage(RC_Lang::get('bonus::bonus.edit_success'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('links' => $links, 'pjaxurl' => RC_Uri::url('bonus/admin/edit', array('type_id' => $type_id))));
+		return $this->showmessage(RC_Lang::get('bonus::bonus.edit_success'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('links' => $links, 'pjaxurl' => RC_Uri::url('bonus/admin/edit', array('type_id' => $type_id))));
 	}
 	
 	/**
@@ -302,7 +302,7 @@ class admin extends ecjia_admin {
 		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
 		
 // 		if (!empty($_SESSION['ru_id'])) {
-// 			$this->showmessage(RC_Lang::get('bonus::bonus.merchant_notice'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
+// 			return $this->showmessage(RC_Lang::get('bonus::bonus.merchant_notice'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
 // 		}
 		
 		$type_name 	= !empty($_POST['value']) 	? trim($_POST['value']) 	: '';
@@ -314,12 +314,12 @@ class admin extends ecjia_admin {
 				RC_DB::table('bonus_type')->where('type_id', $id)->update(array('type_name' => $type_name));
 				ecjia_admin::admin_log(RC_Lang::get('bonus::bonus.bonustype_name_is').$type_name, 'edit', 'bonustype');
 				
-				$this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
+				return $this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 			} else {
-				$this->showmessage(RC_Lang::get('bonus::bonus.type_name_exist'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+				return $this->showmessage(RC_Lang::get('bonus::bonus.type_name_exist'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 			}
 		} else {
-			$this->showmessage(RC_Lang::get('bonus::bonus.type_name_empty'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('bonus::bonus.type_name_empty'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 	}
 	
@@ -333,10 +333,10 @@ class admin extends ecjia_admin {
 		$val = !empty($_POST['value']) 	? floatval($_POST['value']) : 0;
 		
 		if ($val <= 0) {
-			$this->showmessage(RC_Lang::get('bonus::bonus.type_money_error'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('bonus::bonus.type_money_error'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		} else {
 			RC_DB::table('bonus_type')->where('type_id', $id)->update(array('type_money' => $val));
-			$this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('bonus/admin/init')));
+			return $this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('bonus/admin/init')));
 		}
 	}
 	
@@ -351,11 +351,11 @@ class admin extends ecjia_admin {
 		
 		/* 可为0 */
 		if ($val <= 0 && !($_POST['value'] === '0')) {
-			$this->showmessage(RC_Lang::get('bonus::bonus.min_amount_empty'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('bonus::bonus.min_amount_empty'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		else {
 			RC_DB::table('bonus_type')->where('type_id', $id)->update(array('min_amount' => $val));
-			$this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('bonus/admin/init')));
+			return $this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('bonus/admin/init')));
 		}
 	}
 	
@@ -378,7 +378,7 @@ class admin extends ecjia_admin {
 		$send_type = RC_Lang::get('bonus::bonus.send_by.'.$info['send_type']);
 		ecjia_admin::admin_log(RC_Lang::get('bonus::bonus.send_type_is').$send_type.'，'.RC_Lang::get('bonus::bonus.bonustype_name_is').$info['type_name'], 'remove', 'bonustype');
 		
-		$this->showmessage(RC_Lang::get('bonus::bonus.del_bonustype_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
+		return $this->showmessage(RC_Lang::get('bonus::bonus.del_bonustype_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 	}
 
 	/**
@@ -591,7 +591,7 @@ class admin extends ecjia_admin {
 		$send_type = RC_Lang::get('bonus::bonus.send_by.'.$bonus_type['send_type']);
 		ecjia_admin::admin_log(RC_Lang::get('bonus::bonus.send_type_is').$send_type.'，'.RC_Lang::get('bonus::bonus.bonustype_name_is').$bonus_type['type_name'].'，'.RC_Lang::get('bonus::bonus.send_rank_is').$rank_name, 'add', 'userbonus');
 		
-		$this->showmessage(sprintf(RC_Lang::get('bonus::bonus.sendbonus_count'), $loop), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('max_id' => $bonus_type_id));
+		return $this->showmessage(sprintf(RC_Lang::get('bonus::bonus.sendbonus_count'), $loop), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('max_id' => $bonus_type_id));
 	}
 
 	/**
@@ -604,7 +604,7 @@ class admin extends ecjia_admin {
 		$user_ids = !empty($_POST['linked_array']) ? $_POST['linked_array'] : '';
 
 		if (empty($user_ids)) {
-			$this->showmessage(RC_Lang::get('bonus::bonus.send_user_empty'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('bonus::bonus.send_user_empty'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		$user_array = (is_array($user_ids)) ? $user_ids : explode(',', $user_ids);
 		
@@ -672,7 +672,7 @@ class admin extends ecjia_admin {
 				ecjia_admin::admin_log(RC_Lang::get('bonus::bonus.send_type_is').$send_type.'，'.RC_Lang::get('bonus::bonus.bonustype_name_is').$bonus_type['type_name'].'，'.RC_Lang::get('bonus::bonus.send_target_is').$v['user_name'], 'add', 'userbonus');
 			}
 		}
-		$this->showmessage(sprintf(RC_Lang::get('bonus::bonus.sendbonus_count'), $count), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
+		return $this->showmessage(sprintf(RC_Lang::get('bonus::bonus.sendbonus_count'), $count), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 	}
 	
 	/**
@@ -706,7 +706,7 @@ class admin extends ecjia_admin {
 				ecjia_admin::admin_log(RC_Lang::get('bonus::bonus.send_type_is').$send_type.'，'.RC_Lang::get('bonus::bonus.bonustype_name_is').$info['type_name'].'，'.RC_Lang::get('bonus::bonus.send_target_is').$v, 'add', 'userbonus');
 			}
 		}
-		$this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
+		return $this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 	}
 	
 	
@@ -739,7 +739,7 @@ class admin extends ecjia_admin {
 		$send_type = RC_Lang::get('bonus::bonus.send_by.'.$info['send_type']);
 		
 		ecjia_admin::admin_log(RC_Lang::get('bonus::bonus.send_type_is').$send_type.'，'.RC_Lang::get('bonus::bonus.bonustype_name_is').$info['type_name'], 'add', 'userbonus');
-		$this->showmessage(RC_Lang::get('bonus::bonus.creat_bonus') . $j . RC_Lang::get('bonus::bonus.creat_bonus_num'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('max_id' => $bonus_typeid));
+		return $this->showmessage(RC_Lang::get('bonus::bonus.creat_bonus') . $j . RC_Lang::get('bonus::bonus.creat_bonus_num'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('max_id' => $bonus_typeid));
 	}
 	
 	/**
@@ -750,16 +750,16 @@ class admin extends ecjia_admin {
 
 		$bonus_id = intval($_GET['bonus_id']);
 		if ($bonus_id <= 0) {
-			$this->showmessage(RC_Lang::get('bonus::bonus.invalid_parameter'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('bonus::bonus.invalid_parameter'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		$bonus = bonus_info($bonus_id);
 
 		if (empty($bonus)) {
-			$this->showmessage(RC_Lang::get('bonus::bonus.bonus_not_exist'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('bonus::bonus.bonus_not_exist'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		$count = $this->send_bonus_mail($bonus['bonus_type_id'], array($bonus_id));
 		
-		$this->showmessage(sprintf(RC_Lang::get('bonus::bonus.success_send_mail'), $count), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
+		return $this->showmessage(sprintf(RC_Lang::get('bonus::bonus.success_send_mail'), $count), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 	}
 	
 	/**
@@ -908,7 +908,7 @@ class admin extends ecjia_admin {
 				);
 			}
 		}
-		$this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('content' => $opt));
+		return $this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('content' => $opt));
 	}
 	
 	/**
@@ -927,7 +927,7 @@ class admin extends ecjia_admin {
 // 			$row = $this->db_user->field("user_id, user_name")->where("user_name LIKE '%" . mysql_like_quote($keywords) . "%' OR user_id LIKE '%" . mysql_like_quote($keywords) . "%'")->select();
 			$row = $db_users->where('user_name', 'like', '%' . mysql_like_quote($keywords) . '%')->orWhere('user_id', 'like', '%' . mysql_like_quote($keywords) . '%')->get();
 		}
-		$this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('content' => $row));
+		return $this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('content' => $row));
 	}
 	
 	/**
@@ -983,7 +983,7 @@ class admin extends ecjia_admin {
 		RC_DB::table('user_bonus')->where('bonus_id', $id)->delete();
 
 		ecjia_admin::admin_log($bonus_sn, 'remove', 'userbonus');
-		$this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);		
+		return $this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);		
 	}
 	
 	/**
@@ -1018,13 +1018,13 @@ class admin extends ecjia_admin {
 					foreach ($info as $v) {
 						ecjia_admin::admin_log($v['bonus_sn'], 'batch_remove', 'userbonus');
 					}
-					$this->showmessage(sprintf(RC_Lang::get('bonus::bonus.batch_drop_success'), $count), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('bonus/admin/bonus_list', array('bonus_type' => $bonus_type_id))));
+					return $this->showmessage(sprintf(RC_Lang::get('bonus::bonus.batch_drop_success'), $count), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('bonus/admin/bonus_list', array('bonus_type' => $bonus_type_id))));
 					break;
 		
 				case 'send' :
 					$this->send_bonus_mail($bonus_type_id, $ids);
 					
-					$this->showmessage(RC_Lang::get('bonus::bonus.success_send_mail'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('bonus/admin/bonus_list', array('bonus_type' => $bonus_type_id))));
+					return $this->showmessage(RC_Lang::get('bonus::bonus.success_send_mail'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('pjaxurl' => RC_Uri::url('bonus/admin/bonus_list', array('bonus_type' => $bonus_type_id))));
 					break;
 					
 				default :
