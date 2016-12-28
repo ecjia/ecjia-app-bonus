@@ -40,7 +40,7 @@
 	            <table class="table table-striped table-advance table-hover">
 	                <thead>
 	                    <tr>
-	                        <th class="table_checkbox">
+	                        <th class="table_checkbox w35">
 	                            <div class="check-list">
 	                                <div class="check-item">
 	                                    <input id="checkall" type="checkbox" data-toggle="selectall"  data-children=".checkbox"/>
