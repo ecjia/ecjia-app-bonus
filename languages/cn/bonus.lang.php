@@ -7,12 +7,10 @@ defined('IN_ECJIA') or exit('No permission resources.');
 
 return array(
 	/* 红包类型字段信息 */
-    'bonus_type' 	            => '红包类型',
-	'bonus_manage' 				=> '红包管理',
-	'bonus_list' 				=> '红包列表',
-	'type_name' 				=> '类型名称',
-	'merchants_name'			=> '商家名称',
-	'type_money' 				=> '红包金额',
+	'bonus_type' 	=> '红包类型',
+	'bonus_list' 	=> '红包列表',
+	'type_name' 	=> '类型名称',
+	'type_money' 	=> '红包金额',
 	'min_goods_amount' 			=> '最小订单金额',
 	'notice_min_goods_amount' 	=> '只有商品总金额达到这个数的订单才能使用这种红包',
 	'min_amount' 				=> '订单下限',
@@ -121,8 +119,7 @@ return array(
 	'order_id' 			=> '订单号',
 	'send_mail' 		=> '发邮件',
 	'emailed' 			=> '邮件通知',
-    'handler'           => '操作',
-    
+	
 	'mail_status' => array(
 		BONUS_NOT_MAIL 					=> '未发',
 		BONUS_INSERT_MAILLIST_FAIL 		=> '插入邮件发送队列失败',
@@ -152,7 +149,6 @@ return array(
 	'min_amount_lable' 		=> '订单下限：',
 	'send_method_lable' 	=> '如何发放此类型红包：',
 	'min_goods_amount_lable'=> '最小订单金额：',
-	'usage_type_label'		=> '使用类型：',
 	'type_money_lable' 		=> '红包金额：',
 	'type_name_lable'		=> '类型名称：',
 	'add_bonus_type'		=> '添加红包类型',
@@ -179,7 +175,6 @@ return array(
 	'filter'				=> '筛选',
 	'edit_bonus_type_name'	=> '编辑红包类型名称',
 	'view_bonus'			=> '查看红包',
-	'general_audience'		=> '全场通用',
 	'remove_bonustype_confirm' 	=> '您确定要删除该红包类型吗？',
 	'gen_excel'					=> '导出报表',
 	'edit_bonus_money'			=> '编辑红包金额',
@@ -235,11 +230,6 @@ return array(
 	
 	'send_start_lt_end' 		=> '红包发放起始日期不能大于或等于发放结束日期',
 	'use_start_lt_end' 			=> '红包使用起始日期不能大于或等于使用结束日期',
-	
-	'all'						=> '全部',
-	'merchants'					=> '商家',
-	'enter_merchant_keywords'	=> '请输入商家名称关键字',
-	'enter_type_keywords'		=> '请输入类型名称关键字',
-);		
+);	
 
 //end

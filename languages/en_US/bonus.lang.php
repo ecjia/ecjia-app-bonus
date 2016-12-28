@@ -8,6 +8,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
 return array(
 	/* Bonus type feild information */
 	'bonus_manage' 				=> 'Bonus Manage',
+    'bonus_type' 	            => 'Bonus Type',
 	'bonus_list' 				=> 'Bonus List',
 	'type_name' 				=> 'Name',
 	'merchants_name'			=> 'Merchant name',
@@ -15,6 +16,7 @@ return array(
 	'min_goods_amount' 			=> 'Minimum orders amount',
 	'notice_min_goods_amount' 	=> 'Only the total amount of merchandise to achieve this the number of orders to use such red packets.',
 	'min_amount' 				=> 'Min limit',
+    'min_amount_lable' 			=> 'Min limit:',
 	'max_amount' 				=> 'Max limit',
 	'send_startdate' 			=> 'Start time',
 	'send_enddate' 				=> 'Deadline',
