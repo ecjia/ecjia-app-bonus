@@ -8,7 +8,7 @@ class merchant extends ecjia_merchant {
 	public function __construct() {
 		parent::__construct();
 
-		RC_Loader::load_app_func('common',   'goods');
+		RC_Loader::load_app_func('common', 'goods');
 		RC_Loader::load_app_func('merchant', 'goods');
 		RC_Loader::load_app_class('bonus', 'bonus');
 
@@ -18,8 +18,8 @@ class merchant extends ecjia_merchant {
 		RC_Script::enqueue_script('smoke');
 
 		/* 红包类型编辑页面 js/css */
-		RC_Script::enqueue_script('bonus_type',           RC_App::apps_url('statics/js/bonus_merchant_type.js', __FILE__), array(), false, true);
-		RC_Script::enqueue_script('bonus',                RC_App::apps_url('statics/js/bonus_merchant.js', __FILE__), array(), false, true);
+		RC_Script::enqueue_script('bonus_type', RC_App::apps_url('statics/js/bonus_merchant_type.js', __FILE__), array(), false, true);
+		RC_Script::enqueue_script('bonus', RC_App::apps_url('statics/js/bonus_merchant.js', __FILE__), array(), false, true);
 
         // select 选择框
         RC_Style::enqueue_style('chosen_style', dirname(RC_App::app_dir_url(__FILE__)) .'/merchant/statics/assets/chosen/chosen.css', array());
