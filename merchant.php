@@ -462,7 +462,6 @@ class merchant extends ecjia_merchant {
 			/* 模板赋值 */
 			$this->assign('bonus_type_id',    $id);
 			$this->assign('merchant_cat_list', merchant_cat_list());
-// 			$this->assign('brand_list',	get_brand_list());
 			$this->assign('bonus_type',  $bonus_type);
 			$this->assign('goods_list',  $goods_list);
 			$this->assign('form_search', RC_Uri::url('bonus/merchant/get_goods_list'));
@@ -481,7 +480,6 @@ class merchant extends ecjia_merchant {
 			/* 模板赋值 */
 			$this->assign('bonus_type_id', $id);
 			$this->assign('merchant_cat_list',	merchant_cat_list());
-			$this->assign('brand_list',	get_brand_list());
 
 			$bonus_relation = RC_DB::table('term_meta');
 			$goods_group = $bonus_relation
