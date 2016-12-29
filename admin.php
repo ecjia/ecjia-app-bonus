@@ -301,10 +301,6 @@ class admin extends ecjia_admin {
 	public function edit_type_name() {
 		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
 		
-// 		if (!empty($_SESSION['ru_id'])) {
-// 			return $this->showmessage(RC_Lang::get('bonus::bonus.merchant_notice'), ecjia::MSGTYPE_HTML | ecjia::MSGSTAT_ERROR);
-// 		}
-		
 		$type_name 	= !empty($_POST['value']) 	? trim($_POST['value']) 	: '';
 		$id			= !empty($_POST['pk']) 		? intval($_POST['pk']) 		: 0;
 		
@@ -472,15 +468,6 @@ class admin extends ecjia_admin {
 			$this->assign('cat_list', RC_Api::api('goods', 'get_goods_category'));
 			$this->assign('brand_list', RC_Api::api('goods', 'get_goods_brand'));
 
-// 			$bonus_relation = RC_Loader::load_model('term_meta_model');
-// 			$where = array(
-// 				'object_type'	=> 'ecjia.goods',
-// 				'object_group'	=> 'goods_bonus_coupon',
-// 				'meta_key'		=> 'bonus_type_id',
-// 				'meta_value'	=> $id,
-// 			);
-// 			$goods_group = $bonus_relation->where($where)->get_field('object_id', true);
-			
 			$goods_group = RC_DB::table('term_meta')
 				->where('object_type', 'ecjia.goods')
 				->where('object_group', 'goods_bonus_coupon')
@@ -568,7 +555,6 @@ class admin extends ecjia_admin {
 						'order_id'  	=> 0,
 						'emailed'   	=> BONUS_INSERT_MAILLIST_SUCCEED,
 					);
-// 					$this->db_user_bonus->insert($data);
 					RC_DB::table('user_bonus')->insert($data);
 					$loop++;
 				} else {
@@ -581,7 +567,6 @@ class admin extends ecjia_admin {
 						'order_id'  	=> 0,
 						'emailed'   	=> BONUS_INSERT_MAILLIST_FAIL,
 					);
-// 					$this->db_user_bonus->insert($data);
 					RC_DB::table('user_bonus')->insert($data);
 					$loop_faild++;
 				}
@@ -616,7 +601,6 @@ class admin extends ecjia_admin {
 		}
 		
 		/* 根据会员ID取得用户名和邮件地址 */
-// 		$user_list = $this->db_user->field('user_id, email, user_name')->in(array('user_id' => $new_ids))->select();
 		$user_list = RC_DB::table('users')->select('user_id', 'email', 'user_name')->whereIn('user_id', $new_ids)->get();
 		$count = count($user_list);
 
@@ -652,7 +636,6 @@ class admin extends ecjia_admin {
 						'order_id' 		=> 0,
 						'emailed' 		=> BONUS_INSERT_MAILLIST_SUCCEED,
 					);
-// 					$this->db_user_bonus->insert($data);
 					RC_DB::table('user_bonus')->insert($data);
 				} else {
 					$data = array(
@@ -663,7 +646,6 @@ class admin extends ecjia_admin {
 						'order_id' 		=> 0,
 						'emailed' 		=> BONUS_INSERT_MAILLIST_FAIL,
 					);
-// 					$this->db_user_bonus->insert($data);
 					RC_DB::table('user_bonus')->insert($data);
 				}
 			}
@@ -685,7 +667,6 @@ class admin extends ecjia_admin {
 		$type_id 	= isset($_POST['bonus_type_id']) 	? intval($_POST['bonus_type_id']) 	: 0;
 		
 		$data = array('bonus_type_id' => 0);
-// 		$this->db_goods->where(array('bonus_type_id' => $type_id))->update($data);
 		RC_DB::table('goods')->where('bonus_type_id', $type_id)->update($data);
 		
 		$new_ids = array();
@@ -694,11 +675,9 @@ class admin extends ecjia_admin {
 				$new_ids[] = $value['goods_id'];
 			}
 			$data = array('bonus_type_id' => $type_id);
-// 			$this->db_goods->in(array('goods_id' => $new_ids))->update($data);
 			RC_DB::table('goods')->whereIn('goods_id', $new_ids)->update($data);
 			
 			$info = bonus_type_info($type_id);
-// 			$goods = $this->db_goods->field('goods_name')->in(array('goods_id' => $goods_ids))->select();
 			$goods_name_list = RC_DB::table('goods')->whereIn('goods_id', $new_ids)->lists('goods_name');
 			
 			$send_type = RC_Lang::get('bonus::bonus.send_by.'.$info['send_type']);
@@ -708,7 +687,6 @@ class admin extends ecjia_admin {
 		}
 		return $this->showmessage(RC_Lang::get('bonus::bonus.attradd_succed'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 	}
-	
 	
 	/**
 	 * 按线下发放红包
@@ -731,7 +709,6 @@ class admin extends ecjia_admin {
 				'bonus_type_id' => $bonus_typeid,
 				'bonus_sn' 		=> $bonus_sn
 			);
-// 			$this->db_user_bonus->insert($data);
 			RC_DB::table('user_bonus')->insert($data);
 			$j++;
 		}
@@ -788,7 +765,6 @@ class admin extends ecjia_admin {
 // 				'on'   => 'ub.user_id = u.user_id '
 // 			)
 // 		);
-	
 // 		$bonus_list = $dbview->where(array('ub.order_id' => 0, 'u.email' => array('neq' => '')))->in(array('ub.bonus_id' => $bonus_id_list))->select();
 		
 		$db_view = RC_DB::table('user_bonus')
@@ -806,7 +782,6 @@ class admin extends ecjia_admin {
 		}
 		$send_count = 0;
 		/* 发送邮件 */
-		//$tpl   = get_mail_template('send_bonus');
 		$tpl_name = 'send_bonus';
 		$tpl = RC_Api::api('mail', 'mail_template', $tpl_name);
 		
@@ -822,11 +797,9 @@ class admin extends ecjia_admin {
 				
 				if (add_to_maillist($bonus['user_name'], $bonus['email'], $tpl['template_subject'], $content, $tpl['is_html'], false)) {
 					$data = array('emailed' => BONUS_INSERT_MAILLIST_SUCCEED);
-// 					$this->db_user_bonus->where(array('bonus_id' => $bonus['bonus_id']))->update($data);
 					$send_count++;
 				} else {
 					$data = array('emailed' => BONUS_INSERT_MAILLIST_FAIL);
-// 					$this->db_user_bonus->where(array('bonus_id' => $bonus['bonus_id']))->update($data);
 				}
 				RC_DB::table('user_bonus')->where('bonus_id', $bonus['bonus_id'])->update($data);
 			}
@@ -843,7 +816,6 @@ class admin extends ecjia_admin {
 
 		@set_time_limit(0);
 		$tid  = !empty($_GET['tid']) ? intval($_GET['tid']) : 0;
-// 		$type_name = $this->db_bonus_type->where(array('type_id' => $tid))->get_field('type_name');
 		$type_name = RC_DB::table('bonus_type')->where('type_id', $tid)->pluck('type_name');
 		
 		$bonus_filename = $type_name .'_bonus_list';
@@ -976,10 +948,8 @@ class admin extends ecjia_admin {
 		$this->admin_priv('bonus_type_delete', ecjia::MSGTYPE_JSON);
 		
 		$id = intval($_GET['id']);
-// 		$bonus_sn = $this->db_user_bonus->where(array('bonus_id' => $id))->get_field('bonus_sn');
 		$bonus_sn = RC_DB::table('user_bonus')->where('bonus_id', $id)->pluck('bonus_sn');
 		
-// 		$this->db_user_bonus->where(array('bonus_id'=> $id))->delete();
 		RC_DB::table('user_bonus')->where('bonus_id', $id)->delete();
 
 		ecjia_admin::admin_log($bonus_sn, 'remove', 'userbonus');
@@ -995,8 +965,6 @@ class admin extends ecjia_admin {
 		$action 		= !empty($sel_action) ? $sel_action : 'send';
 		$ids 			= $_POST['checkboxes'];
 		
-// 		$info = $this->db_user_bonus->in(array('bonus_id' => $ids))->select();
-
 		if (!is_array($ids)) {
 			$ids = explode(',', $ids);
 		}
@@ -1012,7 +980,6 @@ class admin extends ecjia_admin {
 			switch ($action) {
 				case 'remove':
 					$count = count($ids);
-// 					$this->db_user_bonus->in(array('bonus_id' => $ids))->delete();
 					RC_DB::table('user_bonus')->whereIn('bonus_id', $ids)->delete();
 
 					foreach ($info as $v) {

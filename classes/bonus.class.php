@@ -24,7 +24,6 @@ class bonus {
     	}
     	return $rank_list;
     }
-       
 
     /**
      * 查询红包类型的商品列表 --bonus.func
@@ -37,23 +36,19 @@ class bonus {
     	return RC_DB::table('goods')->select('goods_id', 'goods_name')->where('bonus_type_id', $type_id)->get();
     }
     
-    
     /**
      * 取得红包类型数组（用于生成下拉列表）
      *
      * @return  array       分类数组 bonus_typeid => bonus_type_name
      */
-    public static function get_bonus_type()
-    {
+    public static function get_bonus_type() {
     	$db = RC_DB::table('bonus_type');
     	$bonus = array();
     
-    	//$data = $db->field('type_id, type_name, type_money')->where(array('send_type' => 3, 'seller_id' => $_SESSION['seller_id']))->select();
     	if (!empty($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
     		$db->where(RC_DB::raw('store_id'), $_SESSION['store_id']);
     	}
-    	$data = $db
-    			->selectRaw('type_id, type_name, type_money')
+    	$data = $db->selectRaw('type_id, type_name, type_money')
     			->where(RC_DB::raw('send_type'), 3)
     			->get();
     	if (!empty($data)) {
@@ -63,7 +58,6 @@ class bonus {
     	}
     	return $bonus;
     }
-    
     
     /**
      * 获取用户红包列表 --bonus.func
@@ -90,14 +84,14 @@ class bonus {
     	$page = new ecjia_merchant_page ($count, 15, 5);
     
     	$row = $db_user_bonus
-    	->leftJoin('bonus_type', 'bonus_type.type_id', '=', 'user_bonus.bonus_type_id')
-    	->leftJoin('users', 'users.user_id', '=', 'user_bonus.user_id')
-    	->leftJoin('order_info', 'order_info.order_id', '=', 'user_bonus.order_id')
-    	->select('user_bonus.*', 'users.user_name', 'users.email', 'order_info.order_sn', 'bonus_type.type_name')
-    	->orderby($filter['sort_by'], $filter['sort_order'])
-    	->take(15)
-    	->skip($page->start_id-1)
-    	->get();
+	    	->leftJoin('bonus_type', 'bonus_type.type_id', '=', 'user_bonus.bonus_type_id')
+	    	->leftJoin('users', 'users.user_id', '=', 'user_bonus.user_id')
+	    	->leftJoin('order_info', 'order_info.order_id', '=', 'user_bonus.order_id')
+	    	->select('user_bonus.*', 'users.user_name', 'users.email', 'order_info.order_sn', 'bonus_type.type_name')
+	    	->orderby($filter['sort_by'], $filter['sort_order'])
+	    	->take(15)
+	    	->skip($page->start_id-1)
+	    	->get();
     
     	if (!empty($row)) {
     		foreach($row as $key => $val) {
@@ -108,7 +102,6 @@ class bonus {
     	$arr = array('item' => $row, 'filter' => $filter, 'page' => $page->show (2), 'desc' => $page->page_desc ());
     	return $arr;
     }
-    
     
     /**
      * 插入邮件发送队列 --bonus.func
@@ -122,22 +115,18 @@ class bonus {
     public static function add_to_maillist($username, $email, $subject, $content, $is_html) {
     	$time = time ();
     	$content = addslashes ( $content );
-    	// 	$template_id = $db_mail_templates->field ( 'template_id' )->find ( "template_code = 'send_bonus'" );
-    	// 	$template_id = $template_id ['template_id'];
     	$template_id = RC_DB::table('mail_templates')->where('template_code', 'send_bonus')->pluck('template_id');
     
     	$data = array (
-    			'email' 		=> $email,
-    			'template_id' 	=> $template_id,
-    			'email_content' => $content,
-    			'pri' 			=> 1,
-    			'last_send' 	=> $time
+    		'email' 		=> $email,
+    		'template_id' 	=> $template_id,
+    		'email_content' => $content,
+    		'pri' 			=> 1,
+    		'last_send' 	=> $time
     	);
-    	// 	$db_email_sendlist->insert( $data );
     	RC_DB::table('email_sendlist')->insert($data);
     	return true;
     }
-    
     
     /**
      * 取得红包信息
@@ -159,15 +148,11 @@ class bonus {
     	$db_view->select('user_bonus.*', 'bonus_type.*');
     
     	if ($bonus_id > 0) {
-    		// 		return $dbview->find(array('ub.bonus_id' => $bonus_id));
     		return $db_view->where('user_bonus.bonus_id', $bonus_id)->first();
     	} else {
-    		// 		return $dbview->find(array('ub.bonus_sn' => $bonus_sn));
     		return $db_view->where('user_bonus.bonus_sn', $bonus_sn)->first();
     	}
     }
-    
 }
-
 
 // end

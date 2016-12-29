@@ -6,9 +6,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * @return void
  */
 function get_type_list() {
-// 	$db_user_bonus = RC_Model::model('bonus/user_bonus_model');
-// 	$db_bonus_type = RC_Model::model('bonus/bonus_type_model');
-// 	$merchants_db_bonus_type = RC_Model::model('bonus/merchants_user_bonus_type_viewmodel');
 	/* 查询条件 */
 	$filter['sort_by']    		= !empty($_GET['sort_by']) 				? trim($_GET['sort_by']) 			: 'type_id';
 	$filter['sort_order'] 		= !empty($_GET['sort_order']) 			? trim($_GET['sort_order']) 		: 'DESC';
@@ -89,9 +86,6 @@ function get_type_list() {
  * @return array
  */
 function get_bonus_goods($type_id) {
-// 	$db_goods = RC_Loader::load_app_model('goods_model', 'goods');
-// 	$row = $db_goods->field('goods_id, goods_name')->where("bonus_type_id = '$type_id'")->select();
-// 	return $row;
 	return RC_DB::table('goods')->select('goods_id', 'goods_name')->where('bonus_type_id', $type_id)->get();
 }
 
@@ -104,8 +98,6 @@ function get_bonus_goods($type_id) {
  * @return void
  */
 function get_bonus_list() {
-	RC_Lang::load('bonus');
-	
 	/* 查询条件 */
 	$filter ['sort_by']    = empty($_REQUEST['sort_by']) 	? 'user_bonus.bonus_id'	: trim($_REQUEST['sort_by']);
 	$filter ['sort_order'] = empty($_REQUEST['sort_order'])	? 'DESC'				: trim($_REQUEST['sort_order']);
@@ -136,7 +128,7 @@ function get_bonus_list() {
 			$row[$key]['merchants_name'] = RC_DB::table('bonus_type as b')->leftJoin('store_franchisee as s', RC_DB::raw('b.store_id'), '=', RC_DB::raw('s.store_id'))->where(RC_DB::raw('b.type_id'), $val['bonus_type_id'])->pluck(RC_DB::raw('s.merchants_name'));
 		}
 	}
-	$arr = array('item' => $row, 'filter' => $filter, 'page' => $page->show ( 15 ), 'desc' => $page->page_desc ());
+	$arr = array('item' => $row, 'filter' => $filter, 'page' => $page->show ( 15 ), 'desc' => $page->page_desc());
 	return $arr;
 }
 
@@ -148,9 +140,6 @@ function get_bonus_list() {
  * @return array
  */
 function bonus_type_info($bonus_type_id) {
-// 	$db_bonus_type = RC_Loader::load_app_model ('bonus_type_model', 'bonus');
-// 	return $db_bonus_type->find( "type_id = '$bonus_type_id'" );
-	
 	return RC_DB::table('bonus_type')->where('type_id', $bonus_type_id)->first();
 }
 
@@ -168,8 +157,6 @@ function add_to_maillist($username, $email, $subject, $content, $is_html) {
 	$db_email_sendlist = RC_Model::model('mail/email_sendlist_model');
 	$time = time ();
 	$content = addslashes ( $content );
-// 	$template_id = $db_mail_templates->field ( 'template_id' )->find ( "template_code = 'send_bonus'" );
-// 	$template_id = $template_id ['template_id'];
 	$template_id = RC_DB::table('mail_templates')->where('template_code', 'send_bonus')->pluck('template_id');
 
 	$data = array (
@@ -179,7 +166,6 @@ function add_to_maillist($username, $email, $subject, $content, $is_html) {
 		'pri' 			=> 1,
 		'last_send' 	=> $time 
 	);
-// 	$db_email_sendlist->insert( $data );
 	RC_DB::table('email_sendlist')->insert($data);
 	return true;
 }
@@ -192,50 +178,13 @@ function add_to_maillist($username, $email, $subject, $content, $is_html) {
  * @return  array   红包数组
  */
 function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) {
-// 	$db_cart_view = RC_Model::model('cart/cart_goods_viewmodel');
 	$db_cart = RC_DB::table('cart as c')->leftJoin('goods as g', RC_DB::raw('c.goods_id'), '=', RC_DB::raw('g.goods_id'));
 	
-//     $where = array();
     if (!empty($cart_id)) {
-//         $where = array('c.rec_id' => $cart_id);
         $db_cart->where(RC_DB::raw('c.rec_id'), $cart_id);
     }
-//     $where['c.user_id'] = $_SESSION['user_id'];
-//     $where['rec_type'] = CART_GENERAL_GOODS;
-    
     $db_cart->where(RC_DB::raw('c.user_id'), $_SESSION['user_id'])->where('rec_type', CART_GENERAL_GOODS);
-    
-	//$goods_list = $db_cart_view->join(array('goods'))->field('g.user_id')->where($where)->group('g.user_id')->select();
-//     $goods_list = $db_cart_view->join(array('goods'))->field('g.seller_id')->where($where)->group('g.seller_id')->select();
-
- //    $goods_list = $db_cart->selectRaw('g.seller_id')->groupby(RC_DB::raw('g.seller_id'))->get();
-    
-	// $goods_user = array();
-	// if ($goods_list) {
-	// 	foreach ($goods_list as $key => $row) {
-	// 		$goods_user[] = $row['seller_id'];
-	// 	}
-	// }
-	
 	$today = RC_Time::gmtime();
-	
-// 	$dbview	= RC_Model::model('bonus/user_bonus_type_viewmodel');
-// 	$dbview->view = array(
-// 		'bonus_type' 	=> array(
-// 			'type' 	=> Component_Model_View::TYPE_LEFT_JOIN,
-// 			'alias'	=> 'bt',
-// 			'field'	=> 'bt.type_id, bt.type_name, bt.type_money, ub.bonus_id, bt.seller_id, bt.usebonus_type',
-// 			'on'   	=> 'ub.bonus_type_id = bt.type_id'
-// 		)
-// 	);
-// 	$bt_where = array(
-// 		'bt.use_start_date' 	=> array('elt' => $today),
-// 		'bt.use_end_date'		=> array('egt' => $today),
-// 		'bt.min_goods_amount'	=> array('elt' => $goods_amount),
-// 		'ub.user_id'			=> array('neq' => 0, 'eq' => $user_id),
-// 		'ub.order_id'			=> 0	
-// 	);
-// 	$row = $dbview->where($bt_where)->select();
 	
 	$row = RC_DB::table('user_bonus as ub')
 		->leftJoin('bonus_type as bt', RC_DB::raw('ub.bonus_type_id'), '=', RC_DB::raw('bt.type_id'))
@@ -246,21 +195,7 @@ function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) {
 		->where(RC_DB::raw('ub.user_id'), '!=', 0)
 		->where(RC_DB::raw('ub.user_id'), $user_id)
 		->where(RC_DB::raw('ub.order_id'), 0)
-	->get();
-	
-	// if (!empty($row)) {
-	// 	foreach ($row as $key => $val) {
-	// 		if ($val['usebonus_type'] == 0) {
-	// 			//if (!in_array($val['user_id'], $goods_user)) {
-	// 			//	unset($row[$key]);
-	// 			//}
-	// 			if (!in_array($val['seller_id'], $goods_user)) {
-	// 				unset($row[$key]);
-	// 			}
-	// 		}
-	// 	}
-	// 	$row = array_merge($row);
-	// }
+		->get();
 	return $row;
 }
 
@@ -271,23 +206,12 @@ function user_bonus($user_id, $goods_amount = 0, $cart_id = array()) {
 * @param   array   红包信息
 */
 function bonus_info($bonus_id, $bonus_sn = '') {
-// 	$dbview	= RC_Loader::load_app_model('user_bonus_type_viewmodel', 'bonus');
-// 	$dbview->view = array(
-// 		'bonus_type' => array(
-// 			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-// 			'alias'	=> 'bt',
-// 			'field'	=> 'bt.*, ub.*',
-// 			'on'	=> 'bt.type_id = ub.bonus_type_id'
-// 		)
-// 	);
 	$db_view = RC_DB::table('user_bonus')->leftJoin('bonus_type', 'bonus_type.type_id', '=', 'user_bonus.bonus_type_id');
 	$db_view->select('user_bonus.*', 'bonus_type.*');
 	
 	if ($bonus_id > 0) {
-// 		return $dbview->find(array('ub.bonus_id' => $bonus_id));
 		return $db_view->where('user_bonus.bonus_id', $bonus_id)->first();
 	} else {
-// 		return $dbview->find(array('ub.bonus_sn' => $bonus_sn));
 		return $db_view->where('user_bonus.bonus_sn', $bonus_sn)->first();
 	}
 }
@@ -298,8 +222,7 @@ function bonus_info($bonus_id, $bonus_sn = '') {
 * @return  bool
 */
 function bonus_used($bonus_id) {
-	$db = RC_Model::model('bonus/user_bonus_model');
-	$order_id = $db->where(array('bonus_id' => $bonus_id))->get_field('order_id');
+	$order_id = RC_DB::table('user_bonus')->where('bonus_id', $bonus_id)->pluck('order_id');
 	return $order_id > 0;
 }
 
@@ -310,12 +233,11 @@ function bonus_used($bonus_id) {
 * @return  bool
 */
 function use_bonus($bonus_id, $order_id) {
-	$db = RC_Model::model('bonus/user_bonus_model');
 	$data = array(
 		'order_id'	=> $order_id,
 		'used_time' => RC_Time::gmtime()
 	);
-	return $db->where(array('bonus_id' => $bonus_id))->update($data);
+	return RC_DB::table('user_bonus')->where('bonus_id', $bonus_id)->update($data);
 }
 
 /**
@@ -325,10 +247,7 @@ function use_bonus($bonus_id, $order_id) {
 * @return  bool
 */
 function unuse_bonus($bonus_id) {
-// 	$db = RC_Model::model('bonus/user_bonus_model');
 	$data = array('order_id' => 0, 'used_time'	=> 0);
-// 	return $db->where(array('bonus_id' => $bonus_id))->update($data);
-	
 	return RC_DB::table('user_bonus')->where('bonus_id', $bonus_id)->update($data);
 }
 
@@ -391,7 +310,6 @@ function change_user_bonus($bonus_id, $order_id, $is_used = true) {
 		$db->where(array('bonus_id' => $bonus_id))->update($data);
 	}
 }
-
 /********从order.func移出的有关红包的方法---end************/
 
 /********从system.func移出的有关红包的方法---start************/
@@ -401,8 +319,6 @@ function change_user_bonus($bonus_id, $order_id, $is_used = true) {
  * @return  array       分类数组 bonus_typeid => bonus_type_name
  */
 function get_bonus_type() {
-// 	$db = RC_Loader::load_app_model('bonus_type_model', 'bonus');
-// 	$data = $db->field('type_id, type_name, type_money')->where('send_type = 3')->select();
 	$data = RC_DB::table('bonus_type')->select('type_id', 'type_name', 'type_money')->where('send_type', 3)->get();
 	
 	$bonus = array();
@@ -438,7 +354,6 @@ function get_rank_list($is_special = false) {
 	}
 	return $rank_list;
 }
-
 /********从system.func移出的有关红包的方法---start************/
 
 // end
