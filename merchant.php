@@ -9,7 +9,7 @@ class merchant extends ecjia_merchant {
 		parent::__construct();
 
 		RC_Loader::load_app_func('common',   'goods');
-		RC_Loader::load_app_func('category', 'goods');
+		RC_Loader::load_app_func('merchant', 'goods');
 		RC_Loader::load_app_class('bonus', 'bonus');
 
 		/* 加载全局 js/css */
