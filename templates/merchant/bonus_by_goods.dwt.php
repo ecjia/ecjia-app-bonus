@@ -29,7 +29,7 @@
 				            <div class="form-inline row choose_lists" data-url="{url path='goods/merchant/get_goods_list'}">
 				                <div class="pull-left">
 					                <div class="form-group">
-					                    <select name="cat_id" class="form-control">
+					                    <select name="cat_id" class="w130">
 					                    	<option value="0">{lang key='system::system.all_category'}{$merchant_cat_list}</option>
 					                    </select>
 					                </div>
