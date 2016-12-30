@@ -10,7 +10,7 @@ class admin extends ecjia_admin {
 	
 	public function __construct() {
 		parent::__construct();
-		RC_Loader::load_app_func('bonus');
+		RC_Loader::load_app_func('admin_bonus');
 		
 		$this->db_user_bonus 	= RC_Model::model('bonus/user_bonus_model');
 		$this->db_bonus_type 	= RC_Model::model('bonus/bonus_type_model' );

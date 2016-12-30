@@ -516,7 +516,6 @@ class merchant extends ecjia_merchant {
 		/* 按会员等级来发放红包 */
 		$rank_id = intval($_POST['rank_id']);
 		if ($rank_id > 0) {
-			//$row = $this->db_user_rank->field('min_points, max_points, special_rank')->find(array('rank_id' => $rank_id));
 			$row = RC_DB::table('user_rank')
 					->selectRaw('min_points, max_points, special_rank')
 					->where(RC_DB::raw('rank_id'), $rank_id)
@@ -525,14 +524,12 @@ class merchant extends ecjia_merchant {
 			if ($row['special_rank']) {
 				/* 特殊会员组处理 */
 				if($validated_email) {
-					//$user_list = $this->db_user->field('user_id, email, user_name')->where(array('user_rank' => $rank_id, 'is_validated' => 1))->select();
 					$user_list = $db_user
 						->selectRaw('user_id, email, user_name')
 						->where(RC_DB::raw('user_rank'), $rank_id)
 						->where(RC_DB::raw('is_validated'), 1)
 						->get();
 				} else {
-					//$user_list = $this->db_user->field('user_id, email, user_name')->where(array('user_rank' => $rank_id))->select();
 					$user_list = $db_user
 						->selectRaw('user_id, email, user_name')
 						->where(RC_DB::raw('user_rank'), $rank_id)
@@ -547,7 +544,6 @@ class merchant extends ecjia_merchant {
 						->selectRaw('user_id, email, user_name')
 						->get();
 				} else {
-					//$user_list = $this->db_user->field('user_id, email, user_name')->where($where_sql)->select();
 					$user_list = $db_user
 						->selectRaw('user_id, email, user_name')
 						->where(RC_DB::raw('rank_points'), '>=', intval($row['min_points']))
