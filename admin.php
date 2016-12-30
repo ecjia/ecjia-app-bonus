@@ -10,9 +10,6 @@ class admin extends ecjia_admin {
 	
 	public function __construct() {
 		parent::__construct();
-		
-		RC_Loader::load_app_func('common', 'goods');
-		RC_Loader::load_app_func('category', 'goods');
 		RC_Loader::load_app_func('bonus');
 		
 		$this->db_user_bonus 	= RC_Model::model('bonus/user_bonus_model');
@@ -423,9 +420,6 @@ class admin extends ecjia_admin {
 				'<p><strong>' . RC_Lang::get('bonus::bonus.more_info') . '</strong></p>' .
 				'<p>' . __('<a href="https://ecjia.com/wiki/帮助:ECJia智能后台:红包类型#.E6.8C.89.E7.85.A7.EF.BC.88.E5.95.86.E5.93.81.EF.BC.89.E5.8F.91.E6.94.BE.E7.BA.A2.E5.8C.85" target="_blank">'.RC_Lang::get('bonus::bonus.about_send_by_goods').'</a>') . '</p>'
 			);
-			
-			RC_Loader::load_app_func('category', 'goods');
-			
 			$bonus_type = RC_DB::table('bonus_type')->select('type_id', 'type_name')->where('type_id', $id)->first();
 			$goods_list = get_bonus_goods($id);
 			/* 模板赋值 */
@@ -756,17 +750,6 @@ class admin extends ecjia_admin {
 		if (!is_array($bonus_id_list)) {
 			$bonus_id_list = explode(',', $bonus_id_list);
 		}
-
-// 		$dbview->view = array(
-// 			'users' => array(
-// 				'type' => Component_Model_View::TYPE_LEFT_JOIN,
-// 				'alias'=> 'u',
-// 				'field'=> 'ub.bonus_id, u.user_name, u.email',
-// 				'on'   => 'ub.user_id = u.user_id '
-// 			)
-// 		);
-// 		$bonus_list = $dbview->where(array('ub.order_id' => 0, 'u.email' => array('neq' => '')))->in(array('ub.bonus_id' => $bonus_id_list))->select();
-		
 		$db_view = RC_DB::table('user_bonus')
 			->leftJoin('users', 'users.user_id', '=', 'user_bonus.user_id')
 			->select('user_bonus.bonus_id', 'users.user_name', 'users.email');
@@ -829,17 +812,6 @@ class admin extends ecjia_admin {
 		echo mb_convert_encoding(RC_Lang::get('bonus::bonus.use_enddate')."\t\n","GBK", "UTF-8");
 		
 		$val = array();
-// 		$dbview = RC_Loader::load_app_model('user_bonus_type_viewmodel');
-// 		$dbview->view = array(
-// 			'bonus_type' => array(
-// 				'type' =>Component_Model_View::TYPE_LEFT_JOIN,
-// 				'alias'=> 'bt',
-// 				'field'=> 'ub.bonus_id, ub.bonus_type_id, ub.bonus_sn, bt.type_name, bt.type_money, bt.use_end_date',
-// 				'on'   => 'bt.type_id = ub.bonus_type_id'
-// 			)
-// 		);
-// 		$data = $dbview->where(array('ub.bonus_type_id' => $tid))->order(array('ub.bonus_id' => 'DESC'))->select();
-		
 		$db_view = RC_DB::table('user_bonus')
 			->leftJoin('bonus_type', 'bonus_type.type_id', '=', 'user_bonus.bonus_type_id')
 			->select('user_bonus.bonus_id', 'user_bonus.bonus_type_id', 'user_bonus.bonus_sn', 'bonus_type.type_name', 'bonus_type.type_money', 'bonus_type.use_end_date');
@@ -896,7 +868,6 @@ class admin extends ecjia_admin {
 		$db_users = RC_DB::table('users')->select('user_id', 'user_name');
 		$row = '';
 		if (!empty($keywords)) {
-// 			$row = $this->db_user->field("user_id, user_name")->where("user_name LIKE '%" . mysql_like_quote($keywords) . "%' OR user_id LIKE '%" . mysql_like_quote($keywords) . "%'")->select();
 			$row = $db_users->where('user_name', 'like', '%' . mysql_like_quote($keywords) . '%')->orWhere('user_id', 'like', '%' . mysql_like_quote($keywords) . '%')->get();
 		}
 		return $this->showmessage('', ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS, array('content' => $row));
