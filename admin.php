@@ -1,8 +1,9 @@
 <?php
+defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 红包类型的处理
  */
-defined('IN_ECJIA') or exit('No permission resources.');
 
 class admin extends ecjia_admin {
 	private $db_user_bonus;

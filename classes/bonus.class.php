@@ -1,4 +1,5 @@
 <?php
+defined('IN_ECJIA') or exit('No permission resources.');
 
 class bonus {	
     /**
@@ -135,15 +136,6 @@ class bonus {
      * @param   array   红包信息
      */
     public static function bonus_info($bonus_id, $bonus_sn = '') {
-    	// 	$dbview	= RC_Loader::load_app_model('user_bonus_type_viewmodel', 'bonus');
-    	// 	$dbview->view = array(
-    	// 		'bonus_type' => array(
-    	// 			'type'	=> Component_Model_View::TYPE_LEFT_JOIN,
-    	// 			'alias'	=> 'bt',
-    	// 			'field'	=> 'bt.*, ub.*',
-    	// 			'on'	=> 'bt.type_id = ub.bonus_type_id'
-    	// 		)
-    	// 	);
     	$db_view = RC_DB::table('user_bonus')->leftJoin('bonus_type', 'bonus_type.type_id', '=', 'user_bonus.bonus_type_id');
     	$db_view->select('user_bonus.*', 'bonus_type.*');
     

@@ -1,8 +1,9 @@
 <?php
+defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 红包类型的处理
  */
-defined('IN_ECJIA') or exit('No permission resources.');
 
 class merchant extends ecjia_merchant {
 	public function __construct() {
@@ -656,7 +657,7 @@ class merchant extends ecjia_merchant {
 					'bonus_type_id' => $bonus_type_id,
 					'bonus_sn'      => 0,
 					'user_id' 	    => $val['user_id'],
-					'used_time' 		=> 0,
+					'used_time' 	=> 0,
 					'order_id' 		=> 0,
 					'emailed' 		=> BONUS_INSERT_MAILLIST_SUCCEED,
 				);

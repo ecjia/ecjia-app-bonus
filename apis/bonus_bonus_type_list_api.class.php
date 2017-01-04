@@ -1,5 +1,6 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 获取红包类型列表
  * @author will.chen
@@ -40,8 +41,6 @@ class bonus_bonus_type_list_api extends Component_Event_Api {
 		return RC_Model::model('bonus/bonus_type_model')->where($where)->limit($limit)->select();
 		
 	}
-	
-	
 }
 
 // end

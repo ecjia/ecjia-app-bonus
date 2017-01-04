@@ -1,5 +1,6 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 获取红包类型列表
  * @author zrl
@@ -30,8 +31,6 @@ class bonus_merchant_bonus_type_list_api extends Component_Event_Api {
     				->get();
     	return $res;
     }
-    
-    
 }
 
 // end

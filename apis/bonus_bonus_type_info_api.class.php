@@ -1,5 +1,6 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 获取红包类型信息
  * @author zrl
@@ -23,7 +24,6 @@ class bonus_bonus_type_info_api extends Component_Event_Api {
     	}
     	return $bonus_type_db->first();
     }
-    
 }
 
 // end

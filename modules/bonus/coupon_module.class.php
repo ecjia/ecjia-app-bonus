@@ -1,5 +1,6 @@
 <?php
 defined('IN_ECJIA') or exit('No permission resources.');
+
 /**
  * 获取优惠红包列表
  * @author zrl
@@ -66,4 +67,5 @@ class coupon_module extends api_front implements api_interface {
 
 	 }
 }
+
 // end
