@@ -16,83 +16,6 @@
 				}
 				ecjia.pjax(url);
 			})
-
-
-//			$('.type_name').editable({
-//				name : 'type_name',
-//				type : 'text',
-//				dataType : 'json',
-//				pk : function() {
-//					return $(this).prev().attr('value');
-//				},
-//				url : url1,
-//				title : '编辑红包类型名称',
-//				success : function(data) {
-//					var pjaxurl = $(this).attr("data-pjax-url");
-//					if (data.state == "success") {
-//						ecjia.pjax(pjaxurl, function() {
-//							ecjia.merchant.showmessage(data);
-//						});
-//					} else {
-//						var old_name = $(this).attr('data-name-value');
-//						ecjia.pjax(pjaxurl, function() {
-//							$(this).attr("value", old_name);
-//							ecjia.merchant.showmessage(data);
-//						});
-//					}
-//				}
-//			});
-
-//			$('.type_money').editable({
-//				name : 'type_money',
-//				type : 'text',
-//				dataType : 'json',
-//				pk : function() {
-//					return $(this).prev().attr('value');
-//				},
-//				url : url2,
-//				title : '编辑红包金额',
-//				success : function(data) {
-//					var pjaxurl = $(this).attr("data-pjax-url");
-//					if (data.state == "success") {
-//						ecjia.pjax(pjaxurl, function() {
-//							ecjia.merchant.showmessage(data);
-//						});
-//					} else {
-//						var old_name = $(this).attr('data-name-value');
-//						ecjia.pjax(pjaxurl, function() {
-//							$(this).attr("value", old_name);
-//							ecjia.merchant.showmessage(data);
-//						});
-//					}
-//				}
-//			});
-
-//			$('.min_amount').editable({
-//				name : 'min_amount',
-//				type : 'text',
-//				dataType : 'json',
-//				pk : function() {
-//					return $(this).prev().attr('value');
-//				},
-//				url : url3,
-//				title : '编辑订单下限金额',
-//				success : function(data) {
-//					var pjaxurl = $(this).attr("data-pjax-url");
-//					if (data.state == "success") {
-//						ecjia.pjax(pjaxurl, function() {
-//							ecjia.merchant.showmessage(data);
-//						});
-//					} else {
-//						var old_name = $(this).attr('data-name-value');
-//						ecjia.pjax(pjaxurl, function() {
-//							$(this).attr("value", old_name);
-//							ecjia.merchant.showmessage(data);
-//						});
-//					}
-//				}
-//			});
-
 		},
 
 		/* 红包列表js初始化 */
@@ -142,10 +65,7 @@
 				}
 			});
 		},
-
 	};
-
-
 
 	/* **红包类型编辑** */
 	app.bonus_info_edit = {
@@ -300,8 +220,6 @@
                 theObjend.style.display = (get_value != 0 && get_value != 3) ? "" : "none";
 
             }
-            //          document.forms['typeInfoForm'].elements['send_start_date'].disabled  = (get_value != 1 && get_value != 2);
-            //          document.forms['typeInfoForm'].elements['send_end_date'].disabled  = (get_value != 1 && get_value != 2);
             return;
         },
 	};

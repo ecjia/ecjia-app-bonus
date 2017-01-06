@@ -4,7 +4,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * ECJia 红包类型/红包管理程序
  */
-
 /* 红包类型字段信息 */
 $LANG['bonus_type'] = '红包类型';
 $LANG['bonus_list'] = '红包列表';

@@ -4,7 +4,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * ECJIA 红包类型/红包管理语言包
  */
-
 return array(
 	/* Bonus type feild information */
 	'bonus_manage' 				=> 'Bonus Manage',

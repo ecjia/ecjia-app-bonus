@@ -4,7 +4,6 @@ defined('IN_ROYALCMS') or exit('No permission resources.');
 /**
  * 红包应用
  */
-
 return array(
 	'identifier' 	=> 'ecjia.bonus',
 	'directory' 	=> 'bonus',

@@ -4,7 +4,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * 红包类型的处理
  */
-
 class merchant extends ecjia_merchant {
 	public function __construct() {
 		parent::__construct();
@@ -358,13 +357,13 @@ class merchant extends ecjia_merchant {
 		    ->where(RC_DB::Raw('type_id'), $id)
 		    ->where(RC_DB::Raw('store_id'), $_SESSION['store_id'])
 		    ->first();
-	    if($bonus_type['send_type'] == 0){
+	    if ($bonus_type['send_type'] == 0) {
 	        $send = '按用户发放';
-	    }elseif($bonus_type['send_type'] == 3){
+	    } elseif ($bonus_type['send_type'] == 3) {
 	        $send = '线下发放的红包';
-	    }elseif($bonus_type['send_type'] == 1){
+	    } elseif ($bonus_type['send_type'] == 1) {
 	        $send = '按商品发放';
-	    }elseif($bonus_type['send_type'] == 2){
+	    } elseif ($bonus_type['send_type'] == 2) {
 	        $send = '按订单金额发放';
 	    }
 	    if ($val <= 0) {

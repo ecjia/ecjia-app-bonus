@@ -4,13 +4,10 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * 获取可使用红包
  * @author will.chen
- *
  */
 class bonus_user_bonus_api extends Component_Event_Api {
     
     public function call(&$options) {
-        
-        
         return $this->user_bonus($options['user_id'], $options['goods_amount'], $options['cart_id']);
     }
     
@@ -42,7 +39,6 @@ class bonus_user_bonus_api extends Component_Event_Api {
 			->select(RC_DB::raw('bt.type_id'),RC_DB::raw('bt.type_name'), RC_DB::raw('bt.type_money'), RC_DB::raw('ub.bonus_id'), RC_DB::raw('bt.usebonus_type'))->get();
 		
 		$row = array_merge($row);
-		
 		return $row;
 	}
 }

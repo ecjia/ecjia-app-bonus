@@ -4,7 +4,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * 红包使用
  * @author will.chen
- *
  */
 class bonus_use_bonus_api extends Component_Event_Api {
     

@@ -1,10 +1,12 @@
 <?php defined('IN_ECJIA') or exit('No permission resources.');?>
 <!-- {extends file="ecjia-merchant.dwt.php"} -->
+
 <!-- {block name="footer"} -->
 <script type="text/javascript">
 	ecjia.merchant.bonus_info_edit.init();
 </script>
 <!-- {/block} -->
+
 <!-- {block name="home-content"} -->
 <div class="row">
 	<div class="col-lg-12">

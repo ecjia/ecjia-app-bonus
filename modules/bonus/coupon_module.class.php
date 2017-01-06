@@ -4,7 +4,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * 获取优惠红包列表
  * @author zrl
- *
  */
 class coupon_module extends api_front implements api_interface {
 	
@@ -44,28 +43,26 @@ class coupon_module extends api_front implements api_interface {
 		if (!empty($result['coupon_list'])) {
 			foreach ($result['coupon_list'] as $key => $row) {
 				$list[] = array(
-						'shop_name' 				=>  $row['shop_name'],
-						'bonus_id'  				=> 	$row['type_id'],
-						'bonus_name'				=>  $row['type_name'],
-						'bonus_amount'				=> intval($row['bonus_amount']),
-						'formatted_bonus_amount'	=> price_format($row['bonus_amount']),
-						'request_amount'			=> $row['min_goods_amount'],
-						'formatted_request_amount'	=> price_format($row['min_goods_amount']),
-						'formatted_start_date'		=> RC_Time::local_date(ecjia::config('date_format'), $row['use_start_date']),
-						'formatted_end_date'		=> RC_Time::local_date(ecjia::config('date_format'), $row['use_end_date']),
-						'received_coupon'			=> (isset($row['user_id']) && $row['user_id'] > 0) ? 1 : 0
+					'shop_name' 				=>  $row['shop_name'],
+					'bonus_id'  				=> 	$row['type_id'],
+					'bonus_name'				=>  $row['type_name'],
+					'bonus_amount'				=> intval($row['bonus_amount']),
+					'formatted_bonus_amount'	=> price_format($row['bonus_amount']),
+					'request_amount'			=> $row['min_goods_amount'],
+					'formatted_request_amount'	=> price_format($row['min_goods_amount']),
+					'formatted_start_date'		=> RC_Time::local_date(ecjia::config('date_format'), $row['use_start_date']),
+					'formatted_end_date'		=> RC_Time::local_date(ecjia::config('date_format'), $row['use_end_date']),
+					'received_coupon'			=> (isset($row['user_id']) && $row['user_id'] > 0) ? 1 : 0
 				);
 			}
 		}
 		$pager = array(
-				'total' => $result['page']->total_records,
-				'count' => $result['page']->total_records,
-				'more'	=> $result['page']->total_pages <= $page ? 0 : 1,
+			'total' => $result['page']->total_records,
+			'count' => $result['page']->total_records,
+			'more'	=> $result['page']->total_pages <= $page ? 0 : 1,
 		);
-		
 		return array('data' => $list, 'pager' => $pager);
-
-	 }
+	}
 }
 
 // end

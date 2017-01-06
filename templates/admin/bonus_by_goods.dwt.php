@@ -17,7 +17,6 @@
 	</h3>
 </div>
 
-
 <div class="row-fluid">
 	<div class="span12">
 		<div class="tabbable">

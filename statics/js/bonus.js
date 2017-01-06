@@ -1,6 +1,5 @@
 // JavaScript Document
-;
-(function (app, $) {
+;(function (app, $) {
     app.bonus = {
         send_by_print_init: function () {
             $form = $('form[name="bonus_thePrintForm"]');

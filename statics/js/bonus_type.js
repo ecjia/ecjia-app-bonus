@@ -1,6 +1,5 @@
 // JavaScript Document
-;
-(function (app, $) {
+;(function (app, $) {
     app.bonus_type = {
         /**红包类型列表**/
     	list : function () {

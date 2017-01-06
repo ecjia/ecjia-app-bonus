@@ -8,10 +8,10 @@ defined('IN_ECJIA') or exit('No permission resources.');
  */
 function get_type_list() {
 	/* 查询条件 */
-	$filter['sort_by']    		= !empty($_GET['sort_by']) 				? trim($_GET['sort_by']) 			: 'type_id';
-	$filter['sort_order'] 		= !empty($_GET['sort_order']) 			? trim($_GET['sort_order']) 		: 'DESC';
-	$filter['merchant_keywords'] = !empty($_GET['merchant_keywords']) 	? trim($_GET['merchant_keywords']) 	: '';
-	$filter['type_keywords'] 	= !empty($_GET['type_keywords']) 		? trim($_GET['type_keywords']) 		: '';
+	$filter['sort_by']    			= !empty($_GET['sort_by']) 				? trim($_GET['sort_by']) 			: 'type_id';
+	$filter['sort_order'] 			= !empty($_GET['sort_order']) 			? trim($_GET['sort_order']) 		: 'DESC';
+	$filter['merchant_keywords']	= !empty($_GET['merchant_keywords']) 	? trim($_GET['merchant_keywords']) 	: '';
+	$filter['type_keywords'] 		= !empty($_GET['type_keywords']) 		? trim($_GET['type_keywords']) 		: '';
 	
 	$db_bonus_type = RC_DB::table('bonus_type as bt')->leftJoin('store_franchisee as s', RC_DB::raw('bt.store_id'), '=', RC_DB::raw('s.store_id'));
 	
@@ -81,7 +81,6 @@ function get_type_list() {
 
 /**
  * 查询红包类型的商品列表 --bonus.func
- *
  * @access public
  * @param integer $type_id        	
  * @return array
@@ -92,10 +91,9 @@ function get_bonus_goods($type_id) {
 
 /**
  * 获取用户红包列表 --bonus.func
- * 
  * @access public
  * @param
- *        	$page_param
+ * $page_param
  * @return void
  */
 function get_bonus_list() {
@@ -135,9 +133,8 @@ function get_bonus_list() {
 
 /**
  * 取得红包类型信息 --bonus.func
- * 
  * @param int $bonus_type_id
- *        	红包类型id
+ * 红包类型id
  * @return array
  */
 function bonus_type_info($bonus_type_id) {

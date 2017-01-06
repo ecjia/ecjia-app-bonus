@@ -25,10 +25,10 @@ class bonus_merchant_bonus_type_list_api extends Component_Event_Api {
     	//$res = $db_bonus_type->where($where)->order($filter['sort_by'].' '.$filter['sort_order'])->limit($page->limit())->select();
     	
     	$res = $bonus_type_db
-    				->orderBy($options['sort_by'], $options['sort_order'])
-    				->take($options['limit'])
-    				->skip($options['skip'])
-    				->get();
+			->orderBy($options['sort_by'], $options['sort_order'])
+			->take($options['limit'])
+			->skip($options['skip'])
+			->get();
     	return $res;
     }
 }

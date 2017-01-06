@@ -4,7 +4,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * 获取红包类型列表
  * @author will.chen
- *
  */
 class bonus_bonus_type_list_api extends Component_Event_Api {
 	
@@ -16,8 +15,6 @@ class bonus_bonus_type_list_api extends Component_Event_Api {
 // 		if (!is_array($options) || !isset($options['type'])) {
 // 			return new ecjia_error('invalid_parameter', RC_Lang::get('bonus::bonus.invalid_parameter'));
 // 		}
-		
-		
 		return $this->bonus_type_list($options);
 	}
 	
@@ -37,9 +34,7 @@ class bonus_bonus_type_list_api extends Component_Event_Api {
 		if (isset($options['limit'])) {
 			
 		}
-		
 		return RC_Model::model('bonus/bonus_type_model')->where($where)->limit($limit)->select();
-		
 	}
 }
 

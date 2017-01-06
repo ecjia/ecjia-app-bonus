@@ -3,7 +3,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 
 class bonus {	
     /**
-     *
      * 取得用户等级数组,按用户级别排序
      * @param   bool      $is_special      是否只显示特殊会员组
      * @return  array     rank_id=>rank_name
@@ -28,7 +27,6 @@ class bonus {
 
     /**
      * 查询红包类型的商品列表 --bonus.func
-     *
      * @access public
      * @param integer $type_id
      * @return array
@@ -39,7 +37,6 @@ class bonus {
     
     /**
      * 取得红包类型数组（用于生成下拉列表）
-     *
      * @return  array       分类数组 bonus_typeid => bonus_type_name
      */
     public static function get_bonus_type() {
@@ -62,10 +59,9 @@ class bonus {
     
     /**
      * 获取用户红包列表 --bonus.func
-     *
      * @access public
      * @param
-     *        	$page_param
+     * $page_param
      * @return void
      */
     public static function get_bonus_list() {

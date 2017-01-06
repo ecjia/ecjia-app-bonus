@@ -4,7 +4,6 @@ defined('IN_ECJIA') or exit('No permission resources.');
 /**
  * 获取红包类型数
  * @author zrl
- *
  */
 class bonus_bonus_type_count_api extends Component_Event_Api {
     
@@ -20,7 +19,6 @@ class bonus_bonus_type_count_api extends Component_Event_Api {
     	}
     	 
     	if(!empty($options['bonustype_id']) || (isset($options['bonustype_id']) && trim($options['bonustype_id'])==='0' )){
-    		//$where['send_type']		= $_GET['bonustype_id']; 
     		$bonus_type_db->where(RC_DB::raw('send_type'), '=', $options['bonustype_id']);
     	}
     	return $bonus_type_db->count();
