@@ -664,7 +664,7 @@ class merchant extends ecjia_merchant {
 		$user_list = array();
 		$user_ids = $_GET['linked_array'];
 		if (empty($user_ids)) {
-			return $this->showmessage(RC_Lang::lang('send_user_empty'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
+			return $this->showmessage(RC_Lang::get('bonus::bonus.send_user_empty'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR);
 		}
 		$user_array = (is_array($user_ids)) ? $user_ids : explode(',', $user_ids);
 		$new_ids = array();
