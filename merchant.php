@@ -68,8 +68,9 @@ class merchant extends ecjia_merchant {
         RC_Style::enqueue_style('chosen_style', dirname(RC_App::app_dir_url(__FILE__)) .'/merchant/statics/assets/chosen/chosen.css', array());
         RC_Script::enqueue_script('chosen_script', dirname(RC_App::app_dir_url(__FILE__)) .'/merchant/statics/assets/chosen/chosen.jquery.min.js', array(), false, false);
 
-        RC_Script::enqueue_script('datepicker', RC_Uri::admin_url('statics/lib/datepicker/bootstrap-datetimepicker.js'));
-		RC_Style::enqueue_style('datepicker', RC_Uri::admin_url('statics/lib/datepicker/bootstrap-datetimepicker.min.css'));
+		//时间控件
+        RC_Script::enqueue_script('bootstrap-datetimepicker', RC_Uri::admin_url('statics/lib/datepicker/bootstrap-datetimepicker.js'));
+		RC_Style::enqueue_style('datetimepicker', RC_Uri::admin_url('statics/lib/datepicker/bootstrap-datetimepicker.min.css'));
 
         RC_Script::enqueue_script('jq_quicksearch', RC_Uri::admin_url() . '/statics/lib/multi-select/js/jquery.quicksearch.js', array('jquery'), false, true);
 
