@@ -23,9 +23,9 @@
 			<span class="badge badge-info">{if $count.count}{$count.count}{else}0{/if}</span> 
 		</a>
 	</li>
-	<li class="{if $filter.type eq 'merchant'}active{/if}">
-		<a class="data-pjax" href='{url path="bonus/admin/init" args="type=merchant{if $filter.send_type !== ''}&send_type={$filter.send_type}{/if}{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}{if $filter.type_keywords}&type_keywords={$filter.type_keywords}{/if}"}'>{lang key='bonus::bonus.merchants'}
-			<span class="badge badge-info">{if $count.merchant}{$count.merchant}{else}0{/if}</span> 
+	<li class="{if $filter.type eq 'self'}active{/if}">
+		<a class="data-pjax" href='{url path="bonus/admin/init" args="type=self{if $filter.send_type !== ''}&send_type={$filter.send_type}{/if}{if $filter.merchant_keywords}&merchant_keywords={$filter.merchant_keywords}{/if}{if $filter.type_keywords}&type_keywords={$filter.type_keywords}{/if}"}'>{lang key='bonus::bonus.self'}
+			<span class="badge badge-info">{if $count.self}{$count.self}{else}0{/if}</span> 
 		</a>
 	</li>
 </ul>
