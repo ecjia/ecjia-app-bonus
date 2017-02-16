@@ -108,7 +108,7 @@ class admin extends ecjia_admin {
 	 * 红包类型列表页面
 	 */
 	public function init() {
-		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_manage');
 
 		ecjia_screen::get_current_screen()->remove_last_nav_here();
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('bonus::bonus.bonus_manage')));
@@ -140,7 +140,7 @@ class admin extends ecjia_admin {
 	 * 红包类型添加页面
 	 */
 	public function add() {
-		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_update');
 	
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('bonus::bonus.add_bonus_type')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
@@ -239,7 +239,7 @@ class admin extends ecjia_admin {
 	 * 红包类型编辑页面
 	 */
 	public function edit() {
-		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_update');
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('bonus::bonus.bonustype_edit')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(
@@ -426,7 +426,7 @@ class admin extends ecjia_admin {
 	 * 红包发送页面
 	 */
 	public function send() {
-		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_manage');
 		
 		/* 取得参数 */
 		$id = !empty($_GET['id'])  ? intval($_GET['id'])  : 0;
@@ -925,7 +925,7 @@ class admin extends ecjia_admin {
 	 * 红包列表
 	 */
 	public function bonus_list() {
-		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_manage');
 		
 		ecjia_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('bonus::bonus.bonus_list')));
 		ecjia_screen::get_current_screen()->add_help_tab(array(

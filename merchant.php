@@ -105,7 +105,7 @@ class merchant extends ecjia_merchant {
 	 * 红包类型列表页面
 	 */
 	public function init() {
-		$this->admin_priv('bonus_type_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_manage');
 
 		$this->assign('ur_here',    RC_Lang::get('bonus::bonus.bonustype_list'));
 		$this->assign('action_link', array('text' => RC_Lang::get('system::system.bonustype_add'), 'href' => RC_Uri::url('bonus/merchant/add')));
@@ -125,7 +125,7 @@ class merchant extends ecjia_merchant {
 	 * 红包类型添加页面
 	 */
 	public function add() {
-		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_update');
 		$this->assign('ur_here', RC_Lang::get('bonus::bonus.add_bonus_type'));
 		$this->assign('action_link', array('href' => RC_Uri::url('bonus/merchant/init'), 'text' => RC_Lang::get('bonus::bonus.bonustype_list')));
 
@@ -229,7 +229,7 @@ class merchant extends ecjia_merchant {
 	 * 红包类型编辑页面
 	 */
 	public function edit() {
-		$this->admin_priv('bonus_type_update', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_type_update');
 		
         ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(RC_Lang::get('bonus::bonus.bonustype_edit')));
         $type_id	= !empty($_GET['type_id']) 		? intval($_GET['type_id'])	: 0;
@@ -450,7 +450,7 @@ class merchant extends ecjia_merchant {
 	 * 红包发送页面
 	 */
 	public function send() {
-		$this->admin_priv('bonus_send', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_send');
 		
 		/* 取得参数 */
 		$id = !empty($_GET['id'])  ? intval($_GET['id'])  : 0;
@@ -817,7 +817,7 @@ class merchant extends ecjia_merchant {
 	 * 红包列表
 	 */
 	public function bonus_list() {
-		$this->admin_priv('bonus_manage', ecjia::MSGTYPE_JSON);
+		$this->admin_priv('bonus_manage');
 
 		$this->assign('full_page',   1);
 		$this->assign('ur_here',    RC_Lang::get('bonus::bonus.bonus_list'));
