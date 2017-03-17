@@ -75,6 +75,10 @@ class bonus_bonus_type_list_api extends Component_Event_Api {
 			$where['send_start_date']	= array('elt' => $time);
 			$where['send_end_date']	= array('egt' => $time);
 		}
+		$where['store_id'] = 0;
+		if ($options['store_id']) {
+		    $where['store_id']	= $options['store_id'];
+		}
 		$limit = null;
 		if (isset($options['limit'])) {
 			
