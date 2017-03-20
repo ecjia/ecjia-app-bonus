@@ -61,30 +61,9 @@ class bonus_send_bonus_api extends Component_Event_Api {
 			return new ecjia_error('invalid_parameter', RC_Lang::get('bonus::bonus.invalid_parameter'));
 		}
 		
-		if ($options['type'] == SEND_BY_REGISTER) {
-			return $this->send_by_register();
-		} elseif ($options['type'] == SEND_COUPON) {
+		if ($options['type'] == SEND_COUPON) {
 			return $this->send_coupon($options['bonus_type_id']);
 		}
-	}
-	
-	/* 注册送红包*/
-	private function send_by_register() {
-		$db_bonus_type = RC_Loader::load_app_model('bonus_type_model', 'bonus');
-		/* 判断红包*/
-		$time = RC_Time::gmtime();
-		$bonus_info = $db_bonus_type->find(array('send_start_date' => array('elt' => $time), 'send_end_date' => array('egt' => $time), 'send_type' => SEND_BY_USER));	
-		/* 发送红包*/
-		if (!empty($bonus_info)) {
-			$db_user_bonus = RC_Loader::load_app_model('user_bonus_model', 'bonus');
-			$data = array(
-					'bonus_type_id' => $bonus_info['type_id'],
-					'user_id'	   	=> $_SESSION['user_id']
-			);
-			$db_user_bonus->insert($data);
-			return true;
-		}
-		return false;
 	}
 	
 	/* 发放优惠券*/
