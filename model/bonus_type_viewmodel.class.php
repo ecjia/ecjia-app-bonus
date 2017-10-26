@@ -75,7 +75,7 @@ class bonus_type_viewmodel extends Component_Model_View {
 		$record_count = $this->join(array('store_franchisee', 'user_bonus'))->where($options['where'])->count('DISTINCT bt.type_id');
 		//实例化分页
 		$page_row = new ecjia_page($record_count, $options['size'], 6, '', $options['page']);
-		$res = $this->join(array('store_franchisee', 'user_bonus'))->where($options['where'])->field('s.merchants_name, bt.*,ub.user_id')->group('bt.type_id')->limit($page_row->limit())->select();
+		$res = $this->join(array('store_franchisee', 'user_bonus'))->where($options['where'])->field('s.merchants_name, bt.*, ub.user_id')->group('bt.type_id')->limit($page_row->limit())->select();
 		return array('coupon_list' => $res, 'page' => $page_row);
 	}
 }
