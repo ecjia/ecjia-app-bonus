@@ -180,7 +180,7 @@ class admin extends ecjia_admin {
 		$min_amount  = !empty($_POST['min_amount']) 		? floatval($_POST['min_amount']) 	: 0;
 		$bonus_type  = intval($_POST['bonus_type']) == 1 	? 1 								: 0;
 		$send_type	 = !empty($_POST['send_type'])			? intval($_POST['send_type'])		: 0;
-		$store_id = RC_DB::table('bonus_type')->select('store_id')->where('type_id', $type_id)->pluck();
+		$store_id = RC_DB::table('bonus_type')->where('type_id', $type_id)->pluck('store_id');
 		$store_id    = !empty($store_id)                    ? intval($store_id)    		        : 0;
 
 		if (RC_DB::table('bonus_type')->where('type_name', $type_name)->where('store_id', $store_id)->count() > 0) {
@@ -888,7 +888,7 @@ class admin extends ecjia_admin {
 		
 		$arr = $_POST;
 		$type_id = !empty($_POST['type_id']) ? intval($_POST['type_id']) : '';
-		$arr['store_id'] = RC_DB::table('bonus_type')->select('store_id')->where('type_id', $type_id)->pluck();
+		$arr['store_id'] = RC_DB::table('bonus_type')->where('type_id', $type_id)->pluck('store_id');
 		$row = RC_Api::api('goods', 'get_goods_list', $arr);
 		$opt = array();
 		if (!empty($row)) {
