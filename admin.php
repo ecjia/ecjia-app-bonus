@@ -50,16 +50,10 @@ defined('IN_ECJIA') or exit('No permission resources.');
  * 红包类型的处理
  */
 class admin extends ecjia_admin {
-	private $db_user_bonus;
-	private $db_bonus_type;
-	
 	public function __construct() {
+		
 		parent::__construct();
 		RC_Loader::load_app_func('admin_bonus');
-		
-		$this->db_user_bonus 	= RC_Model::model('bonus/user_bonus_model');
-		$this->db_bonus_type 	= RC_Model::model('bonus/bonus_type_model' );
-
 		/* 加载全局 js/css */
 		RC_Script::enqueue_script('jquery-validate');
 		RC_Script::enqueue_script('jquery-form');
