@@ -31,6 +31,7 @@ class validate_module extends api_front implements api_interface
 			'formatted_bonus_amount' 	=> price_format($bonus_info['type_money']),
 			'request_amount'			=> $bonus_info['min_goods_amount'],
 			'formatted_request_amount' 	=> price_format($bonus_info['min_goods_amount']),
+			'label_request_amount' 		=> '购物满'.price_format($bonus_info['min_goods_amount']).'才可以使用此红包',
 			'start_date'				=> $bonus_info['use_start_date'],
 			'end_date'					=> $bonus_info['use_end_date'],
 			'formatted_start_date'   	=> RC_Time::local_date(ecjia::config('date_format'), $bonus_info['use_start_date']),
