@@ -14,6 +14,9 @@ class bind_module extends api_front implements api_interface
 			return new ecjia_error(100, 'Invalid session');
 		}
 		$bonus_sn = $this->requestData('bonus_sn', '0');
+		if (empty($bonus_sn)) {
+			return new ecjia_error('invalid_parameter', RC_Lang::get('system::system.invalid_parameter'));
+		}
 		
 		$time = RC_Time::gmtime();
     	$db_bonus_view = RC_DB::table('bonus_type as bt')->leftJoin('user_bonus as ub', RC_DB::raw('bt.type_id'), '=', RC_DB::raw('ub.bonus_type_id'));
