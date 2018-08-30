@@ -9,7 +9,7 @@ class BonusServiceProvider extends  AppParentServiceProvider
     
     public function boot()
     {
-        $this->package('ecjia/app-bonus', null, dirname(__DIR__));
+        $this->package('ecjia/app-bonus');
     }
     
     public function register()
