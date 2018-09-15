@@ -44,54 +44,39 @@
 //
 //  ---------------------------------------------------------------------------------
 //
-defined('IN_ECJIA') or exit('No permission resources.');
+namespace Ecjia\App\Bonus;
+
+use RC_DB;
+use RC_Loader;
+use RC_Time;
+use RC_Logger;
+use RC_Api;
 
 /**
- * 领取优惠券
- * @author will.chen
+ * 用户可用红包
+ *
  */
-class receive_coupon_module extends api_front implements api_interface {
+class UserAvaliableBonus
+{
 	
-	 public function handleRequest(\Royalcms\Component\HttpKernel\Request $request) {	
-		$this->authSession();	
-		
-		if ($_SESSION['user_id'] <= 0) {
-			return new ecjia_error(100,'Invalid session');
-		} else {
-			$user_id = $_SESSION['user_id'];
-		}
-		$bonus_id = $this->requestData('bonus_type_id', 0);
- 		if ($bonus_id <= 0 ) {
- 			return new ecjia_error('invalid_parameter', RC_Lang::get('system::system.invalid_parameter'));
- 		}
- 		
- 		$time = RC_Time::gmtime();
- 		$where = array(
- 				'send_type'			=> SEND_COUPON,
- 				'ub.user_id'		=> $user_id,
- 				'ub.bonus_type_id'	=> $bonus_id,
- 				'send_start_date' 	=> array('elt' => $time),
- 				'send_end_date'		=> array('egt' => $time),
- 		);
- 		$dbview = RC_DB::table('bonus_type as bt')->leftJoin('user_bonus as ub', RC_DB::raw('bt.type_id'), '=', RC_DB::raw('ub.bonus_type_id'));
- 		
- 		$user_bonus_count = $dbview->where(RC_DB::raw('send_type'), SEND_COUPON)
- 								   ->where(RC_DB::raw('ub.user_id'), $user_id)
- 								   ->where(RC_DB::raw('ub.bonus_type_id'), $bonus_id)
- 								   ->where(RC_DB::raw('send_start_date'), '<=' , $time)
- 								   ->where(RC_DB::raw('send_end_date'), '>=' , $time)
- 								   ->count(RC_DB::raw('ub.bonus_id'));
- 		
- 		if ($user_bonus_count > 0) {
- 			return new ecjia_error('received', '此优惠卷每人只限领一次'); 
- 		}
- 		$options = array('type' => SEND_COUPON, 'bonus_type_id' => $bonus_id, 'where' => $where);
- 		$result = RC_Api::api('bonus', 'send_bonus', $options);
- 		if (is_ecjia_error($result)) {
- 			return $result;
- 		}
- 		return array();
-	}
+    /**
+     * 获取商品对应的店铺id
+     * @param array $options
+     * @return ayyay
+     */
+    public static function GetUserBonus($options = array()) {  	
+    	$time = RC_Time::gmtime();
+    	$field = 'bt.type_id, bt.type_name, bt.send_type, bt.type_money, ub.bonus_id, bt.use_start_date, bt.use_end_date, min_goods_amount,bt.store_id,merchants_name';
+    	$dbview = RC_DB::table('bonus_type as bt')
+    					->leftJoin('user_bonus as ub', RC_DB::raw('bt.type_id'), '=', RC_DB::raw('ub.bonus_type_id'))
+    					->leftJoin('store_franchisee as sf', RC_DB::raw('bt.store_id'), '=', RC_DB::raw('sf.store_id'));
+    	$user_bonus = $dbview->where(RC_DB::raw('bt.use_start_date'), '<=', $time)
+    						 ->where(RC_DB::raw('bt.use_end_date'), '>=', $time)
+    						 ->where(RC_DB::raw('ub.user_id'), '!=', 0)
+    						 ->where(RC_DB::raw('ub.user_id'), $options['user_id'])
+    						 ->where(RC_DB::raw('ub.order_id'), 0)
+    						 ->where(RC_DB::raw('bt.min_goods_amount'), '<=', $options['min_goods_amount'])
+    						 ->selectRaw($field)->get();
+    	return $user_bonus;
+    }
 }
-
-// end
