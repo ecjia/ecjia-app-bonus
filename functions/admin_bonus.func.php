@@ -327,7 +327,7 @@ function get_total_bonus() {
 		$total_money = RC_DB::table('cart as c')
 			->leftJoin('goods as g', RC_DB::raw('c.goods_id'), '=', RC_DB::raw('g.goods_id'))
 			->leftJoin('bonus_type as t', RC_DB::raw('g.bonus_type_id'), '=', RC_DB::raw('t.type_id'))
-			->where(RC_DB::raw('c.session_id'), SESS_ID)
+			->where(RC_DB::raw('c.session_id'), RC_Session::getId())
 			->where(RC_DB::raw('c.is_gift'), 0)
 			->where(RC_DB::raw('t.send_type'), SEND_BY_GOODS)
 			->where(RC_DB::raw('t.send_start_date'), '<=', $today)
@@ -338,7 +338,7 @@ function get_total_bonus() {
 
 	    /* 取得购物车中非赠品总金额 */
 		$goods_amount = RC_DB::table('cart')
-	        ->where('session_id', SESS_ID)
+		->where('session_id', RC_Session::getId())
 	        ->where('is_gift', 0)
 	        ->where('rec_type', CART_GENERAL_GOODS)
 	        ->SUM(RC_DB::raw('goods_price * goods_number'));
