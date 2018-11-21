@@ -445,7 +445,7 @@ class admin extends ecjia_admin {
 			);
 			$bonus_type = RC_DB::table('bonus_type')->select('type_id', 'type_name')->where('type_id', $id)->first();
 			
-			$this->assign('ranklist',         get_rank_list());
+			$this->assign('ranklist',         bonus::get_rank_list());
 			$this->assign('bonus_type',       $bonus_type);
 			$this->assign('form_action',      RC_Uri::url('bonus/admin/send_by_user_rank'));
 			$this->assign('form_user_action', RC_Uri::url('bonus/admin/send_by_user'));
