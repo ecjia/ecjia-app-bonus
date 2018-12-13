@@ -71,7 +71,9 @@
 				<!-- {foreach from=$type_list.item item=type} -->
 				<tr>
 					<td class="hide-edit-area hide_edit_area_bottom" >
+						{if $filter.type neq 'self'}
 						<span class="cursor_pointer" data-trigger="editable" data-url="{RC_Uri::url('bonus/admin/edit_type_name')}" data-name="type_name" data-pk="{$type.type_id}" data-title="{lang key='bonus::bonus.edit_bonus_type_name'}">{$type.type_name}</span>
+						{else}{$type.type_name}{/if}
 						<br/>
 						<div class="edit-list">
 						{if $filter.type eq 'self'}
@@ -101,7 +103,11 @@
 					</td>
 					<td>{$type.send_by}</td>
 					<td>
+						{if $filter.type neq 'self'}
 						<span class="cursor_pointer" data-trigger="editable" data-url="{RC_Uri::url('bonus/admin/edit_type_money')}" data-name="type_money" data-pk="{$type.type_id}" data-title="{lang key='bonus::bonus.edit_bonus_money'}">{$type.type_money}</span>
+						{else}
+						{$type.type_money}
+						{/if}
 					</td>
 					<td>
 						<!-- {if $type.send_type eq 2} -->
