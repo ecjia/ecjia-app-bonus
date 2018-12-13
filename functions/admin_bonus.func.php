@@ -89,12 +89,14 @@ function get_type_list() {
 	}
 	
 	$filter_count = $db_bonus_type
-		->select(RC_DB::raw('count(*) as count'), RC_DB::raw('SUM(IF(s.manage_mode = "self", 1, 0)) as self'))
+	->select(RC_DB::raw('count(*) as count'), RC_DB::raw('SUM(bt.store_id = 0) as platform'), RC_DB::raw('SUM(IF(s.manage_mode = "self", 1, 0)) as self'))
 		->first();
 	
 	$filter['type'] = isset($_GET['type']) ? $_GET['type'] : '';
 	if (!empty($filter['type'])) {
 		$db_bonus_type->where(RC_DB::raw('s.manage_mode'), 'self');
+	} else {
+	    $db_bonus_type->where(RC_DB::raw('bt.store_id'), 0);
 	}
 	
 	$count = $db_bonus_type->count();
