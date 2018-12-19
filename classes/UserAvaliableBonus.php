@@ -64,7 +64,7 @@ class UserAvaliableBonus
      * @param array $options
      * @return ayyay
      */
-    public static function GetUserBonus($options = array()) {  	
+    public static function GetUserBonus($options = array()) {
     	$time = RC_Time::gmtime();
     	$field = 'bt.type_id, bt.type_name, bt.send_type, bt.type_money, ub.bonus_id, bt.use_start_date, bt.use_end_date, min_goods_amount,bt.store_id,merchants_name';
     	$dbview = RC_DB::table('bonus_type as bt')
@@ -72,6 +72,7 @@ class UserAvaliableBonus
     					->leftJoin('store_franchisee as sf', RC_DB::raw('bt.store_id'), '=', RC_DB::raw('sf.store_id'));
     	$user_bonus = $dbview->where(RC_DB::raw('bt.use_start_date'), '<=', $time)
     						 ->where(RC_DB::raw('bt.use_end_date'), '>=', $time)
+    						 ->whereIn(RC_DB::raw('bt.store_id'), $options['store_id'])
     						 ->where(RC_DB::raw('ub.user_id'), '!=', 0)
     						 ->where(RC_DB::raw('ub.user_id'), $options['user_id'])
     						 ->where(RC_DB::raw('ub.order_id'), 0)
