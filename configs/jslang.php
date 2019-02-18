@@ -44,38 +44,33 @@
 //
 //  ---------------------------------------------------------------------------------
 //
-defined('IN_ECJIA') or exit('No permission resources.');
 
 /**
- * 获取红包类型列表
- * @author zrl
- *
+ * js语言包设置
  */
-class bonus_merchant_bonus_type_list_api extends Component_Event_Api {
-    
-    public function call(&$options) {
-    	if (!is_array($options)) {
-    		return new ecjia_error('invalid_parameter', __('参数无效', 'bonus'));
-    	}
-    	$bonus_type_db = RC_DB::table('bonus_type as bt');
-    	$bonus_type_db->whereNotIn(RC_DB::raw('bt.send_type'),array(100, 101))->where(RC_DB::raw('bt.send_type'), '<>', 100);
-    	if (!empty($_SESSION['store_id']) && $_SESSION['store_id'] > 0) {
-    		$bonus_type_db->where(RC_DB::raw('store_id'), '=', $_SESSION['store_id']);
-    	}
-    	
-    	if(!empty($options['bonustype_id']) || (isset($options['bonustype_id']) && trim($options['bonustype_id'])==='0' )){
-    		$bonus_type_db->where(RC_DB::raw('send_type'), '=', $options['bonustype_id']);
-    	}
-    	
-    	//$res = $db_bonus_type->where($where)->order($filter['sort_by'].' '.$filter['sort_order'])->limit($page->limit())->select();
-    	
-    	$res = $bonus_type_db
-			->orderBy($options['sort_by'], $options['sort_order'])
-			->take($options['limit'])
-			->skip($options['skip'])
-			->get();
-    	return $res;
-    }
-}
 
-// end
+defined('IN_ECJIA') or exit('No permission resources.');
+
+return array(
+    //bonus
+    'bonus_page' =>array(
+        'edit_bonus_type_name'		=> __('编辑红包类型名称', 'bonus'),
+        'edit_bonus_money'			=> __('编辑红包金额', 'bonus'),
+        'edit_order_limit'			=> __('编辑订单下限金额', 'bonus'),
+        'type_name_required'		=> __('请输入红包类型名称', 'bonus'),
+        'type_name_minlength'		=> __('红包类型名称长度不能小于1', 'bonus'),
+        'type_money_required'		=> __('请输入红包金额', 'bonus'),
+        'min_goods_amount_required'	=> __('请输入最小订单金额', 'bonus'),
+
+    ),
+
+    'bonus_js_page' =>array(
+        'bonus_sum_required'	=> __('请输入红包数量！', 'bonus'),
+        'bonus_number_required'	=> __('请输入数字！', 'bonus'),
+        'select_goods_empty'	=> __('未搜索到商品信息', 'bonus'),
+        'select_user_empty'		=> __('未搜索到用户信息', 'bonus'),
+
+    ),
+
+);
+//end
