@@ -81,7 +81,7 @@ class merchant extends ecjia_merchant {
         RC_Script::localize_script('bonus_type', 'js_lang', config('app-bonus::jslang.bonus_page'));
         RC_Script::localize_script('bonus', 'bonus_js_lang', config('app-bonus::jslang.bonus_js_page'));
 		
-		ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('红包管理'), RC_Uri::url('bonus/merchant/init')));
+		ecjia_merchant_screen::get_current_screen()->add_nav_here(new admin_nav_here(__('红包管理', 'bonus'), RC_Uri::url('bonus/merchant/init')));
 		ecjia_merchant_screen::get_current_screen()->set_parentage('promotion', 'promotion/merchant.php');
 	}
 
@@ -367,7 +367,7 @@ class merchant extends ecjia_merchant {
 		        ->where('store_id', $store_id)
 		        ->update(array('type_name' => $typename));
 	        /* 记录日志 */
-	        ecjia_merchant::admin_log('发放类型是'.$send.',红包名是'.$typename, 'edit', 'bonustype');
+	        ecjia_merchant::admin_log(sprintf(__('发放类型是%s红包名是%s', 'bonus'), $send,$typename), 'edit', 'bonustype');
 	        return $this->showmessage(__('操作成功！', 'bonus'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_SUCCESS);
 	    } else {
 	        return $this->showmessage(__('此类型的名称已经存在！', 'bonus'), ecjia::MSGTYPE_JSON | ecjia::MSGSTAT_ERROR );
