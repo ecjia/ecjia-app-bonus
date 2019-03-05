@@ -33,7 +33,7 @@ class StoreBonusClear extends StoreCleanAbstract
      * 排序
      * @var int
      */
-    protected $sort = 83;
+    protected $sort = 13;
 
     /**
      * 数据描述及输出显示内容
