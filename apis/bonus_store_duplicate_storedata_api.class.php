@@ -67,7 +67,7 @@ class bonus_store_duplicate_storedata_api extends Component_Event_Api
         return [
 
             //bonus
-            new \Ecjia\App\Store\StoreDuplicateHandlers\StoreBonusDuplicate($store_id, $source_store_id),
+            new \Ecjia\App\Bonus\StoreDuplicateHandlers\StoreBonusDuplicate($store_id, $source_store_id),
 
         ];
     }
