@@ -51,7 +51,7 @@ defined('IN_ECJIA') or exit('No permission resources.');
  *
  * @author royalwang
  */
-class store_store_duplicate_storedata_api extends Component_Event_Api
+class bonus_store_duplicate_storedata_api extends Component_Event_Api
 {
 
     public function call(& $options)
