@@ -13,6 +13,12 @@ use RC_DB;
 use RC_Api;
 use ecjia_admin;
 
+/**
+ * 复制店铺中的红包
+ *
+ * Class StoreBonusDuplicate
+ * @package Ecjia\App\Bonus\StoreDuplicateHandlers
+ */
 class StoreBonusDuplicate extends StoreDuplicateAbstract
 {
 
