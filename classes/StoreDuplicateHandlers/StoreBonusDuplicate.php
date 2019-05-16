@@ -32,7 +32,7 @@ class StoreBonusDuplicate extends StoreDuplicateAbstract
      * 排序
      * @var int
      */
-    protected $sort = 13;
+    protected $sort = 31;
 
     public function __construct($store_id, $source_store_id)
     {
@@ -90,31 +90,41 @@ HTML;
      */
     public function handleDuplicate()
     {
-        $item = $this->dependentCheck();
-        //判断提示错误
-        if (empty($item)){
-            //标记处理完成
-            $this->markDuplicateFinished();
-            return TRUE;
-        }
-
-        return FALSE;
-
-        /*$count = $this->handleCount();
-        if (empty($count)) {
+        //检测当前对象是否已复制完成
+        if ($this->isCheckFinished()){
             return true;
         }
 
-        $bonus_type_list = RC_DB::table('bonus_type')->where('store_id', $this->store_id)->lists('type_id');
-
-        $res = RC_DB::table('user_bonus')->whereIn('bonus_type_id', $bonus_type_list)->delete();
-        $result = RC_DB::table('bonus_type')->where('store_id', $this->store_id)->delete();
-
-        if ($result || $res) {
-            $this->handleAdminLog();
+        $dependent = false;
+        if (!empty($this->dependents)) { //如果设有依赖对象
+            //检测依赖
+            if (!empty($this->dependentCheck())){
+                $dependent = true;
+            }
         }
 
-        return $result;*/
+        //如果当前对象复制前仍存在依赖，则需要先复制依赖对象才能继续复制
+        if ($dependent){
+            return false;
+        }
+
+        //@todo 执行具体任务
+        $this->startDuplicateProcedure();
+
+        //标记处理完成
+        $this->markDuplicateFinished();
+
+        //记录日志
+        $this->handleAdminLog();
+
+        return true;
+    }
+
+    /**
+     * 此方法实现店铺复制操作的具体过程
+     */
+    protected function startDuplicateProcedure(){
+
     }
 
     /**
