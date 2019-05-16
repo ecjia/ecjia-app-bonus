@@ -90,9 +90,17 @@ HTML;
      */
     public function handleDuplicate()
     {
-        return true;
+        $item = $this->dependentCheck();
+        //判断提示错误
+        if (empty($item)){
+            //标记处理完成
+            $this->markDuplicateFinished();
+            return TRUE;
+        }
 
-        $count = $this->handleCount();
+        return FALSE;
+
+        /*$count = $this->handleCount();
         if (empty($count)) {
             return true;
         }
@@ -106,7 +114,7 @@ HTML;
             $this->handleAdminLog();
         }
 
-        return $result;
+        return $result;*/
     }
 
     /**
