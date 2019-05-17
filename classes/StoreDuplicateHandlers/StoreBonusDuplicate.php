@@ -126,24 +126,58 @@ HTML;
     /**
      * 店铺复制操作的具体过程
      */
-    protected function startDuplicateProcedure(){
-        RC_DB::table('bonus_type')->where('store_id', $this->source_store_id)->chunk(50, function ($items) {
+
+    protected function startDuplicateProcedure()
+    {
+        $replacement_bonus_type = [];
+
+        RC_DB::table('bonus_type')->where('store_id', $this->source_store_id)->chunk(50, function ($items) use (& $replacement_bonus_type) {
             //构造可用于复制的数据
             foreach ($items as &$item) {
+                $type_id = $item['type_id'];
                 unset($item['type_id']);
 
                 //将源店铺ID设为新店铺的ID
                 $item['store_id'] = $this->store_id;
 
+                //插入数据到新店铺
+                $new_type_id = RC_DB::table('bonus_type')->insertGetId($item);
+
+                $replacement_bonus_type[$type_id] = $new_type_id;
 
             }
 
-            dd($items);
-            //插入数据到新店铺
-            RC_DB::table('bonus_type')->insert($items);
         });
 
+        $type_id_keys = array_keys($replacement_bonus_type);
+        if (!empty($type_id_keys)) {
 
+            //通过源店铺的cat_id查询出在attribute中的关联数据
+            RC_DB::table('user_bonus')->whereIn('bonus_type_id', $type_id_keys)->chunk(50, function($items) use ($replacement_bonus_type) {
+
+                //构造可用于复制的数据
+                foreach ($items as & $item) {
+                    //$bonus_id = $item['bonus_id'];
+                    unset($item['bonus_id']);
+
+                    //将bonus_type_id替换成新店铺的bonus_type_id
+                    if (isset($replacement_bonus_type[$item['bonus_type_id']])){
+                        $item['bonus_type_id'] = $replacement_bonus_type[$item['bonus_type_id']];
+                    }
+
+                }
+
+                //dd($items);
+                //为新店铺插入这些数据
+                RC_DB::table('user_bonus')->insert($items);
+            });
+        }
+
+        $replacement_data = [
+            'bonus_type' => $replacement_bonus_type
+        ];
+
+        $this->setReplacementData($this->getCode(), $replacement_data);
 
     }
 
