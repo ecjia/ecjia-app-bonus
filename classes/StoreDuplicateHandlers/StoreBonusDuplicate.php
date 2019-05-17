@@ -40,6 +40,10 @@ class StoreBonusDuplicate extends StoreDuplicateAbstract
         $this->name = __('店铺红包', 'bonus');
 
         parent::__construct($store_id, $source_store_id);
+
+        $this->source_store_data_handler = RC_DB::table('bonus_type')
+            ->leftJoin('user_bonus', 'bonus_type.type_id', '=', 'user_bonus.bonus_type_id')
+            ->where('bonus_type.store_id', $this->source_store_id);
     }
 
     /**
@@ -68,19 +72,21 @@ HTML;
     }
 
     /**
-     * 获取数据统计条数
+     * 统计数据条数并获取
      *
-     * @return int
+     * @return mixed
      */
     public function handleCount()
     {
-        $count = RC_DB::table('bonus_type')
-            ->leftJoin('user_bonus', 'bonus_type.type_id', '=', 'user_bonus.bonus_type_id')
-            ->where('bonus_type.store_id', $this->source_store_id)
-            ->count();
-
-        return $count;
-
+        //如果已经统计过，直接返回统计过的条数
+        if ($this->count) {
+            return $this->count;
+        }
+        // 统计数据条数
+        if (!empty($this->source_store_data_handler)) {
+            $this->count = $this->source_store_data_handler->count();
+        }
+        return $this->count;
     }
 
 
