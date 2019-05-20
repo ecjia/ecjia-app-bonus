@@ -38,10 +38,15 @@ class StoreBonusDuplicate extends StoreDuplicateAbstract
     public function __construct($store_id, $source_store_id)
     {
         $this->name = __('店铺红包', 'bonus');
-
         parent::__construct($store_id, $source_store_id);
+    }
 
-        $this->source_store_data_handler = RC_DB::table('bonus_type')
+    /**
+     * 获取源店铺数据操作对象
+     */
+    public function getSourceStoreDataHandler()
+    {
+        return RC_DB::table('bonus_type')
             ->leftJoin('user_bonus', 'bonus_type.type_id', '=', 'user_bonus.bonus_type_id')
             ->where('bonus_type.store_id', $this->source_store_id);
     }
@@ -82,10 +87,9 @@ HTML;
         if ($this->count) {
             return $this->count;
         }
+
         // 统计数据条数
-        if (!empty($this->source_store_data_handler)) {
-            $this->count = $this->source_store_data_handler->count();
-        }
+        $this->count = $this->getSourceStoreDataHandler()->count();
         return $this->count;
     }
 
@@ -112,7 +116,10 @@ HTML;
         }
 
         //执行具体任务
-        $this->startDuplicateProcedure();
+        $result = $this->startDuplicateProcedure();
+        if (is_ecjia_error($result)) {
+            return $result;
+        }
 
         //标记处理完成
         $this->markDuplicateFinished();
@@ -126,30 +133,35 @@ HTML;
     /**
      * 店铺复制操作的具体过程
      */
-
     protected function startDuplicateProcedure()
     {
-        $replacement_bonus_type = [];
+        try {
+            $replacement_bonus_type = [];
 
-        RC_DB::table('bonus_type')->where('store_id', $this->source_store_id)->chunk(50, function ($items) use (& $replacement_bonus_type) {
-            //构造可用于复制的数据
-            foreach ($items as &$item) {
-                $type_id = $item['type_id'];
-                unset($item['type_id']);
+            RC_DB::table('bonus_type')->where('store_id', $this->source_store_id)->chunk(50, function ($items) use (& $replacement_bonus_type) {
+                //构造可用于复制的数据
+                foreach ($items as &$item) {
+                    $type_id = $item['type_id'];
+                    unset($item['type_id']);
 
-                //将源店铺ID设为新店铺的ID
-                $item['store_id'] = $this->store_id;
+                    //将源店铺ID设为新店铺的ID
+                    $item['store_id'] = $this->store_id;
 
-                //插入数据到新店铺
-                $new_type_id = RC_DB::table('bonus_type')->insertGetId($item);
+                    //插入数据到新店铺
+                    $new_type_id = RC_DB::table('bonus_type')->insertGetId($item);
 
-                $replacement_bonus_type[$type_id] = $new_type_id;
+                    $replacement_bonus_type[$type_id] = $new_type_id;
 
-            }
+                }
 
-        });
+            });
 
-        $this->setReplacementData($this->getCode(), $replacement_bonus_type);
+            $this->setReplacementData($this->getCode(), $replacement_bonus_type);
+
+            return true;
+        } catch (\Royalcms\Component\Repository\Exceptions\RepositoryException $e) {
+            return new ecjia_error('duplicate_data_error', $e->getMessage());
+        }
 
     }
 
@@ -166,7 +178,7 @@ HTML;
 
         $merchants_name = !empty($store_info) ? sprintf(__('店铺名是%s', 'bonus'), $store_info['merchants_name']) : sprintf(__('店铺ID是%s', 'bonus'), $this->store_id);
 
-        ecjia_admin::admin_log($merchants_name, 'clean', 'store_bonus');
+        ecjia_admin::admin_log($merchants_name, 'duplicate', 'store_bonus');
     }
 
 
