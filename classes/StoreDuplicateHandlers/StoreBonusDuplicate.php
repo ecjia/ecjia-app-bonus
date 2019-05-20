@@ -173,11 +173,7 @@ HTML;
             });
         }
 
-        $replacement_data = [
-            'bonus_type' => $replacement_bonus_type
-        ];
-
-        $this->setReplacementData($this->getCode(), $replacement_data);
+        $this->setReplacementData($this->getCode(), $replacement_bonus_type);
 
     }
 
