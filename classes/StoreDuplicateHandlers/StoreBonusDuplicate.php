@@ -149,30 +149,6 @@ HTML;
 
         });
 
-        $type_id_keys = array_keys($replacement_bonus_type);
-        if (!empty($type_id_keys)) {
-
-            //通过源店铺的cat_id查询出在attribute中的关联数据
-            RC_DB::table('user_bonus')->whereIn('bonus_type_id', $type_id_keys)->chunk(50, function($items) use ($replacement_bonus_type) {
-
-                //构造可用于复制的数据
-                foreach ($items as & $item) {
-                    //$bonus_id = $item['bonus_id'];
-                    unset($item['bonus_id']);
-
-                    //将bonus_type_id替换成新店铺的bonus_type_id
-                    if (isset($replacement_bonus_type[$item['bonus_type_id']])){
-                        $item['bonus_type_id'] = $replacement_bonus_type[$item['bonus_type_id']];
-                    }
-
-                }
-
-                //dd($items);
-                //为新店铺插入这些数据
-                RC_DB::table('user_bonus')->insert($items);
-            });
-        }
-
         $this->setReplacementData($this->getCode(), $replacement_bonus_type);
 
     }
