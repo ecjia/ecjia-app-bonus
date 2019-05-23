@@ -40,9 +40,8 @@ class StoreBonusDuplicate extends StoreDuplicateAbstract
      */
     public function getSourceStoreDataHandler()
     {
-        return RC_DB::table('bonus_type')
-            ->rightJoin('user_bonus', 'bonus_type.type_id', '=', 'user_bonus.bonus_type_id')
-            ->where('bonus_type.store_id', $this->source_store_id);
+        //return RC_DB::table('bonus_type')->rightJoin('user_bonus', 'bonus_type.type_id', '=', 'user_bonus.bonus_type_id')->where('bonus_type.store_id', $this->source_store_id);
+        return RC_DB::table('bonus_type')->where('store_id', $this->source_store_id);
     }
 
     /**
@@ -64,7 +63,7 @@ HTML;
     public function handleCount()
     {
         //如果已经统计过，直接返回统计过的条数
-        if ($this->count) {
+        if (!is_null($this->count)) {
             return $this->count;
         }
 
@@ -120,7 +119,7 @@ HTML;
     {
         $replacement_bonus_type = [];
         try {
-            RC_DB::table('bonus_type')->where('store_id', $this->source_store_id)->chunk(50, function ($items) use (& $replacement_bonus_type) {
+            $this->getSourceStoreDataHandler()->chunk(50, function ($items) use (& $replacement_bonus_type) {
                 //构造可用于复制的数据
                 foreach ($items as &$item) {
                     $type_id = $item['type_id'];
