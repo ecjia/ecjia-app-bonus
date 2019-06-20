@@ -779,7 +779,7 @@ class merchant extends ecjia_merchant {
 	public function search_users() {
 		$this->admin_priv('bonus_send', ecjia::MSGTYPE_JSON);
 		
-		$json = remove_xss($_POST['JSON']);
+		$json = $_POST['JSON'];
 		$keywords = !empty($json) && isset($json['keyword']) ? trim($json['keyword']) : '';
 		if(!empty($keywords)){
 			$db_user = RC_DB::table('users');
