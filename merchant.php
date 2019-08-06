@@ -1033,7 +1033,7 @@ class merchant extends ecjia_merchant {
 
 		$filter['skip']		= $page->start_id-1;
 		$filter['limit']	= 15;
-		$res = RC_Api::api('bonus', 'merchant_bonus_type_list', array('skip' => $filter['skip'], 'limit' => $filter['limit'], 'bonustype_id' => intval($_GET['bonustype_id']), 'sort_by' => $filter['sort_by'], 'sort_order' => $filter['sort_order']));
+		$res = RC_Api::api('bonus', 'merchant_bonus_type_list', array('skip' => $filter['skip'], 'limit' => $filter['limit'], 'bonustype_id' => $_GET['bonustype_id'], 'sort_by' => $filter['sort_by'], 'sort_order' => $filter['sort_order']));
 		$arr = array();
 
         $send_by_arr = array(
