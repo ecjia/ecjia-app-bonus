@@ -1015,7 +1015,7 @@ class merchant extends ecjia_merchant {
 
 		$bonustype_id = empty($_GET['bonustype_id']) ? 0 : intval($_GET['bonustype_id']);
 		$filter['send_type'] = '';
-		if(!empty($_GET['bonustype_id']) || (isset($_GET['bonustype_id']) && intval($_GET['bonustype_id'])==='0' )){
+		if(!empty($_GET['bonustype_id']) || intval($_GET['bonustype_id']) === 0 ){
 			$filter['send_type']	= $bonustype_id;
 
 		}
